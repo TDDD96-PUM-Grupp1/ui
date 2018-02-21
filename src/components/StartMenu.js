@@ -31,14 +31,14 @@ class StartMenu extends Component {
   render() {
     const menus = {
       first: <FirstMenu showCreate={this.showCreate} showAbout={this.showAbout} />,
-      create: <CreateMenu />,
+      create: <CreateMenu onBack={this.showFirst} />,
       about: <div /> // TODO possibly add about page
     };
 
     return (
       <div className="center-menu">
         <h1 className="game-title">Ball Game</h1>
-        {menus[this.state.menu]}
+        <div className="menu-button-holder">{menus[this.state.menu]}</div>
       </div>
     );
   }

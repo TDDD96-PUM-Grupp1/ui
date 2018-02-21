@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import '../css/menu.css';
 
 const FirstMenu = ({ showCreate, showAbout }) => (
-  <div className="menu-button-holder">
+  <div>
     <button onClick={showCreate} className="menu-button">
       Create Game
     </button>
