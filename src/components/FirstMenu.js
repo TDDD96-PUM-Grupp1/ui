@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import '../css/menu.css';
 
 const FirstMenu = ({ showCreate, showAbout }) => (
   <div className="menu-button-holder">
