@@ -35,3 +35,14 @@
 .menu-button:hover{
   background-color: #FF8300;
 }
+
+.menu-button-holder{
+  background-color: #ffecbd;
+
+  border-radius: 30px;
+  display: inline-block;
+
+  padding: 30px;
+
+  margin:auto;
+}

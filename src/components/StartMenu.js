@@ -1,21 +1,47 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-// TODO replace placeholder functions with actual calls
-const startGame = () => {};
-const showAbout = () => {};
+import CreateMenu from './CreateMenu';
+import FirstMenu from './FirstMenu';
 
-const StartMenu = () => (
-  <div className="start-menu">
-    <div className="center-menu">
-      <h1 className="game-title">Ball Game</h1>
-      <button onClick={startGame} className="menu-button">
-        Create Game
-      </button>
-      <button onClick={showAbout} className="menu-button">
-        About
-      </button>
-    </div>
-  </div>
-);
+class StartMenu extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      menu: 'first'
+    };
+
+    this.showCreate = this.showCreate.bind(this);
+    this.showAbout = this.showAbout.bind(this);
+    this.showFirst = this.showFirst.bind(this);
+  }
+
+  showCreate() {
+    this.setState({ menu: 'create' });
+  }
+
+  showAbout() {
+    this.setState({ menu: 'about' });
+  }
+
+  showFirst() {
+    this.setState({ menu: 'first' });
+  }
+
+  render() {
+    const menus = {
+      first: <FirstMenu showCreate={this.showCreate} showAbout={this.showAbout} />,
+      create: <CreateMenu />,
+      about: <div /> // TODO possibly add about page
+    };
+
+    return (
+      <div className="center-menu">
+        <h1 className="game-title">Ball Game</h1>
+        {menus[this.state.menu]}
+      </div>
+    );
+  }
+}
 
 export default StartMenu;
