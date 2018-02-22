@@ -1,6 +1,9 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Communication from './components/Communication';
+
+const com = new Communication();
 
 const App = () => (
   <div className="App">

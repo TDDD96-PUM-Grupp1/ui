@@ -8,13 +8,15 @@ class Communication {
   */
   constructor() {
     // Connect to deepstream
-    this.client = createDeepstream('10.90.128.65:60020').login();
+    this.ds = createDeepstream('10.90.128.65:60020');
     this.instance = 'abc'; // this.client.getUid();
+    this.client = this.ds.login({ username: this.instance });
     this.players = {};
     this.addPlayer = this.addPlayer.bind(this);
     this.readSensorData = this.readSensorData.bind(this);
     this.presenceUpdate = this.presenceUpdate.bind(this);
 
+    console.log(`data/${this.instance}/addPlayer`);
     this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
   }
 
@@ -23,10 +25,11 @@ class Communication {
   * published by that player.
   */
   addPlayer(data, response) {
+    console.log(`Player ${data.id} has connected`);
     this.players[data.id] = { name: data.name, sensor: data.sensor };
     this.client.event.subscribe(`data/${this.instance}/${data.id}`, this.readSensorData);
-    this.client.presence.subscribe(data.id, this.presenceUpdate);
     response.send(data.id);
+    this.client.presence.subscribe(data.id, this.presenceUpdate);
   }
 
   /*
@@ -35,6 +38,7 @@ class Communication {
   */
   presenceUpdate(username, login) {
     if (!login) {
+      console.log(`Players ${username} has disconnected`);
       delete this.players[username];
       this.client.event.unsubscribe(`data/${this.instance}/${username}`);
       this.client.presence.unsubscribe(username);
@@ -46,6 +50,7 @@ class Communication {
   */
   readSensorData(data) {
     if (data.sensor) {
+      console.log(`${data.id} is sending ${data.sensor.gamma}`);
       this.players[data.id].sensor = data.sensor;
     }
   }
