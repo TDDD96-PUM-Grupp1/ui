@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Communication from './components/Communication';
 import PlayerList from './components/PlayerList';
+import StartMenu from './components/StartMenu';
 
 const com = new Communication();
 
@@ -15,7 +16,9 @@ const App = () => (
     <p className="App-intro">
       To get started, edit <code>src/App.js</code> and save to reload.
     </p>
+    <StartMenu />
     <PlayerList getPlayersFunction={com.getPlayers} />
+
   </div>
 );
 
