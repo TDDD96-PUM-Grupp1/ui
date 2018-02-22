@@ -46,7 +46,7 @@ class CreateMenu extends Component {
     } else if (maxVal < 1) {
       newErrors.push('Max players has to be more than 1');
     } else if (maxVal > MAX_ALLOWED_PLAYERS) {
-      newErrors.push('Max players has to be less than str(MAX_ALLOWED_PLAYERS)');
+      newErrors.push(`Max players has to be less than ${MAX_ALLOWED_PLAYERS}`);
     } else {
       newMax = maxVal;
     }
