@@ -9,12 +9,11 @@ class Communication extends Component {
     // Login
     this.counter = 0;
     this.instance = this.client.getUid();
-    this.players = [];
+    this.players = {};
     this.addPlayer = this.addPlayer.bind(this);
     this.readSensorData = this.readSensorData.bind(this);
 
     this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
-    this.client.event.subscribe(`data/${this.instance}/${this.counter}`, this.readSensorData);
 
     this.state = {
       beta: 0,
@@ -23,9 +22,9 @@ class Communication extends Component {
   }
 
   addPlayer(data, response) {
-    this.players.push({ id: data.id, name: data.name });
+    this.players[data.id] = { name: data.name, sensor: data.sensor };
     this.client.event.subscribe(`data/${this.instance}/${this.data.id}`, this.readSensorData);
-    response.send(this.counter);
+    response.send(data.id);
   }
 
   readSensorData(data) {
