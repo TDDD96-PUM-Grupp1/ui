@@ -13,34 +13,33 @@
   display:block;
   margin: auto;
 
-  margin-bottom: 20px;
+  margin-top: 20px;
   height: 60px;
   width: 250px;
 
   color: #FFFFFF;
-  background-color: #F49F45;
+  background-color: #FFA000;
   font-size: 20px;
 
   cursor:pointer;
 
-  border-radius: 10px;
   border: none;
-  border-bottom: 5px #D9842A solid;
+  border-bottom: 5px #FF6F00 solid;
 }
 
 .menu-button:hover{
-  background-color: #FF8300;
+  background-color: #FF6F00;
 }
 
 .menu-button-holder{
-  background-color: #ffecbd;
-
-  border-radius: 30px;
+  background-color: #FFF8E1;
   display: inline-block;
 
-  padding: 30px;
+  padding: 10px 30px 30px 30px;
 
   margin:auto;
+
+  border: 2px #FFECB3 solid;
 }
 
 .create-title{
