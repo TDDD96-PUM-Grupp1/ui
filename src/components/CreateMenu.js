@@ -2,26 +2,56 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 const DEFAULT_MAX_PLAYERS = 8;
+const MAX_ALLOWED_PLAYERS = 100;
 
 class CreateMenu extends Component {
   constructor(props) {
     super(props);
 
+    const availableModes = ['mode1', 'mode2', 'mode3']; // TODO get real list
+
     this.state = {
-      gameModes: ['mode1', 'mode2', 'mode3'], // TODO get real list
-      errors: []
+      gameModes: availableModes,
+      errors: [],
+      maxPlayers: DEFAULT_MAX_PLAYERS,
+      gameMode: availableModes[0], // TODO fix with§
     };
 
     this.startGame = this.startGame.bind(this);
     this.validatePlayers = this.validatePlayers.bind(this);
+    this.updateGameMode = this.updateGameMode.bind(this);
   }
 
   startGame() {
-    // TODO
+    if (this.state.errors.length === 0) {
+      // TODO startGame(this.state.gameMode, this.state.maxPlayers);
+    }
+  }
+
+  updateGameMode(event) {
+    const modeIndex = event.target.selectedIndex;
+    const newMode = this.state.gameModes[modeIndex];
+
+    this.setState({ gameMode: newMode });
   }
 
   validatePlayers(event) {
-    console.log(event.target.value); // TODO implement check
+    const newErrors = [];
+    let newMax = this.state.maxPlayers;
+
+    const maxVal = parseInt(event.target.value, 10);
+
+    if (Number.isNaN(maxVal)) {
+      newErrors.push('Unvalid max player limit');
+    } else if (maxVal < 1) {
+      newErrors.push('Max players has to be more than 1');
+    } else if (maxVal > MAX_ALLOWED_PLAYERS) {
+      newErrors.push('Max players has to be less than str(MAX_ALLOWED_PLAYERS)');
+    } else {
+      newMax = maxVal;
+    }
+
+    this.setState({ errors: newErrors, maxPlayers: newMax });
   }
 
   render() {
@@ -30,7 +60,7 @@ class CreateMenu extends Component {
         <h3 className="create-title">Create New Game</h3>
         <div className="menu-setting">
           <h4 className="menu-descriptor">Game Mode</h4>
-          <select className="create-input">
+          <select className="create-input" onChange={this.updateGameMode}>
             {this.state.gameModes.map(val => (
               <option key={val} value={val}>
                 {val}
@@ -47,20 +77,26 @@ class CreateMenu extends Component {
             onChange={this.validatePlayers}
           />
         </div>
+        <div className="error-list">
+          {this.state.errors.map(error => (
+            <div className="error-box" key={error}>
+              {error}
+            </div>
+          ))}
+        </div>
         <button onClick={this.startGame} className="menu-button">
           Create
         </button>
         <button onClick={this.props.onBack} className="menu-button">
           {'\u2B05'} Back
         </button>
-        <div className="error-list">{this.state.errors.map(error => <div>{error}</div>)}</div>
       </div>
     );
   }
 }
 
 CreateMenu.propTypes = {
-  onBack: PropTypes.func.isRequired
+  onBack: PropTypes.func.isRequired,
 };
 
 export default CreateMenu;

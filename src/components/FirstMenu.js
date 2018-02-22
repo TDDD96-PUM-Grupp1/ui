@@ -15,7 +15,7 @@ const FirstMenu = ({ showCreate, showAbout }) => (
 
 FirstMenu.propTypes = {
   showAbout: PropTypes.func.isRequired,
-  showCreate: PropTypes.func.isRequired
+  showCreate: PropTypes.func.isRequired,
 };
 
 export default FirstMenu;

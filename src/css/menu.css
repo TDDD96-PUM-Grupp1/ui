@@ -58,6 +58,8 @@
 
 .create-menu{
   text-align: left;
+
+  width: 300px;
 }
 
 .create-input{
@@ -71,4 +73,19 @@
 
 .menu-setting{
   margin: 30px 0px 30px 0px;
+}
+
+.error-list{
+  margin: 10px 0px;
+}
+
+.error-box{
+  background-color: #EF5350;
+  padding: 3px;
+  border: 2px #E57373 solid;
+
+  color: #FFFFFF;
+  font-size: 15px;
+
+  width: 100%;
 }
