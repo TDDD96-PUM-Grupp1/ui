@@ -16,7 +16,7 @@ class PlayerList extends Component {
 
   getPlayers() {
     const players = this.props.getPlayersFunction();
-    this.setState({ playerList: players });
+    this.setState(players);
   }
 
   render() {
