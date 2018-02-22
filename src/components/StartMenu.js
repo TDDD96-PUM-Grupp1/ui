@@ -3,12 +3,15 @@ import React, { Component } from 'react';
 import CreateMenu from './CreateMenu';
 import FirstMenu from './FirstMenu';
 
+/*
+Menu in UI with interchangeable content.
+*/
 class StartMenu extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      menu: 'first'
+      menu: 'first',
     };
 
     this.showCreate = this.showCreate.bind(this);
@@ -16,14 +19,23 @@ class StartMenu extends Component {
     this.showFirst = this.showFirst.bind(this);
   }
 
+  /*
+  Show the menu for creating games.
+  */
   showCreate() {
     this.setState({ menu: 'create' });
   }
 
+  /*
+  Show the about page.
+  */
   showAbout() {
     this.setState({ menu: 'about' });
   }
 
+  /*
+  Show the initial menu.
+  */
   showFirst() {
     this.setState({ menu: 'first' });
   }
@@ -32,7 +44,7 @@ class StartMenu extends Component {
     const menus = {
       first: <FirstMenu showCreate={this.showCreate} showAbout={this.showAbout} />,
       create: <CreateMenu onBack={this.showFirst} />,
-      about: <div /> // TODO possibly add about page
+      about: <div />, // TODO possibly add about page
     };
 
     return (

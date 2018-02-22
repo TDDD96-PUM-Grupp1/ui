@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import '../css/menu.css';
 
+/*
+The first menu shown when UI is started
+*/
 const FirstMenu = ({ showCreate, showAbout }) => (
   <div>
     <button onClick={showCreate} className="menu-button">

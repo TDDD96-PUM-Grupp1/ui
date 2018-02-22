@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 const DEFAULT_MAX_PLAYERS = 8;
 const MAX_ALLOWED_PLAYERS = 100;
 
+/*
+Component showing a menu for setting up a new game
+*/
 class CreateMenu extends Component {
   constructor(props) {
     super(props);
@@ -14,7 +17,7 @@ class CreateMenu extends Component {
       gameModes: availableModes,
       errors: [],
       maxPlayers: DEFAULT_MAX_PLAYERS,
-      gameMode: availableModes[0], // TODO fix with§
+      gameMode: availableModes[0], // TODO fix with
     };
 
     this.startGame = this.startGame.bind(this);
@@ -22,12 +25,19 @@ class CreateMenu extends Component {
     this.updateGameMode = this.updateGameMode.bind(this);
   }
 
+  /*
+  Try to start new game when done setting options
+  */
   startGame() {
     if (this.state.errors.length === 0) {
       // TODO startGame(this.state.gameMode, this.state.maxPlayers);
     }
   }
 
+  /*
+  Update the selected game mode.
+  Event handler for a dropdown list.
+  */
   updateGameMode(event) {
     const modeIndex = event.target.selectedIndex;
     const newMode = this.state.gameModes[modeIndex];
@@ -35,6 +45,10 @@ class CreateMenu extends Component {
     this.setState({ gameMode: newMode });
   }
 
+  /*
+  Validate the selected player count,
+  Event handler for an input field.
+  */
   validatePlayers(event) {
     const newErrors = [];
     let newMax = this.state.maxPlayers;
