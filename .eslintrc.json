@@ -12,7 +12,10 @@
   },
     "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js"] }],
-    "prettier/prettier": ["error", { "singleQuote": true }],
-    "no-console": "off"
+      
+    "prettier/prettier": ["error", {
+      "singleQuote": true,
+      "trailingComma": "all" 
+      }]
   }
 }

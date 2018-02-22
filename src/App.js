@@ -16,6 +16,8 @@ function getDummyName() {
   };
 }
 
+const com = new Communication();
+
 const App = () => (
   <div className="App">
     <header className="App-header">
@@ -25,7 +27,6 @@ const App = () => (
     <p className="App-intro">
       To get started, edit <code>src/App.js</code> and save to reload.
     </p>
-    <Communication />
     <PlayerList getPlayersFunction={getDummyName} />
   </div>
 );

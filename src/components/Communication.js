@@ -1,48 +1,58 @@
 import createDeepstream from 'deepstream.io-client-js';
-import React, { Component } from 'react';
 
-class Communication extends Component {
-  constructor(props) {
-    super(props);
+class Communication {
+  /*
+  * Constructor for Communication.
+  * Establishes connection with the Deepstream server. Awaits
+  * a RPC from a client.
+  */
+  constructor() {
     // Connect to deepstream
-    this.client = createDeepstream('10.90.128.65:60020').login();
-    // Login
-    this.counter = 0;
-    this.instance = this.client.getUid();
-    this.players = [];
+    this.ds = createDeepstream('10.90.128.65:60020');
+    this.instance = 'abc'; // this.client.getUid();
+    this.client = this.ds.login({ username: this.instance });
+    this.players = {};
     this.addPlayer = this.addPlayer.bind(this);
     this.readSensorData = this.readSensorData.bind(this);
+    this.presenceUpdate = this.presenceUpdate.bind(this);
 
+    console.log(`data/${this.instance}/addPlayer`);
     this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
-    this.client.event.subscribe(`data/${this.instance}/${this.counter}`, this.readSensorData);
-
-    this.state = {
-      beta: 0,
-      gamma: 0,
-    };
   }
 
+  /*
+  * Adds player to the list of players. Starts to listen to the events
+  * published by that player.
+  */
   addPlayer(data, response) {
-    this.players.push({ id: data.id, name: data.name });
-    this.client.event.subscribe(`data/${this.instance}/${this.data.id}`, this.readSensorData);
-    response.send(this.counter);
+    console.log(`Player ${data.id} has connected`);
+    this.players[data.id] = { name: data.name, sensor: data.sensor };
+    this.client.event.subscribe(`data/${this.instance}/${data.id}`, this.readSensorData);
+    response.send(data.id);
+    // this.client.presence.subscribe(data.id, this.presenceUpdate);
   }
 
+  /*
+  * Callback for a presence update for a controller.If disconnected
+  * removes player and unsubscribes from player channel.
+  */
+  presenceUpdate(username, login) {
+    if (!login) {
+      console.log(`Players ${username} has disconnected`);
+      delete this.players[username];
+      this.client.event.unsubscribe(`data/${this.instance}/${username}`);
+      this.client.presence.unsubscribe(username);
+    }
+  }
+
+  /*
+  * Callback for reading sensordata. Updates a specific players sensorvalues.
+  */
   readSensorData(data) {
-    console.log('asd');
-    this.setState({
-      beta: data.beta,
-      gamma: data.gamma,
-    });
-  }
-
-  render() {
-    return (
-      <div>
-        <div>Beta: {Math.round(this.state.beta)}</div>
-        <div>Gamma: {Math.round(this.state.gamma)}</div>
-      </div>
-    );
+    if (data.sensor) {
+      console.log(`${data.id} is sending ${data.sensor.gamma}`);
+      this.players[data.id].sensor = data.sensor;
+    }
   }
 }
 
