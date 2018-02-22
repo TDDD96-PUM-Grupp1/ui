@@ -29,8 +29,8 @@ class PlayerList extends Component {
     return (
       <div>
         {Object.keys(this.state.playerList).map(key => (
-          <div>
-            <PlayerInfo key={key} id={key} playerObject={this.state.playerList[key]} />
+          <div key={key}>
+            <PlayerInfo id={key} playerObject={this.state.playerList[key]} />
             <br />
           </div>
         ))}
