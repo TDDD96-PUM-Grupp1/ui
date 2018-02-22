@@ -29,7 +29,7 @@ class Communication {
     this.players[data.id] = { name: data.name, sensor: data.sensor };
     this.client.event.subscribe(`data/${this.instance}/${data.id}`, this.readSensorData);
     response.send(data.id);
-    this.client.presence.subscribe(data.id, this.presenceUpdate);
+    // this.client.presence.subscribe(data.id, this.presenceUpdate);
   }
 
   /*
