@@ -5,8 +5,8 @@ const PlayerInfo = ({ id, playerObject }) => (
   <div>
     <div>{id}</div>
     <div>{playerObject.name}</div>
-    <div>{playerObject.beta}</div>
-    <div>{playerObject.gamma}</div>
+    <div>{playerObject.sensor.beta}</div>
+    <div>{playerObject.sensor.gamma}</div>
   </div>
 );
 

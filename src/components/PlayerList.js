@@ -11,7 +11,7 @@ class PlayerList extends Component {
     };
 
     this.getPlayers = this.getPlayers.bind(this);
-    setInterval(this.getPlayers, 2000);
+    setInterval(this.getPlayers, 100);
   }
 
   getPlayers() {
@@ -20,13 +20,22 @@ class PlayerList extends Component {
   }
 
   render() {
-    const players = [];
+    // const players = [];
 
-    Object.keys(this.state.playerList).map(key => {
-      players.push(<PlayerInfo key={key} id={key} playerObject={this.state.playerList[key]} />);
-    });
+    // Object.keys(this.state.playerList).map(key => {
+    //   players.push(<PlayerInfo key={key} id={key} playerObject={this.state.playerList[key]} />);
+    // });
 
-    return <div>{players}</div>;
+    return (
+      <div>
+        {Object.keys(this.state.playerList).map(key => (
+          <div>
+            <PlayerInfo key={key} id={key} playerObject={this.state.playerList[key]} />
+            <br />
+          </div>
+        ))}
+      </div>
+    );
   }
 }
 

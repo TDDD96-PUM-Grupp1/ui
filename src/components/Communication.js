@@ -18,6 +18,8 @@ class Communication {
 
     console.log(`data/${this.instance}/addPlayer`);
     this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
+
+    this.getPlayers = this.getPlayers.bind(this);
   }
 
   /*
@@ -53,6 +55,10 @@ class Communication {
       console.log(`${data.id} is sending ${data.sensor.gamma}`);
       this.players[data.id].sensor = data.sensor;
     }
+  }
+
+  getPlayers() {
+    return this.players;
   }
 }
 
