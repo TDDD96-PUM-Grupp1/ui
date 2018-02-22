@@ -5,8 +5,8 @@ const PlayerInfo = ({ id, playerObject }) => (
   <div>
     <div>{id}</div>
     <div>{playerObject.name}</div>
-    <div>{playerObject.sensor.beta}</div>
-    <div>{playerObject.sensor.gamma}</div>
+    <div>{Math.round(playerObject.sensor.beta)}</div>
+    <div>{Math.round(playerObject.sensor.gamma)}</div>
   </div>
 );
 

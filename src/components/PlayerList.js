@@ -16,16 +16,12 @@ class PlayerList extends Component {
 
   getPlayers() {
     const players = this.props.getPlayersFunction();
-    this.setState(players);
+    this.setState({
+      playerList: players,
+    });
   }
 
   render() {
-    // const players = [];
-
-    // Object.keys(this.state.playerList).map(key => {
-    //   players.push(<PlayerInfo key={key} id={key} playerObject={this.state.playerList[key]} />);
-    // });
-
     return (
       <div>
         {Object.keys(this.state.playerList).map(key => (
