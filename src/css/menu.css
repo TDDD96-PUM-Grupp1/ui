@@ -21,7 +21,9 @@
   background-color: #FFA000;
   font-size: 20px;
 
-  cursor:pointer;
+  cursor: pointer;
+
+  font-family: 'Roboto', sans-serif;
 
   border: none;
   border-bottom: 5px #FF6F00 solid;
