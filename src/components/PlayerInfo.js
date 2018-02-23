@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/*
+Stateless component which displays information about a player
+*/
 const PlayerInfo = ({ id, playerObject }) => (
   <div>
     <div>{id}</div>

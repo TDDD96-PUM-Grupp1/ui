@@ -2,6 +2,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import PlayerInfo from './PlayerInfo';
 
+/*
+  A collection of PlayerList components to display information about connected players.
+  Currently contains logic to fetch player data on a set frequency.
+ */
 class PlayerList extends Component {
   constructor(props) {
     super(props);
