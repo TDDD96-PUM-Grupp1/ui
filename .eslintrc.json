@@ -14,7 +14,7 @@
     "react/jsx-filename-extension": [1, { "extensions": [".js"] }],
     "prettier/prettier": ["error", {
       "singleQuote": true,
-      "trailingComma": "all" 
+      "trailingComma": "all"
       }],
 	"linebreak-style": ["off"]
   }
