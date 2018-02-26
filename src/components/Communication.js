@@ -19,6 +19,7 @@ class Communication {
     this.getPlayers = this.getPlayers.bind(this);
     this.readSensorData = this.readSensorData.bind(this);
     this.presenceUpdate = this.presenceUpdate.bind(this);
+
   }
 
   /*
