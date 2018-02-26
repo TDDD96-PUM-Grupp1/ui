@@ -13,11 +13,13 @@ class Communication {
     this.client = this.ds.login({ username: this.instance });
     this.players = {};
     this.addPlayer = this.addPlayer.bind(this);
+    this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
+
+    // Bind callbacks
+    this.getPlayers = this.getPlayers.bind(this);
     this.readSensorData = this.readSensorData.bind(this);
     this.presenceUpdate = this.presenceUpdate.bind(this);
 
-    console.log(`data/${this.instance}/addPlayer`);
-    this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
   }
 
   /*
@@ -50,9 +52,12 @@ class Communication {
   */
   readSensorData(data) {
     if (data.sensor) {
-      console.log(`${data.id} is sending ${data.sensor.gamma}`);
       this.players[data.id].sensor = data.sensor;
     }
+  }
+
+  getPlayers() {
+    return this.players;
   }
 }
 
