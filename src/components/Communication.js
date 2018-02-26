@@ -6,9 +6,9 @@ class Communication {
   * Establishes connection with the Deepstream server. Awaits
   * a RPC from a client.
   */
-  constructor() {
+  constructor(options) {
     // Connect to deepstream
-    this.ds = createDeepstream('10.90.128.65:60020');
+    this.ds = createDeepstream(options.host_ip);
     this.instance = 'abc'; // this.client.getUid();
     this.client = this.ds.login({ username: this.instance });
     this.players = {};
@@ -19,7 +19,6 @@ class Communication {
     this.getPlayers = this.getPlayers.bind(this);
     this.readSensorData = this.readSensorData.bind(this);
     this.presenceUpdate = this.presenceUpdate.bind(this);
-
   }
 
   /*
