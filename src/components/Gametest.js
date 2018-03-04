@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 
 import * as PIXI from 'pixi.js';
 
+import Game from './game/Game';
+
 /*
-Menu in UI with interchangeable content.
+Game testing component.
 */
 class Gametest extends Component {
   constructor(props) {
@@ -14,13 +16,23 @@ class Gametest extends Component {
 
   componentDidMount() {
     // Setup PIXI Canvas in componentDidMount
-    this.renderer = PIXI.autoDetectRenderer(1366, 768);
-    this.refElement.appendChild(this.renderer.view);
+    const app = new PIXI.Application();
+    this.app = app;
+    this.refElement.appendChild(this.app.renderer.view);
 
-    // create the root of the scene graph
-    this.stage = new PIXI.Container();
-    this.stage.width = 1366;
-    this.stage.height = 768;
+    // Make the canvas resolution scale to fit the window size
+    app.renderer.view.style.position = 'absolute';
+    app.renderer.view.style.display = 'block';
+    app.renderer.autoResize = true;
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+
+    // set background color
+    app.renderer.backgroundColor = 0x061639;
+
+    // Initialize game
+    const game = new Game(app);
+
+    app.ticker.add(delta => game.loop(delta));
   }
 
   setRef(c) {
