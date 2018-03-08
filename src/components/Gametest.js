@@ -32,6 +32,7 @@ class Gametest extends Component {
     // Initialize game
     const game = new Game(app);
 
+    // Hook up the PIXI update loop with the game loop.
     app.ticker.add(delta => game.loop(delta));
   }
 
