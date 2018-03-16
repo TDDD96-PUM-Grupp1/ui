@@ -19,8 +19,8 @@ class PlayerController extends EntityController {
   // Update
   update(dt) {
     this.time += dt;
-    this.entity.vx = Math.cos(this.time) * 200;
-    this.entity.vy = Math.sin(this.time * 1.2) * 200;
+    this.entity.ax = Math.cos(this.time) * 200;
+    this.entity.ay = Math.cos(this.time * 1.2) * 200;
   }
 }
 

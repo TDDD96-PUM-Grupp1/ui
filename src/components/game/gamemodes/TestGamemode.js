@@ -1,6 +1,6 @@
 import PlayerCircle from '../entities/PlayerCircle';
-import PlayerController from '../entities/controllers/PlayerController';
 import Gamemode from './Gamemode';
+import TestController from '../entities/controllers/TestController';
 
 /*
 Test gamemode.
@@ -10,9 +10,14 @@ class TestGamemode extends Gamemode {
     super(game);
     // Make a test circle;
     const circle = new PlayerCircle(this.game.app);
-    const player = new PlayerController();
-    circle.setController(player);
+    const controller = new TestController(300, 300, 150, 150, 1, 1.2);
+    circle.setController(controller);
     this.game.entityHandler.register(circle);
+
+    const circle2 = new PlayerCircle(this.game.app);
+    const controller2 = new TestController(450, 300, 150, 150, 0.7, 1.5);
+    circle2.setController(controller2);
+    this.game.entityHandler.register(circle2);
   }
   /* eslint-disable class-methods-use-this, no-unused-vars */
   // Called before the game objects are updated.

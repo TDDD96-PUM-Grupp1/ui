@@ -5,11 +5,28 @@ class GameEntity {
   /* eslint-disable class-methods-use-this, no-unused-vars, no-useless-constructor,
   no-empty-function */
   constructor(app) {
+    // Position
     this.x = 0;
     this.y = 0;
+
+    // Predicted next position
+    this.px = 0;
+    this.py = 0;
+
+    // Velocity
     this.vx = 0;
     this.vy = 0;
+
+    // Acceleration
+    this.ax = 0;
+    this.ay = 0;
+
+    // Mass
     this.mass = 0;
+
+    // Collision group
+    // The entity will only collide with entities with the same group number.
+    this.collisionGroup = 0;
   }
   /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
   no-empty-function */
@@ -19,15 +36,24 @@ class GameEntity {
     if (this.controller != null) {
       this.controller.update(dt);
     }
-    this.x += this.vx * dt;
-    this.y += this.vy * dt;
+    this.vx += this.ax * dt;
+    this.vy += this.ay * dt;
+    this.px = this.x + this.vx * dt;
+    this.py = this.y + this.vy * dt;
   }
 
   // Update this entity's graphics
   graphicUpdate(dt) {
-    this.dt = dt;
+    this.x += this.vx * dt;
+    this.y += this.vy * dt;
+
     this.graphic.x = this.x;
     this.graphic.y = this.y;
+  }
+
+  // Return the predicted next position
+  nextPosition(dt) {
+    return [this.x + this.vx * dt, this.y + this.vy * dt];
   }
 
   // Set the controller for this object.
