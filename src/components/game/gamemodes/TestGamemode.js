@@ -6,8 +6,6 @@ import Gamemode from './Gamemode';
 Test gamemode.
 */
 class TestGamemode extends Gamemode {
-  /* eslint-disable class-methods-use-this, no-unused-vars, no-useless-constructor,
-  no-empty-function */
   constructor(game) {
     super(game);
     // Make a test circle;
@@ -16,9 +14,6 @@ class TestGamemode extends Gamemode {
     circle.setController(player);
     this.game.entityHandler.register(circle);
   }
-  /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
-  no-empty-function */
-
   /* eslint-disable class-methods-use-this, no-unused-vars */
   // Called before the game objects are updated.
   preUpdate(dt) {}
