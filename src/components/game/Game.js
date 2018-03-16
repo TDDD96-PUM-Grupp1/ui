@@ -1,7 +1,10 @@
 // import * as PIXI from 'pixi.js';
 import EntityHandler from './EntityHandler';
-import PlayerCircle from './PlayerCircle';
-import PlayerController from './PlayerController';
+import TestGamemode from './gamemodes/TestGamemode';
+
+/* eslint-disable */
+var GAME;
+/* eslint-enable */
 
 /*
 Game.
@@ -10,14 +13,15 @@ class Game {
   constructor(app) {
     this.app = app;
 
+    // Set global variables for the pixi context and game context to heavily simplify
+    // the creation of additional objects and graphics when necessary.
+    GAME = this;
+
     // Create all handlers
     this.entityHandler = new EntityHandler();
 
-    // Make a test circle;
-    const circle = new PlayerCircle(this.app);
-    const player = new PlayerController();
-    circle.setController(player);
-    this.entityHandler.register(circle);
+    // Create gamemode
+    this.currentGamemode = new TestGamemode(this);
   }
 
   // Main game loop
@@ -26,7 +30,9 @@ class Game {
     const dt = delta / 60;
 
     // Update object handler
+    this.currentGamemode.preUpdate(dt);
     this.entityHandler.update(dt);
+    this.currentGamemode.postUpdate(dt);
   }
 }
 

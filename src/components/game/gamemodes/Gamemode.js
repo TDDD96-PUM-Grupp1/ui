@@ -1,24 +1,25 @@
 /*
-Controller base class
+Gamemode base class.
 */
-class EntityController {
+class Gamemode {
   /* eslint-disable class-methods-use-this, no-unused-vars, no-useless-constructor,
   no-empty-function */
-  constructor() {}
+  constructor(game) {
+    this.game = game;
+  }
   /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
   no-empty-function */
 
-  // Register the entity to be controlled by this controller.
-  register(entity) {
-    this.entity = entity;
-  }
-
   /* eslint-disable class-methods-use-this, no-unused-vars */
-  // Update
-  update(dt) {
-    throw new Error('You must implement the update method of your controller subclass. ');
-  }
+  // Called before the game objects are updated.
+  preUpdate(dt) {}
+
+  // Called after the game objects are updated.
+  postUpdate(dt) {}
+
+  // Clean up after the gamemode is finished.
+  cleanUp() {}
   /* eslint-enable class-methods-use-this, no-unused-vars */
 }
 
-export default EntityController;
+export default Gamemode;

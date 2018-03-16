@@ -7,11 +7,20 @@ class PlayerController extends EntityController {
   constructor(id) {
     super();
     this.playerid = id;
+
+    this.time = 0;
+  }
+
+  init() {
+    this.entity.x = 300;
+    this.entity.y = 300;
   }
 
   // Update
   update(dt) {
-    this.entity.circle.x += 50 * dt;
+    this.time += dt;
+    this.entity.vx = Math.cos(this.time) * 200;
+    this.entity.vy = Math.sin(this.time * 1.2) * 200;
   }
 }
 

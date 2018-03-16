@@ -13,10 +13,12 @@ class PlayerCircle extends GameEntity {
     circle.beginFill(0xee66666);
     circle.drawCircle(0, 0, 32);
     circle.endFill();
-    circle.x = 100;
-    circle.y = 100;
     app.stage.addChild(circle);
-    this.circle = circle;
+    this.graphic = circle;
+
+    // this.x = 100;
+    // this.y = 100;
+    this.mass = 1;
   }
 
   // Update this object

@@ -13,6 +13,10 @@ class EntityHandler {
     for (i = 0; i < this.entities.length; i += 1) {
       this.entities[i].update(dt);
     }
+
+    for (i = 0; i < this.entities.length; i += 1) {
+      this.entities[i].graphicUpdate(dt);
+    }
   }
 
   register(obj) {
