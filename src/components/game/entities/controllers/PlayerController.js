@@ -44,7 +44,7 @@ class PlayerController extends EntityController {
 
     this.time = 0;
 
-    this.accelerationScale = 10;
+    this.accelerationScale = 500;
   }
 
   init() {
@@ -60,6 +60,8 @@ class PlayerController extends EntityController {
 
     this.entity.ax = 0;
     this.entity.ay = 0;
+    this.entity.vx *= 0.8;
+    this.entity.vy *= 0.8;
 
     if (this.keyw.isDown) {
       this.entity.ay += -1;

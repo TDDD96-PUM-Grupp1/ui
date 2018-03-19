@@ -25,6 +25,7 @@ class TestGamemode extends Gamemode {
     circle3.setController(controller3);
     circle3.x = 0;
     circle3.y = 0;
+    circle3.setColor(0xffffff);
     this.game.entityHandler.register(circle3);
   }
   /* eslint-disable class-methods-use-this, no-unused-vars */

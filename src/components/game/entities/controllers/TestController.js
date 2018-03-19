@@ -24,8 +24,8 @@ class TestController extends EntityController {
   // Update
   update(dt) {
     this.time += dt;
-    this.entity.ax = Math.cos(this.time * this.c) * this.a;
-    this.entity.ay = Math.cos(this.time * this.d) * this.b;
+    // this.entity.ax = Math.cos(this.time * this.c) * this.a;
+    // this.entity.ay = Math.cos(this.time * this.d) * this.b;
   }
 }
 

@@ -2,6 +2,8 @@ import * as PIXI from 'pixi.js';
 import GameEntity from './GameEntity';
 import CollisionCircle from './collision/CollisionCircle';
 
+const RADIUS = 32;
+
 /*
 Game object representing a player
 */
@@ -9,7 +11,7 @@ class PlayerCircle extends GameEntity {
   constructor(app) {
     super(app);
 
-    const RADIUS = 32;
+    // const RADIUS = 32;
 
     // Create a graphical circle
     const circle = new PIXI.Graphics();
@@ -33,6 +35,12 @@ class PlayerCircle extends GameEntity {
   // Update this object
   update(dt) {
     super.update(dt);
+  }
+
+  setColor(color) {
+    this.graphic.beginFill(color);
+    this.graphic.drawCircle(0, 0, RADIUS);
+    this.graphic.endFill();
   }
 }
 
