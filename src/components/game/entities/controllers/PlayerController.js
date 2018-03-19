@@ -1,5 +1,39 @@
 import EntityController from './EntityController';
 
+// Mystery third party code
+function keyboard(keyCode) {
+  const key = {};
+  key.code = keyCode;
+  key.isDown = false;
+  key.isUp = true;
+  key.press = undefined;
+  key.release = undefined;
+  // The 'downHandler'
+  key.downHandler = event => {
+    if (event.keyCode === key.code) {
+      if (key.isUp && key.press) key.press();
+      key.isDown = true;
+      key.isUp = false;
+    }
+    event.preventDefault();
+  };
+
+  // The 'upHandler'
+  key.upHandler = event => {
+    if (event.keyCode === key.code) {
+      if (key.isDown && key.release) key.release();
+      key.isDown = false;
+      key.isUp = true;
+    }
+    event.preventDefault();
+  };
+
+  // Attach event listeners
+  window.addEventListener('keydown', key.downHandler.bind(key), false);
+  window.addEventListener('keyup', key.upHandler.bind(key), false);
+  return key;
+}
+
 /*
 Player object controller, will handle taking input from player and modifying their objects.
 */
@@ -9,18 +43,38 @@ class PlayerController extends EntityController {
     this.playerid = id;
 
     this.time = 0;
+
+    this.accelerationScale = 10;
   }
 
   init() {
-    this.entity.x = 300;
-    this.entity.y = 300;
+    this.keyw = keyboard(87);
+    this.keya = keyboard(65);
+    this.keys = keyboard(83);
+    this.keyd = keyboard(68);
   }
 
   // Update
   update(dt) {
     this.time += dt;
-    this.entity.ax = Math.cos(this.time) * 200;
-    this.entity.ay = Math.cos(this.time * 1.2) * 200;
+
+    this.entity.ax = 0;
+    this.entity.ay = 0;
+
+    if (this.keyw.isDown) {
+      this.entity.ay += -1;
+    }
+    if (this.keya.isDown) {
+      this.entity.ax += -1;
+    }
+    if (this.keys.isDown) {
+      this.entity.ay += 1;
+    }
+    if (this.keyd.isDown) {
+      this.entity.ax += 1;
+    }
+    this.entity.ax *= this.accelerationScale;
+    this.entity.ay *= this.accelerationScale;
   }
 }
 
