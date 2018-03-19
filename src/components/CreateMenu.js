@@ -32,14 +32,25 @@ class CreateMenu extends Component {
   Try to start new game when done setting options
   */
   startGame() {
-    if (this.state.errors.length === 0) {
+    console.log(this.state.errors);
+
+    if (
+      this.state.errors.length === 0 ||
+      (this.state.errors[0] === 'Name already taken' && this.state.errors.length === 1)
+    ) {
+      this.setState({ errors: [] });
       // TODO startGame(this.state.gameMode, this.state.maxPlayers);
-      this.props.com.setupInstance(this.state.instanceName, (err, data) => {
-        if (err) {
-          // TODO: Handle error this.setState({ errors: ['Name already taken']})
+      this.props.com.validateInstanceName(this.state.instanceName, (err, data) => {
+        if (data.error || err) {
+          this.setState({ errors: ['Name already taken'] });
+          console.log('Invalid name');
         } else {
           // TODO: Start the game
+          console.log('Instance started');
+          this.props.com.createInstance(this.state.instanceName);
         }
+        console.log(data);
+        console.log(err);
       });
     }
   }
