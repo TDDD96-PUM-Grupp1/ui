@@ -10,8 +10,10 @@ class CollisionCircle extends CollisionBase {
   }
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
-  // Check if we are colliding with another entity.
+  // Check if we are colliding with another entity. UNUSED
   isColliding(otherEntity, dt) {}
+
+  /* eslint-enable class-methods-use-this, no-unused-vars */
 
   // Resolve a collision with another entity.
   resolveCollision(otherEntity, dt) {
@@ -45,7 +47,6 @@ class CollisionCircle extends CollisionBase {
       }
     }
   }
-  /* eslint-enable class-methods-use-this, no-unused-vars */
 }
 
 export default CollisionCircle;

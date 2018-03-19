@@ -30,7 +30,16 @@ class TestGamemode extends Gamemode {
   }
   /* eslint-disable class-methods-use-this, no-unused-vars */
   // Called before the game objects are updated.
-  preUpdate(dt) {}
+  preUpdate(dt) {
+    this.game.entityHandler.getEntities().forEach(entity => {
+      if (entity.x < 0 || entity.x > 800) {
+        entity.vx *= -1;
+      }
+      if (entity.y < 0 || entity.y > 600) {
+        entity.vy *= -1;
+      }
+    });
+  }
 
   // Called after the game objects are updated.
   postUpdate(dt) {}

@@ -44,7 +44,7 @@ class PlayerController extends EntityController {
 
     this.time = 0;
 
-    this.accelerationScale = 500;
+    this.accelerationScale = 800;
   }
 
   init() {
