@@ -20,7 +20,7 @@ class Game {
 
     // Create all handlers
     this.entityHandler = new EntityHandler();
-    this.collisionHandler = new CollisionHandler();
+    this.collisionHandler = new CollisionHandler(this.entityHandler);
 
     // Create gamemode
     this.currentGamemode = new TestGamemode(this);
