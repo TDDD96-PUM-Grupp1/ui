@@ -3,7 +3,7 @@ import GameEntity from './GameEntity';
 import CollisionCircle from './collision/CollisionCircle';
 
 /*
-Game object base class
+Game object representing a player
 */
 class PlayerCircle extends GameEntity {
   constructor(app) {
@@ -21,7 +21,7 @@ class PlayerCircle extends GameEntity {
 
     // Create the collison circle
     this.collision = new CollisionCircle(RADIUS);
-    this.collision.setOwner(this);
+    this.collision.setEntity(this);
 
     // set mass
     this.mass = 1;

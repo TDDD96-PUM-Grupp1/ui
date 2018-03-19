@@ -21,8 +21,11 @@ class GameEntity {
     this.ax = 0;
     this.ay = 0;
 
-    // Mass
+    // Physic properties
     this.mass = 0;
+    this.friction = 0;
+    this.restitution = 1;
+    this.maxVelocity = 100; // Maybe do max kinetic energy?
 
     // Collision group
     // The entity will only collide with entities with the same group number.
@@ -52,7 +55,7 @@ class GameEntity {
   }
 
   // Return the predicted next position
-  nextPosition(dt) {
+  getNextPosition(dt) {
     return [this.x + this.vx * dt, this.y + this.vy * dt];
   }
 

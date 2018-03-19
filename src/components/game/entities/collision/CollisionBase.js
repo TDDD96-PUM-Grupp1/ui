@@ -9,8 +9,8 @@ class CollisionBase {
   no-empty-function */
 
   // Set the owner of this collision.
-  setOwner(entity) {
-    this.owner = entity;
+  setEntity(entity) {
+    this.entity = entity;
   }
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
