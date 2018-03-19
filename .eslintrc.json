@@ -9,13 +9,14 @@
   "env": {
     "browser": true,
     "jasmine": true
-  },
-    "rules": {
+	},
+  "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js"] }],
-      
     "prettier/prettier": ["error", {
       "singleQuote": true,
-      "trailingComma": "all" 
-      }]
+      "trailingComma": "all"
+      }],
+  "linebreak-style": ["off"],
+  "no-console": "off"
   }
 }
