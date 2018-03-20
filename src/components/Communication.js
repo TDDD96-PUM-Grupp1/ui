@@ -20,16 +20,22 @@ class Communication {
     this.addPlayer = this.addPlayer.bind(this);
   }
 
-  validateInstanceName(name, callback) {
-    this.client.rpc.make('services/createInstance', { name: name }, callback);
+  /*
+   Validate the instance name.
+   */
+  validateInstanceName(_name, callback) {
+    this.client.rpc.make('services/createInstance', { name: _name }, callback);
   }
-
-  createInstance(name)
-  {
+  /*
+   Create the instance and provide an rpc for connecting players.
+   */
+  createInstance(name) {
     this.instance = name;
     this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
   }
-
+  /*
+   Request a random name from the service.
+   */
   getRandomName(callback) {
     this.client.rpc.make('services/getRandomName', {}, callback);
   }
@@ -43,7 +49,7 @@ class Communication {
     this.players[data.id] = { name: data.name, sensor: data.sensor };
     this.client.event.subscribe(`data/${this.instance}/${data.id}`, this.readSensorData);
     response.send(data.id);
-    //this.client.presence.subscribe(data.id, this.presenceUpdate);
+    // this.client.presence.subscribe(data.id, this.presenceUpdate);
   }
 
   /*

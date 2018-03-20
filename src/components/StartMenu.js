@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import PropTypes from 'prop-types';
 import CreateMenu from './CreateMenu';
 import FirstMenu from './FirstMenu';
 
@@ -43,7 +44,15 @@ class StartMenu extends Component {
   render() {
     const menus = {
       first: <FirstMenu showCreate={this.showCreate} showAbout={this.showAbout} />,
-      create: <CreateMenu onBack={this.showFirst} com = {this.props.com} />,
+      create: (
+        <CreateMenu
+          onBack={this.showFirst}
+          onValidateInstance={this.props.onValidateInstance}
+          onCreateInstance={this.props.onCreateInstance}
+          onGetRandomName={this.props.onGetRandomName}
+        />
+      ),
+
       about: <div />, // TODO possibly add about page
     };
 
@@ -55,5 +64,11 @@ class StartMenu extends Component {
     );
   }
 }
+
+StartMenu.propTypes = {
+  onValidateInstance: PropTypes.func.isRequired,
+  onCreateInstance: PropTypes.func.isRequired,
+  onGetRandomName: PropTypes.func.isRequired,
+};
 
 export default StartMenu;

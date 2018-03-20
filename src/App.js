@@ -9,7 +9,11 @@ const com = new Communication(settings.communication);
 
 const App = () => (
   <div className="App">
-    <StartMenu com = {com}/>
+    <StartMenu
+      onValidateInstance={com.validateInstanceName}
+      onCreateInstance={com.createInstance}
+      onGetRandomName={com.getRandomName}
+    />
     <PlayerList getPlayersFunction={com.getPlayers} />
   </div>
 );

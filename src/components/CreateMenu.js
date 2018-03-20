@@ -18,8 +18,8 @@ class CreateMenu extends Component {
       gameModes: availableModes,
       errors: [],
       maxPlayers: DEFAULT_MAX_PLAYERS,
-      gameMode: availableModes[0] // TODO fix with
     };
+    // gameMode: availableModes[0], // TODO fix with
 
     this.startGame = this.startGame.bind(this);
     this.validatePlayers = this.validatePlayers.bind(this);
@@ -40,23 +40,26 @@ class CreateMenu extends Component {
     ) {
       this.setState({ errors: [] });
       // TODO startGame(this.state.gameMode, this.state.maxPlayers);
-      this.props.com.validateInstanceName(this.state.instanceName, (err, data) => {
+      // Ask server if the instance is valid
+      this.props.onValidateInstance(this.state.instanceName, (err, data) => {
         if (data.error || err) {
+          // Instance is not valid
           this.setState({ errors: ['Name already taken'] });
           console.log('Invalid name');
         } else {
+          // Instance is valid
           // TODO: Start the game
           console.log('Instance started');
-          this.props.com.createInstance(this.state.instanceName);
+          this.props.onCreateInstance(this.state.instanceName);
         }
-        console.log(data);
-        console.log(err);
       });
     }
   }
-
+  /*
+   Request random name from the service.
+   */
   randomName() {
-    this.props.com.getRandomName((err, data) => {
+    this.props.onGetRandomName((err, data) => {
       this.setState({ instanceName: data.name });
     });
   }
@@ -95,6 +98,7 @@ class CreateMenu extends Component {
     this.setState({ errors: newErrors, maxPlayers: newMax });
   }
 
+  // Change the state if the textbox is changed.
   handleNameChange(event) {
     this.setState({ instanceName: event.target.value });
   }
@@ -152,7 +156,10 @@ class CreateMenu extends Component {
 }
 
 CreateMenu.propTypes = {
-  onBack: PropTypes.func.isRequired
+  onBack: PropTypes.func.isRequired,
+  onValidateInstance: PropTypes.func.isRequired,
+  onCreateInstance: PropTypes.func.isRequired,
+  onGetRandomName: PropTypes.func.isRequired,
 };
 
 export default CreateMenu;
