@@ -64,6 +64,13 @@ class GameEntity {
     this.controller = controller;
     controller.register(this);
   }
+
+  // Clean up resources used by this entity.
+  destroy() {
+    // If doing proper resource managment then the texture objects used can also be destroyed
+    // by using texture: true and baseTexture: true
+    this.graphic.destroy({ children: true });
+  }
 }
 
 export default GameEntity;

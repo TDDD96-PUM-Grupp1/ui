@@ -1,30 +1,13 @@
-import * as PIXI from 'pixi.js';
-import GameEntity from './GameEntity';
-import CollisionCircle from './collision/CollisionCircle';
+import BasicCircle from './BasicCircle';
 
 const RADIUS = 32;
 
 /*
 Game object representing a player
 */
-class PlayerCircle extends GameEntity {
+class PlayerCircle extends BasicCircle {
   constructor(app) {
-    super(app);
-
-    // const RADIUS = 32;
-
-    // Create a graphical circle
-    const circle = new PIXI.Graphics();
-    circle.beginFill(0xee66666);
-    circle.drawCircle(0, 0, RADIUS);
-    circle.endFill();
-    app.stage.addChild(circle);
-    this.graphic = circle;
-
-    // Create the collison circle
-    this.collision = new CollisionCircle(RADIUS);
-    this.collision.setEntity(this);
-
+    super(app, RADIUS, 0xff6600);
     // set mass
     this.mass = 1;
 
@@ -35,12 +18,6 @@ class PlayerCircle extends GameEntity {
   // Update this object
   update(dt) {
     super.update(dt);
-  }
-
-  setColor(color) {
-    this.graphic.beginFill(color);
-    this.graphic.drawCircle(0, 0, RADIUS);
-    this.graphic.endFill();
   }
 }
 

@@ -25,10 +25,11 @@ class TestGamemode extends Gamemode {
     circle3.setController(controller3);
     circle3.x = 0;
     circle3.y = 0;
-    circle3.setColor(0xffffff);
+    circle3.setColor(0xee6666);
     this.game.entityHandler.register(circle3);
   }
-  /* eslint-disable class-methods-use-this, no-unused-vars */
+
+  /* eslint-disable no-unused-vars */
   // Called before the game objects are updated.
   preUpdate(dt) {
     this.game.entityHandler.getEntities().forEach(entity => {
@@ -40,15 +41,19 @@ class TestGamemode extends Gamemode {
       }
     });
   }
+  /* eslint-enable no-unused-vars */
+
+  /* eslint-disable class-methods-use-this, no-unused-vars */
 
   // Called after the game objects are updated.
   postUpdate(dt) {}
+
+  /* eslint-enable class-methods-use-this, no-unused-vars */
 
   // Clean up after the gamemode is finished.
   cleanUp() {
     this.game.entityHandler.clear();
   }
-  /* eslint-enable class-methods-use-this, no-unused-vars */
 }
 
 export default TestGamemode;
