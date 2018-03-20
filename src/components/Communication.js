@@ -18,6 +18,9 @@ class Communication {
     this.readSensorData = this.readSensorData.bind(this);
     this.presenceUpdate = this.presenceUpdate.bind(this);
     this.addPlayer = this.addPlayer.bind(this);
+    this.validateInstanceName = this.validateInstanceName.bind(this);
+    this.createInstance = this.createInstance.bind(this);
+    this.getRandomName = this.getRandomName.bind(this);
   }
 
   /*
