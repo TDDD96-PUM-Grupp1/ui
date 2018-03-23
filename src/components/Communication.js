@@ -39,7 +39,7 @@ class Communication {
    Create the instance and provide an rpc for connecting players.
    */
   createInstance(_name, callback) {
-    this.client.rpc.make('services/createInstance', { name: _name }, (err, data) => {
+    this.client.rpc.make('services/createInstance', { id: this.client.getUid(), name: _name }, (err, data) => {
       if (!err && !data.error) {
         this.instance = _name;
         this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
@@ -56,6 +56,7 @@ class Communication {
     console.log(`Player ${data.id} has connected`);
     this.players[data.id] = { name: data.name, sensor: data.sensor };
     this.client.event.subscribe(`data/${this.instance}/${data.id}`, this.readSensorData);
+    this.client.event.emit(`services/playerAdded`, {instanceName: this.instance, playerName: data.name});
     response.send(data.id);
     // this.client.presence.subscribe(data.id, this.presenceUpdate);
   }
