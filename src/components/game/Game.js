@@ -10,6 +10,7 @@ class Game {
   constructor(app, communication) {
     this.app = app;
     this.communication = communication;
+    this.communication.setGameListener(this);
 
     // Create all handlers
     this.entityHandler = new EntityHandler();
@@ -30,6 +31,11 @@ class Game {
     this.collisionHandler.handleCollisions(dt);
     this.currentGamemode.postUpdate(dt);
     this.entityHandler.updateGraphics(dt);
+  }
+
+  // Called when a new player joins.
+  onPlayerJoin(idTag) {
+    this.currentGamemode.onPlayerJoin(idTag);
   }
 }
 
