@@ -2,6 +2,7 @@
 import EntityHandler from './EntityHandler';
 import TestGamemode from './gamemodes/TestGamemode';
 import CollisionHandler from './CollisionHandler';
+import ResourceServer from './ResourceServer';
 
 /*
 Game.
@@ -15,6 +16,7 @@ class Game {
     // Create all handlers
     this.entityHandler = new EntityHandler();
     this.collisionHandler = new CollisionHandler(this.entityHandler);
+    this.resourceServer = new ResourceServer();
 
     // Create gamemode
     this.currentGamemode = new TestGamemode(this);
