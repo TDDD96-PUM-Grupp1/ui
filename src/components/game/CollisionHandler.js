@@ -11,10 +11,9 @@ class CollisionHandler {
   // Handle collisions between entities
   handleCollisions(dt) {
     const groups = {};
-    let i;
     let entity;
     const entities = this.entityHandler.getEntities();
-    for (i = 0; i < entities.length; i += 1) {
+    for (let i = 0; i < entities.length; i += 1) {
       entity = entities[i];
       if (groups[entity.collisionGroup] == null) {
         groups[entity.collisionGroup] = [];
@@ -24,17 +23,14 @@ class CollisionHandler {
 
     const groupnumbers = Object.keys(groups);
     let group;
-    let it;
-    let j;
-    let k;
     let entity1;
     let entity2;
     // oh javascript why can't you just support for in loops properly
-    for (it = 0; it < this.iterations; it += 1) {
-      for (i = 0; i < groupnumbers.length; i += 1) {
+    for (let it = 0; it < this.iterations; it += 1) {
+      for (let i = 0; i < groupnumbers.length; i += 1) {
         group = groups[groupnumbers[i]];
-        for (j = 0; j < group.length; j += 1) {
-          for (k = j + 1; k < group.length; k += 1) {
+        for (let j = 0; j < group.length; j += 1) {
+          for (let k = j + 1; k < group.length; k += 1) {
             entity1 = group[j];
             entity2 = group[k];
             // if (entity1.collision.isColliding(entity2, dt)) {

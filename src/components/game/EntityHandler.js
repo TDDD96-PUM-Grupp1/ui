@@ -9,16 +9,14 @@ class EntityHandler {
 
   // Update all entities.
   update(dt) {
-    let i;
-    for (i = 0; i < this.entities.length; i += 1) {
+    for (let i = 0; i < this.entities.length; i += 1) {
       this.entities[i].update(dt);
     }
   }
 
   // Update all the entities graphics.
   updateGraphics(dt) {
-    let i;
-    for (i = 0; i < this.entities.length; i += 1) {
+    for (let i = 0; i < this.entities.length; i += 1) {
       this.entities[i].graphicUpdate(dt);
     }
   }
@@ -31,8 +29,7 @@ class EntityHandler {
   // Returns an array containing all entities.
   getEntities() {
     const copy = [];
-    let i;
-    for (i = 0; i < this.entities.length; i += 1) {
+    for (let i = 0; i < this.entities.length; i += 1) {
       copy.push(this.entities[i]);
     }
     return copy;
