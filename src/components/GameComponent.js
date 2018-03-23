@@ -8,9 +8,10 @@ import Game from './game/Game';
 Game testing component.
 */
 class GameComponent extends Component {
-  constructor(props) {
+  constructor(props, communication) {
     super(props);
 
+    this.communication = communication;
     this.setRef = this.setRef.bind(this);
   }
 
@@ -30,7 +31,7 @@ class GameComponent extends Component {
     app.renderer.backgroundColor = 0x061639;
 
     // Initialize game
-    const game = new Game(app, communication);
+    const game = new Game(app, this.communication);
 
     // Hook up the PIXI update loop with the game loop.
     app.ticker.add(delta => game.loop(delta));

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './css/App.css';
 
-import Gametest from './components/Gametest';
+import GameComponent from './components/GameComponent';
 
 // TODO: Uncomment and use the components below:
 // import PlayerList from './components/PlayerList';
@@ -43,7 +43,7 @@ class App extends Component {
     return (
       <div className="App">
         {this.state.gameActive ? (
-          <Gametest />
+          <GameComponent />
         ) : (
           <StartMenu
             onGameStart={this.setGameActive}
