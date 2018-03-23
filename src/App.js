@@ -43,7 +43,7 @@ class App extends Component {
     return (
       <div className="App">
         {this.state.gameActive ? (
-          <GameComponent />
+          <GameComponent communication={this.com} />
         ) : (
           <StartMenu
             onGameStart={this.setGameActive}

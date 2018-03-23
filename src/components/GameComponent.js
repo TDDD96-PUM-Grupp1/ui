@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
 import Game from './game/Game';
-
 /*
 Game testing component.
 */
 class GameComponent extends Component {
-  constructor(props, communication) {
+  constructor(props) {
     super(props);
 
-    this.communication = communication;
+    this.communication = this.props.communication;
     this.setRef = this.setRef.bind(this);
   }
 
@@ -45,5 +44,11 @@ class GameComponent extends Component {
     return <div className="game-canvas-container" ref={this.setRef} />;
   }
 }
+
+GameComponent.propTypes = {
+  /* eslint-disable */
+  communication: PropTypes.object.isRequired,
+  /* eslint-enable */
+};
 
 export default GameComponent;
