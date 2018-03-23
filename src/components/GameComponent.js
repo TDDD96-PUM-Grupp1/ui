@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
-import Game from './game/Game';
+import Game from '../game/Game';
 /*
 Game testing component.
 */
