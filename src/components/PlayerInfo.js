@@ -16,7 +16,9 @@ const PlayerInfo = ({ id, playerObject }) => (
 
 PlayerInfo.propTypes = {
   id: PropTypes.string.isRequired,
+  /* eslint-disable react/forbid-prop-types */
   playerObject: PropTypes.object.isRequired,
+  /* eslint-enable react/forbid-prop-types */
 };
 
 export default PlayerInfo;

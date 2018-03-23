@@ -1,0 +1,16 @@
+Alchemist
+Amulet
+Apprentice
+Beast
+Beauty
+Bersek
+Bogeyman
+Brew
+Castle
+Cauldron
+Cave
+Chalice
+Creature
+Crow
+Curse
+

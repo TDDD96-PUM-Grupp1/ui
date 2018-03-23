@@ -4,12 +4,20 @@ import './css/App.css';
 import Gametest from './components/Gametest';
 
 // TODO: Uncomment and use the components below:
-// import Communication from './components/Communication';
 // import PlayerList from './components/PlayerList';
+import Communication from './components/Communication';
+import InstanceNameHandler from './components/InstanceNameHandler';
 import StartMenu from './components/StartMenu';
-// import settings from './config';
+import settings from './config';
 
-// const com = new Communication(settings.communication);
+function onConnect(success) {
+  if (success) {
+    console.log('Deepstream instanciated.');
+  } else {
+    // TODO: Maybe some form of indication to the user that the deepstream server is down.
+    console.log("Couldn't instanciate deepstream connection.");
+  }
+}
 
 class App extends Component {
   constructor(props) {
@@ -20,6 +28,9 @@ class App extends Component {
     };
 
     this.setGameActive = this.setGameActive.bind(this);
+
+    this.instanceNameHandler = new InstanceNameHandler();
+    this.com = new Communication(settings.communication, onConnect);
   }
 
   setGameActive() {
@@ -31,7 +42,17 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {this.state.gameActive ? <Gametest /> : <StartMenu onGameStart={this.setGameActive} />}
+        {this.state.gameActive ? (
+          <Gametest />
+        ) : (
+          <StartMenu
+            onGameStart={this.setGameActive}
+            getRandomInstanceName={this.instanceNameHandler.getRandomInstanceName}
+            onCreateInstance={this.com.createInstance}
+            onGetRandomName={this.com.getRandomName}
+            getPlayers={this.com.getPlayers}
+          />
+        )}
       </div>
     );
   }

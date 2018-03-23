@@ -71,6 +71,11 @@ class GameEntity {
     // by using texture: true and baseTexture: true
     this.graphic.destroy({ children: true });
   }
+
+  // Set the graphic tint
+  setColor(color) {
+    this.graphic.tint = color;
+  }
 }
 
 export default GameEntity;

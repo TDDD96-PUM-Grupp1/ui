@@ -24,10 +24,6 @@ class BasicCircle extends GameEntity {
     this.collision = new CollisionCircle(radius);
     this.collision.setEntity(this);
   }
-
-  setColor(color) {
-    this.graphic.tint = color;
-  }
 }
 
 export default BasicCircle;

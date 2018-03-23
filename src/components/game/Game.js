@@ -7,8 +7,9 @@ import CollisionHandler from './CollisionHandler';
 Game.
 */
 class Game {
-  constructor(app) {
+  constructor(app, communication) {
     this.app = app;
+    this.communication = communication;
 
     // Create all handlers
     this.entityHandler = new EntityHandler();
@@ -27,8 +28,8 @@ class Game {
     this.currentGamemode.preUpdate(dt);
     this.entityHandler.update(dt);
     this.collisionHandler.handleCollisions(dt);
-    this.entityHandler.updateGraphics(dt);
     this.currentGamemode.postUpdate(dt);
+    this.entityHandler.updateGraphics(dt);
   }
 }
 
