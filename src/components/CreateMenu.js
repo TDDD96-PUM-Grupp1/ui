@@ -31,6 +31,7 @@ class CreateMenu extends Component {
   startGame() {
     if (this.state.errors.length === 0) {
       // TODO startGame(this.state.gameMode, this.state.maxPlayers);
+      this.props.onStart();
     }
   }
 
@@ -111,6 +112,7 @@ class CreateMenu extends Component {
 
 CreateMenu.propTypes = {
   onBack: PropTypes.func.isRequired,
+  onStart: PropTypes.func.isRequired,
 };
 
 export default CreateMenu;

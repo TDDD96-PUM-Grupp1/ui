@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import CreateMenu from './CreateMenu';
 import FirstMenu from './FirstMenu';
@@ -43,7 +44,7 @@ class StartMenu extends Component {
   render() {
     const menus = {
       first: <FirstMenu showCreate={this.showCreate} showAbout={this.showAbout} />,
-      create: <CreateMenu onBack={this.showFirst} />,
+      create: <CreateMenu onBack={this.showFirst} onStart={this.props.onGameStart} />,
       about: <div />, // TODO possibly add about page
     };
 
@@ -55,5 +56,9 @@ class StartMenu extends Component {
     );
   }
 }
+
+StartMenu.propTypes = {
+  onGameStart: PropTypes.func.isRequired,
+};
 
 export default StartMenu;
