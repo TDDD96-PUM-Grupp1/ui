@@ -1,7 +1,10 @@
 // var fs = require('fs');
 
 class InstanceNameHandler {
+  // This constructor will be used when we implement the random name generator.
+  /* eslint-disable no-useless-constructor */
   constructor() {
+    /* eslint-enable no-useless-constructor */
     /*
     // Load in nouns
     fs.readFile('InstanceWordsNouns.txt', (err, data) => {
@@ -34,14 +37,19 @@ class InstanceNameHandler {
   /*
    * returns a random item from a given list.
    */
+  /* eslint-disable class-methods-use-this */
   getRandomItemFromList(list) {
+    /* eslint-enable class-methods-use-this */
+
     return list[Math.floor(Math.random() * list.length)];
   }
 
   /*
    * returns a random instance name from a list of adjectives and nouns.
    */
+  /* eslint-disable class-methods-use-this */
   getRandomInstanceName() {
+    /* eslint-enable class-methods-use-this */
     return 'FierceCastle'; // this.getRandomItemFromList(this.adjectives) + this.getRandomItemFromList(this.nouns);
   }
 }

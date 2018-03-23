@@ -24,12 +24,15 @@ class Communication {
 
   connectDeepstream(options, onConnected) {
     this.client = deepstream(options.host_ip);
+    // Topic and data isn't used but cannot be removed since it is a callback function.
+    /* eslint-disable no-unused-vars */
     this.client.on('error', (err, event, topic) => {
       onConnected(false);
     });
     this.client.login({}, (success, data) => {
       onConnected(success);
     });
+    /* eslint-enable no-unused-vars */
   }
 
   /*

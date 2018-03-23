@@ -73,8 +73,9 @@ class CreateMenu extends Component {
   updateGameMode(event) {
     const modeIndex = event.target.selectedIndex;
     const newMode = this.state.gameModes[modeIndex];
-
+    /* eslint-disable react/no-unused-state */
     this.setState({ gameMode: newMode });
+    /* eslint-enable react/no-unused-state */
   }
 
   /*
