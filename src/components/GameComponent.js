@@ -7,7 +7,7 @@ import Game from './game/Game';
 /*
 Game testing component.
 */
-class Gametest extends Component {
+class GameComponent extends Component {
   constructor(props) {
     super(props);
 
@@ -30,7 +30,7 @@ class Gametest extends Component {
     app.renderer.backgroundColor = 0x061639;
 
     // Initialize game
-    const game = new Game(app);
+    const game = new Game(app, communication);
 
     // Hook up the PIXI update loop with the game loop.
     app.ticker.add(delta => game.loop(delta));
@@ -45,4 +45,4 @@ class Gametest extends Component {
   }
 }
 
-export default Gametest;
+export default GameComponent;

@@ -19,7 +19,7 @@ class PlayerController extends EntityController {
 
   // Update
   update(dt) {
-    const playerData = this.game.getPlayerData(this.id);
+    const playerData = this.game.communication.getPlayerInfo(this.id);
     let [beta, gamma] = playerData.sensor;
 
     beta = Math.min(MAX_ANGLE, Math.max(beta, -MAX_ANGLE));

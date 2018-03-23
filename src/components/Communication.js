@@ -82,6 +82,10 @@ class Communication {
     }
   }
 
+  getPlayerInfo(id) {
+    return this.players[id];
+  }
+
   getPlayers() {
     return this.players;
   }
