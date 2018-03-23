@@ -58,6 +58,10 @@ class Communication {
     this.client.event.subscribe(`data/${this.instance}/${data.id}`, this.readSensorData);
     response.send(data.id);
     // this.client.presence.subscribe(data.id, this.presenceUpdate);
+
+    if (this.gameListener != null) {
+      this.gameListener.onPlayerJoin(data.id);
+    }
   }
 
   /*
@@ -82,8 +86,18 @@ class Communication {
     }
   }
 
+  // Get player info for an id.
+  getPlayerInfo(id) {
+    return this.players[id];
+  }
+
   getPlayers() {
     return this.players;
+  }
+
+  // Add a gamelistener to listen for events.
+  setGameListener(gameListener) {
+    this.gameListener = gameListener;
   }
 }
 
