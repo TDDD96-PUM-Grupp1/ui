@@ -19,7 +19,7 @@ class PlayerList extends Component {
   }
 
   getPlayers() {
-    const players = this.props.getPlayersFunction();
+    const players = this.props.getPlayers();
     this.setState({
       playerList: players,
     });
@@ -40,7 +40,7 @@ class PlayerList extends Component {
 }
 
 PlayerList.propTypes = {
-  getPlayersFunction: PropTypes.func.isRequired,
+  getPlayers: PropTypes.func.isRequired,
 };
 
 export default PlayerList;

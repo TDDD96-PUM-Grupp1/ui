@@ -8,6 +8,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-scripts": "1.1.1",
+    "react-spinners": "^0.2.6",
     "webfontloader": "^1.6.28"
   },
   "scripts": {

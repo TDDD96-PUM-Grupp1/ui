@@ -1,4 +1,4 @@
-import createDeepstream from 'deepstream.io-client-js';
+import deepstream from 'deepstream.io-client-js';
 
 class Communication {
   /*
@@ -6,19 +6,46 @@ class Communication {
   * Establishes connection with the Deepstream server. Awaits
   * a RPC from a client.
   */
-  constructor(options) {
+  constructor(options, onConnected) {
     // Connect to deepstream
-    this.ds = createDeepstream(options.host_ip);
-    this.instance = 'abc'; // this.client.getUid();
-    this.client = this.ds.login({ username: this.instance });
+    this.instance = undefined; // this.client.getUid();
     this.players = {};
-    this.addPlayer = this.addPlayer.bind(this);
-    this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
+
+    this.connectDeepstream(options, onConnected);
 
     // Bind callbacks
     this.getPlayers = this.getPlayers.bind(this);
+    this.connectDeepstream = this.connectDeepstream.bind(this);
     this.readSensorData = this.readSensorData.bind(this);
     this.presenceUpdate = this.presenceUpdate.bind(this);
+    this.addPlayer = this.addPlayer.bind(this);
+    this.createInstance = this.createInstance.bind(this);
+  }
+
+  connectDeepstream(options, onConnected) {
+    this.client = deepstream(options.host_ip);
+    // Topic and data isn't used but cannot be removed since it is a callback function.
+    /* eslint-disable no-unused-vars */
+    this.client.on('error', (err, event, topic) => {
+      onConnected(false);
+    });
+    this.client.login({}, (success, data) => {
+      onConnected(success);
+    });
+    /* eslint-enable no-unused-vars */
+  }
+
+  /*
+   Create the instance and provide an rpc for connecting players.
+   */
+  createInstance(_name, callback) {
+    this.client.rpc.make('services/createInstance', { name: _name }, (err, data) => {
+      if (!err && !data.error) {
+        this.instance = _name;
+        this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
+      }
+      callback(err, data);
+    });
   }
 
   /*
