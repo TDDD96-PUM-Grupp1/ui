@@ -13,8 +13,7 @@ class PlayerController extends EntityController {
     this.accelerationScale = 150;
   }
 
-  init() {
-  }
+  init() {}
 
   // Update
   update(dt) {
@@ -22,12 +21,12 @@ class PlayerController extends EntityController {
     let gamma = 0;
 
     beta = Math.min(MAX_ANGLE, Math.max(beta, -MAX_ANGLE));
-    beta = (beta / MAX_ANGLE) * Math.PI;
+    beta = beta / MAX_ANGLE * Math.PI;
     gamma = Math.min(MAX_ANGLE, Math.max(gamma, -MAX_ANGLE));
-    gamma = (gamma / MAX_ANGLE) * Math.PI;
+    gamma = gamma / MAX_ANGLE * Math.PI;
 
-    let xacc = Math.sin(beta) * this.accelerationScale;
-    let yacc = Math.sin(gamma) * this.accelerationScale;
+    const xacc = Math.sin(beta) * this.accelerationScale;
+    const yacc = Math.sin(gamma) * this.accelerationScale;
 
     this.entity.ax = 0;
     this.entity.ay = 0;
