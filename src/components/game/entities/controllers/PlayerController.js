@@ -1,38 +1,6 @@
 import EntityController from './EntityController';
 
-// Mystery third party code
-function keyboard(keyCode) {
-  const key = {};
-  key.code = keyCode;
-  key.isDown = false;
-  key.isUp = true;
-  key.press = undefined;
-  key.release = undefined;
-  // The 'downHandler'
-  key.downHandler = event => {
-    if (event.keyCode === key.code) {
-      if (key.isUp && key.press) key.press();
-      key.isDown = true;
-      key.isUp = false;
-    }
-    event.preventDefault();
-  };
-
-  // The 'upHandler'
-  key.upHandler = event => {
-    if (event.keyCode === key.code) {
-      if (key.isDown && key.release) key.release();
-      key.isDown = false;
-      key.isUp = true;
-    }
-    event.preventDefault();
-  };
-
-  // Attach event listeners
-  window.addEventListener('keydown', key.downHandler.bind(key), false);
-  window.addEventListener('keyup', key.upHandler.bind(key), false);
-  return key;
-}
+const MAX_ANGLE = 50;
 
 /*
 Player object controller, will handle taking input from player and modifying their objects.
@@ -42,41 +10,29 @@ class PlayerController extends EntityController {
     super();
     this.playerid = id;
 
-    this.time = 0;
-
-    this.accelerationScale = 800;
+    this.accelerationScale = 150;
   }
 
   init() {
-    this.keyw = keyboard(87);
-    this.keya = keyboard(65);
-    this.keys = keyboard(83);
-    this.keyd = keyboard(68);
   }
 
   // Update
   update(dt) {
-    this.time += dt;
+    let beta = 0;
+    let gamma = 0;
+
+    beta = Math.min(MAX_ANGLE, Math.max(beta, -MAX_ANGLE));
+    beta = (beta / MAX_ANGLE) * Math.PI;
+    gamma = Math.min(MAX_ANGLE, Math.max(gamma, -MAX_ANGLE));
+    gamma = (gamma / MAX_ANGLE) * Math.PI;
+
+    let xacc = Math.sin(beta) * this.accelerationScale;
+    let yacc = Math.sin(gamma) * this.accelerationScale;
 
     this.entity.ax = 0;
     this.entity.ay = 0;
-    this.entity.vx *= 0.8;
-    this.entity.vy *= 0.8;
-
-    if (this.keyw.isDown) {
-      this.entity.ay += -1;
-    }
-    if (this.keya.isDown) {
-      this.entity.ax += -1;
-    }
-    if (this.keys.isDown) {
-      this.entity.ay += 1;
-    }
-    if (this.keyd.isDown) {
-      this.entity.ax += 1;
-    }
-    this.entity.ax *= this.accelerationScale;
-    this.entity.ay *= this.accelerationScale;
+    this.entity.vx *= 0.97;
+    this.entity.vy *= 0.97;
   }
 }
 
