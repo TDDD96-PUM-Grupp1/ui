@@ -90,3 +90,10 @@
 
   width: 100%;
 }
+
+.spinner{
+  width: 57px;
+  height: 19px;
+  margin-left: auto;
+  margin-right: auto;
+}

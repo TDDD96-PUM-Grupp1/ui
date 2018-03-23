@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { PulseLoader } from 'react-spinners';
+import deepstream from 'deepstream.io-client-js';
 
 const DEFAULT_MAX_PLAYERS = 8;
 const MAX_ALLOWED_PLAYERS = 100;
@@ -18,6 +20,7 @@ class CreateMenu extends Component {
       gameModes: availableModes,
       errors: [],
       maxPlayers: DEFAULT_MAX_PLAYERS,
+      loading: false,
     };
     // gameMode: availableModes[0], // TODO fix with
 
@@ -32,36 +35,35 @@ class CreateMenu extends Component {
   Try to start new game when done setting options
   */
   startGame() {
-    console.log(this.state.errors);
-
-    if (
-      this.state.errors.length === 0 ||
-      (this.state.errors[0] === 'Name already taken' && this.state.errors.length === 1)
-    ) {
+    if (this.state.errors.length === 0) {
+      this.setState({ loading: true });
       this.setState({ errors: [] });
       // TODO startGame(this.state.gameMode, this.state.maxPlayers);
-      // Ask server if the instance is valid
-      this.props.onValidateInstance(this.state.instanceName, (err, data) => {
-        if (data.error || err) {
+      //
+      // Try to create an instance (as the service if the instance name is unique).
+      this.props.onCreateInstance(this.state.instanceName, (err, data) => {
+        this.setState({ loading: false });
+        if (err) {
+          if (err === deepstream.CONSTANTS.EVENT.NO_RPC_PROVIDER) {
+            this.setState({ errors: ['Service server is not running.'] });
+          }
+        } else if (data.error) {
           // Instance is not valid
-          this.setState({ errors: ['Name already taken'] });
-          console.log('Invalid name');
+          this.setState({ errors: [data.error] });
         } else {
           // Instance is valid
           // TODO: Start the game
-          console.log('Instance started');
-          this.props.onCreateInstance(this.state.instanceName);
+          this.setState({ errors: ['Instance started'] });
         }
       });
     }
   }
+
   /*
    Request random name from the service.
    */
   randomName() {
-    this.props.onGetRandomName((err, data) => {
-      this.setState({ instanceName: data.name });
-    });
+    this.setState({ instanceName: this.props.getRandomInstanceName() });
   }
 
   /*
@@ -141,6 +143,9 @@ class CreateMenu extends Component {
             </div>
           ))}
         </div>
+        <div className="spinner">
+          <PulseLoader color="#ffa000" loading={this.state.loading} />
+        </div>
         <button onClick={this.randomName} className="menu-button">
           Random Name
         </button>
@@ -157,9 +162,8 @@ class CreateMenu extends Component {
 
 CreateMenu.propTypes = {
   onBack: PropTypes.func.isRequired,
-  onValidateInstance: PropTypes.func.isRequired,
   onCreateInstance: PropTypes.func.isRequired,
-  onGetRandomName: PropTypes.func.isRequired,
+  getRandomInstanceName: PropTypes.func.isRequired,
 };
 
 export default CreateMenu;

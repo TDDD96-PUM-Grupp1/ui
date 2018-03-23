@@ -1,4 +1,4 @@
-import createDeepstream from 'deepstream.io-client-js';
+import deepstream from 'deepstream.io-client-js';
 
 class Communication {
   /*
@@ -6,41 +6,43 @@ class Communication {
   * Establishes connection with the Deepstream server. Awaits
   * a RPC from a client.
   */
-  constructor(options) {
+  constructor(options, onConnected) {
     // Connect to deepstream
-    this.ds = createDeepstream(options.host_ip);
     this.instance = undefined; // this.client.getUid();
-    this.client = this.ds.login({ username: this.instance });
     this.players = {};
+
+    this.connectDeepstream(options, onConnected);
 
     // Bind callbacks
     this.getPlayers = this.getPlayers.bind(this);
+    this.connectDeepstream = this.connectDeepstream.bind(this);
     this.readSensorData = this.readSensorData.bind(this);
     this.presenceUpdate = this.presenceUpdate.bind(this);
     this.addPlayer = this.addPlayer.bind(this);
-    this.validateInstanceName = this.validateInstanceName.bind(this);
     this.createInstance = this.createInstance.bind(this);
-    this.getRandomName = this.getRandomName.bind(this);
+  }
+
+  connectDeepstream(options, onConnected) {
+    this.client = deepstream(options.host_ip);
+    this.client.on('error', (err, event, topic) => {
+      onConnected(false);
+    });
+    this.client.login({}, (success, data) => {
+      onConnected(success);
+    });
   }
 
   /*
-   Validate the instance name.
-   */
-  validateInstanceName(_name, callback) {
-    this.client.rpc.make('services/createInstance', { name: _name }, callback);
-  }
-  /*
    Create the instance and provide an rpc for connecting players.
    */
-  createInstance(name) {
-    this.instance = name;
-    this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
-  }
-  /*
-   Request a random name from the service.
-   */
-  getRandomName(callback) {
-    this.client.rpc.make('services/getRandomName', {}, callback);
+  createInstance(_name, callback) {
+    this.client.rpc.make('services/createInstance', { name: _name }, (err, data) => {
+      if (!err && !data.error) {
+        this.instance = _name;
+        this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
+      }
+      callback(err, data);
+    });
   }
 
   /*
