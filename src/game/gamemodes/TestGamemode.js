@@ -10,13 +10,6 @@ Test gamemode.
 class TestGamemode extends Gamemode {
   constructor(game) {
     super(game);
-
-    // Test loading resources
-    game.resourceServer.requestResources([{ name: 'res1', path: 'test_resource.png' }], res => {
-      console.log('Done loading');
-      console.log(res);
-    });
-
     // Make a test circle;
     const circle = new PlayerCircle(this.game.app);
     const controller = new TestController(300, 300, 150, 150, 1, 1.2);

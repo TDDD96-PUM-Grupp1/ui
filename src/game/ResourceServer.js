@@ -14,7 +14,7 @@ class ResourceServer {
     Resourcelist should have the format:
     [{"name1", "path/to/res1"}, {"name2", "path/to/res2"}, .. {"namen", "path/to/resn"}]
   */
-  requestResources(resourceList, doneFunc) {
+  requestResources(resourceList) {
     for (let i = 0; i < resourceList.length; i += 1) {
       const resource = resourceList[i];
       const path = this.resourceDir + resource.path;
@@ -23,22 +23,39 @@ class ResourceServer {
 
     const resources = {};
 
-    // Perform load
-    this.loader.load((loader, result) => {
-      const resNames = Object.keys(result);
-      let name = '';
-      let resTexture = {};
+    // Create promise
+    const p = new Promise((resolve, reject) => {
+      // Perform load
+      this.loader.load((loader, result) => {
+        const resNames = Object.keys(result);
+        let errorFree = true;
 
-      for (let i = 0; i < resNames.length; i += 1) {
-        name = resNames[i];
-        resTexture = result[name].texture;
+        let name;
+        let resError;
+        let resTexture = {};
 
-        // TODO handle errors from resources that fail to load
-        resources[name] = new PIXI.extras.TilingSprite(resTexture);
-      }
+        for (let i = 0; i < resNames.length && errorFree; i += 1) {
+          name = resNames[i];
+          resTexture = result[name].texture;
+          resError = result[name].error;
 
-      doneFunc(resources);
+          if (resError != null) {
+            // Error loading resource
+            errorFree = false;
+            reject(new Error(`Failed to load resource ${name} from path ${result[name].url}`));
+          } else {
+            // Loading successful
+            resources[name] = resTexture;
+          }
+        }
+
+        if (errorFree) {
+          resolve(resources);
+        }
+      });
     });
+
+    return p;
   }
 }
 
