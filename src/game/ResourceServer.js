@@ -5,7 +5,7 @@ import * as PIXI from 'pixi.js';
 */
 class ResourceServer {
   constructor() {
-    this.resourceDir = '../resources';
+    this.resourceDir = 'resources/';
     this.loader = PIXI.loader;
   }
 
@@ -17,16 +17,14 @@ class ResourceServer {
   requestResources(resourceList, doneFunc) {
     for (let i = 0; i < resourceList.length; i += 1) {
       const resource = resourceList[i];
-      this.loader.add(resource.name, this.resourceDir + resource.path);
+      const path = this.resourceDir + resource.path;
+      this.loader.add(resource.name, path);
     }
 
     const resources = {};
 
     // Perform load
     this.loader.load((loader, result) => {
-      console.log('Result');
-      console.log(result);
-
       const resNames = Object.keys(result);
       let name = '';
       let resTexture = {};
@@ -36,7 +34,7 @@ class ResourceServer {
         resTexture = result[name].texture;
 
         // TODO handle errors from resources that fail to load
-        resources[name] = new PIXI.TilingSprite(resTexture);
+        resources[name] = new PIXI.extras.TilingSprite(resTexture);
       }
 
       doneFunc(resources);
