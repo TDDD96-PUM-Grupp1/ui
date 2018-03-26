@@ -3,6 +3,7 @@ Configuration file for different project parameters.
 */
 
 const settings = {
+  skipmenu: true,
   communication: {
     host_ip: '0.0.0.0:60020',
   },

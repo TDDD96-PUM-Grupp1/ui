@@ -24,7 +24,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      gameActive: false,
+      gameActive: settings.skipmenu,
     };
 
     this.setGameActive = this.setGameActive.bind(this);

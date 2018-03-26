@@ -44,7 +44,7 @@ class LocalPlayerController extends EntityController {
 
     this.time = 0;
 
-    this.accelerationScale = 1000;
+    this.accelerationScale = 2000;
   }
 
   init() {
@@ -60,8 +60,8 @@ class LocalPlayerController extends EntityController {
 
     this.entity.ax = 0;
     this.entity.ay = 0;
-    this.entity.vx *= 0.8;
-    this.entity.vy *= 0.8;
+    this.entity.vx *= 0.9;
+    this.entity.vy *= 0.9;
 
     if (this.keyw.isDown) {
       this.entity.ay += -1;
