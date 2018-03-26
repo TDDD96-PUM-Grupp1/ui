@@ -6,15 +6,25 @@ import * as PIXI from 'pixi.js';
 class ResourceServer {
   constructor() {
     this.resourceDir = 'resources/';
-    this.loader = PIXI.loader;
+    this.loader = PIXI.loader; // Get the PIXI loader
   }
 
   /*
-    Takes a list of resources to load and return a promise
-    Resourcelist should have the format:
-    [{"name1", "path/to/res1"}, {"name2", "path/to/res2"}, .. {"namen", "path/to/resn"}]
+    Request a list of resources to be loaded.
+    Takes a list of resources to load and returns a promise.
+    Resourcelist should have the following format
+    (base resource folder can be omitted from path):
+    [{name: "name1", path: "path/to/res1"}, {"name2", "path/to/res2"}, .. {"namen", "path/to/resn"}]
+
+    Promise is rejected if loading any resource fails.
+    If all resources load correctly the promise is resolved with an
+    array of the resources as result.
+
+    The resulting array is formatted as:
+    {name1: --, name2: --, ..., namen: --}, where -- are loaded resources
   */
   requestResources(resourceList) {
+    // Add resources to be loaded to loader
     for (let i = 0; i < resourceList.length; i += 1) {
       const resource = resourceList[i];
       const path = this.resourceDir + resource.path;
