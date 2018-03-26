@@ -9,10 +9,6 @@ class GameEntity {
     this.x = 0;
     this.y = 0;
 
-    // Predicted next position
-    this.px = 0;
-    this.py = 0;
-
     // Velocity
     this.vx = 0;
     this.vy = 0;
@@ -21,10 +17,18 @@ class GameEntity {
     this.ax = 0;
     this.ay = 0;
 
+    // Rotation
+    this.rotation = 0;
+    this.rv = 1;
+
     // Physic properties
     this.mass = 0;
     this.friction = 0;
     this.restitution = 1;
+    this.I = 1; // rotational inertia, super important to calculate from the shape of the object!
+    this.floorFriction = 0.005;
+
+    // Not implemented
     this.maxVelocity = 100; // Maybe do max kinetic energy?
 
     // Collision group
@@ -39,10 +43,15 @@ class GameEntity {
     if (this.controller != null) {
       this.controller.update(dt);
     }
+    const frictionMultiplier = 1 - this.floorFriction;
+    this.vx *= frictionMultiplier;
+    this.vy *= frictionMultiplier;
     this.vx += this.ax * dt;
     this.vy += this.ay * dt;
-    this.px = this.x + this.vx * dt;
-    this.py = this.y + this.vy * dt;
+    // this.px = this.x + this.vx * dt;
+    // this.py = this.y + this.vy * dt;
+
+    this.rotation += this.rv * dt;
   }
 
   // Update this entity's graphics
@@ -52,6 +61,8 @@ class GameEntity {
 
     this.graphic.x = this.x;
     this.graphic.y = this.y;
+
+    this.graphic.rotation = this.rotation;
   }
 
   // Return the predicted next position

@@ -3,6 +3,7 @@ import Gamemode from './Gamemode';
 import TestController from '../entities/controllers/TestController';
 import PlayerController from '../entities/controllers/PlayerController';
 import LocalPlayerController from '../entities/controllers/LocalPlayerController';
+import BasicRectangle from '../entities/BasicRectangle';
 
 /*
 Test gamemode.
@@ -20,6 +21,12 @@ class TestGamemode extends Gamemode {
     const controller2 = new TestController(450, 300, 150, 150, 0.7, 1.5);
     circle2.setController(controller2);
     this.game.entityHandler.register(circle2);
+
+    const rect = new BasicRectangle(this.game.app, 64, 64, 0x88ee11);
+    const rectc = new TestController(750, 500, 200, 160, 0.8, 1.1);
+    rect.setController(rectc);
+    rect.collisionGroup = 1;
+    this.game.entityHandler.register(rect);
 
     const circle3 = new PlayerCircle(this.game.app);
     const controller3 = new LocalPlayerController(1);
