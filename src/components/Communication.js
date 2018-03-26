@@ -29,9 +29,14 @@ class Communication {
     this.client.on('error', (err, event, topic) => {
       onConnected(false);
     });
-    this.client.login({}, (success, data) => {
-      onConnected(success);
-    });
+    this.client.login(
+      { username: 'tddd96client', password: 'Irollwithsuperheroes' },
+      (success, data) => {
+        console.log(success);
+        console.log(data);
+        onConnected(success);
+      },
+    );
     /* eslint-enable no-unused-vars */
   }
 
