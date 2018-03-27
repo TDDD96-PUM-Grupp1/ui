@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-
 import PropTypes from 'prop-types';
+
 import CreateMenu from './CreateMenu';
 import FirstMenu from './FirstMenu';
 import PlayerList from './PlayerList';
@@ -48,6 +48,7 @@ class StartMenu extends Component {
 
       create: (
         <CreateMenu
+          onStart={this.props.onGameStart}
           onBack={this.showFirst}
           onCreateInstance={this.props.onCreateInstance}
           getRandomInstanceName={this.props.getRandomInstanceName}
@@ -68,6 +69,7 @@ class StartMenu extends Component {
 }
 
 StartMenu.propTypes = {
+  onGameStart: PropTypes.func.isRequired,
   onCreateInstance: PropTypes.func.isRequired,
   getRandomInstanceName: PropTypes.func.isRequired,
   getPlayers: PropTypes.func.isRequired,

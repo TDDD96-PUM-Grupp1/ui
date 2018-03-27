@@ -39,7 +39,8 @@ class CreateMenu extends Component {
       this.setState({ loading: true });
       this.setState({ errors: [] });
       // TODO startGame(this.state.gameMode, this.state.maxPlayers);
-      //
+
+      this.props.onStart();
       // Try to create an instance (as the service if the instance name is unique).
       this.props.onCreateInstance(this.state.instanceName, (err, data) => {
         this.setState({ loading: false });
@@ -163,6 +164,7 @@ class CreateMenu extends Component {
 
 CreateMenu.propTypes = {
   onBack: PropTypes.func.isRequired,
+  onStart: PropTypes.func.isRequired,
   onCreateInstance: PropTypes.func.isRequired,
   getRandomInstanceName: PropTypes.func.isRequired,
 };
