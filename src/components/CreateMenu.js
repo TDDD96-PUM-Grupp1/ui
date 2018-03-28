@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { PulseLoader } from 'react-spinners';
 import deepstream from 'deepstream.io-client-js';
 
+import GamemodeHandler from '../game/GamemodeHandler';
+
 const DEFAULT_MAX_PLAYERS = 8;
 const MAX_ALLOWED_PLAYERS = 100;
 
@@ -13,16 +15,18 @@ class CreateMenu extends Component {
   constructor(props) {
     super(props);
 
-    const availableModes = ['mode1', 'mode2', 'mode3']; // TODO get real list
+    const gamemodeHandler = GamemodeHandler.getInstance();
+    const gamemodeList = gamemodeHandler.getGamemodes();
 
     this.state = {
       instanceName: '',
-      gameModes: availableModes,
       errors: [],
       maxPlayers: DEFAULT_MAX_PLAYERS,
       loading: false,
+      gamemodeHandler,
+      gamemodeList,
+      gamemode: gamemodeList[0],
     };
-    // gameMode: availableModes[0], // TODO fix with
 
     this.startGame = this.startGame.bind(this);
     this.validatePlayers = this.validatePlayers.bind(this);
@@ -38,7 +42,9 @@ class CreateMenu extends Component {
     if (this.state.errors.length === 0) {
       this.setState({ loading: true });
       this.setState({ errors: [] });
-      // TODO startGame(this.state.gameMode, this.state.maxPlayers);
+
+      // Set game mode
+      this.state.gamemodeHandler.selectGameMode(this.state.gamemode);
 
       this.props.onStart();
       // Try to create an instance (as the service if the instance name is unique).
@@ -73,10 +79,8 @@ class CreateMenu extends Component {
   */
   updateGameMode(event) {
     const modeIndex = event.target.selectedIndex;
-    const newMode = this.state.gameModes[modeIndex];
-    /* eslint-disable react/no-unused-state */
-    this.setState({ gameMode: newMode });
-    /* eslint-enable react/no-unused-state */
+    const newMode = this.state.gamemodeList[modeIndex];
+    this.setState({ gamemode: newMode });
   }
 
   /*
@@ -122,7 +126,7 @@ class CreateMenu extends Component {
         <div className="menu-setting">
           <h4 className="menu-descriptor">Game Mode</h4>
           <select className="create-input" onChange={this.updateGameMode}>
-            {this.state.gameModes.map(val => (
+            {this.state.gamemodeList.map(val => (
               <option key={val} value={val}>
                 {val}
               </option>
