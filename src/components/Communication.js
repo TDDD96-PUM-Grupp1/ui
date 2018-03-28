@@ -29,7 +29,7 @@ class Communication {
     this.client.on('error', (err, event, topic) => {
       onConnected(false);
     });
-    this.client.login({}, (success, data) => {
+    this.client.login(options.auth, (success, data) => {
       onConnected(success);
     });
     /* eslint-enable no-unused-vars */
