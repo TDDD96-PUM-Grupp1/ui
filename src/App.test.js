@@ -15,41 +15,43 @@ it('renders without crashing', () => {
   ReactDOM.unmountComponentAtNode(div);
 });
 
-it('GamemodeHandler is working singleton', () => {
-  const inst1 = GamemodeHandler.getInstance();
-  const inst2 = GamemodeHandler.getInstance();
+describe('GamemodeHandler', () => {
+  it('is a working singleton', () => {
+    const inst1 = GamemodeHandler.getInstance();
+    const inst2 = GamemodeHandler.getInstance();
 
-  assert.equal(inst1, inst2);
-});
+    assert.equal(inst1, inst2);
+  });
 
-it('All gamemodes can be selected', () => {
-  const gmHandler = GamemodeHandler.getInstance();
-  const gmList = gmHandler.getGamemodes();
+  it('selects all gamemodes', () => {
+    const gmHandler = GamemodeHandler.getInstance();
+    const gmList = gmHandler.getGamemodes();
 
-  for (let i = 0; i < gmList.length; i += 1) {
-    gmHandler.selectGameMode(gmList[i]);
+    for (let i = 0; i < gmList.length; i += 1) {
+      gmHandler.selectGameMode(gmList[i]);
 
-    // Check so selection is done
-    gmHandler.getSelected();
-  }
-});
+      // Check so selection is done
+      gmHandler.getSelected();
+    }
+  });
 
-it('All gamemodes can be loaded', () => {
-  const gmHandler = GamemodeHandler.getInstance();
-  const gmList = gmHandler.getGamemodes();
-  let GamemodeClass;
-  // eslint-disable-next-line no-unused-vars
-  let gamemode;
+  it('loads all gamemodes', () => {
+    const gmHandler = GamemodeHandler.getInstance();
+    const gmList = gmHandler.getGamemodes();
+    let GamemodeClass;
+    // eslint-disable-next-line no-unused-vars
+    let gamemode;
 
-  // Extra components to allow for loading gamemodes
-  const pixi = new PIXI.Application();
-  const com = new Communication(settings.communication, () => {});
-  const game = new Game(pixi, com);
+    // Extra components to allow for loading gamemodes
+    const pixi = new PIXI.Application();
+    const com = new Communication(settings.communication, () => {});
+    const game = new Game(pixi, com);
 
-  for (let i = 0; i < gmList.length; i += 1) {
-    gmHandler.selectGameMode(gmList[i]);
+    for (let i = 0; i < gmList.length; i += 1) {
+      gmHandler.selectGameMode(gmList[i]);
 
-    GamemodeClass = gmHandler.getSelected();
-    gamemode = new GamemodeClass(game);
-  }
+      GamemodeClass = gmHandler.getSelected();
+      gamemode = new GamemodeClass(game);
+    }
+  });
 });
