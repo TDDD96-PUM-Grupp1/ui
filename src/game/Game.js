@@ -31,11 +31,17 @@ class Game {
     this.collisionHandler.handleCollisions(dt);
     this.currentGamemode.postUpdate(dt);
     this.entityHandler.updateGraphics(dt);
+    this.communication.update(dt);
   }
 
   // Called when a new player joins.
   onPlayerJoin(idTag) {
     this.currentGamemode.onPlayerJoin(idTag);
+  }
+
+  // Called when a player leaves the game.
+  onPlayerLeave(idTag) {
+    this.currentGamemode.onPlayerLeave(idTag);
   }
 }
 
