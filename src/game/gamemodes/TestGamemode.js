@@ -26,6 +26,7 @@ class TestGamemode extends Gamemode {
     const rectc = new TestController(750, 500, 200, 160, 0.8, 1.1);
     rect.setController(rectc);
     rect.collisionGroup = 1;
+    rect.mass = 1;
     this.game.entityHandler.register(rect);
 
     const circle3 = new PlayerCircle(this.game.app);
