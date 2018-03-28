@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import assert from 'assert';
 import * as PIXI from 'pixi.js';
 
 import settings from './config';
@@ -20,7 +19,7 @@ describe('GamemodeHandler', () => {
     const inst1 = GamemodeHandler.getInstance();
     const inst2 = GamemodeHandler.getInstance();
 
-    assert.equal(inst1, inst2);
+    expect(inst1).toBe(inst2);
   });
 
   it('selects all gamemodes', () => {
