@@ -63,7 +63,7 @@ class Communication {
     this.client.event.subscribe(`data/button/${this.instance}/${data.id}`, this.buttonPressed);
     this.client.event.emit('services/playerAdded', {
       instanceName: this.instance,
-      playerName: data.name,
+      playerName: data.name
     });
     response.send(data.id);
     // this.client.presence.subscribe(data.id, this.presenceUpdate);
@@ -98,12 +98,11 @@ class Communication {
   /** This function is called whenever a player presses a button on the controller.
    * The number of the button is used to identify which button was pressed, note that
    * button enumeration begins at 0.
-   * @param data is an object such that {id: playerid, bnum: buttonNumber}
+   * @param data is an object such that {id: playerid, bNum: buttonNumber}
    */
   buttonPressed(data) {
     // TODO make this function change the game state in some way
-    console.log(data);
-    console.log('Button press received');
+    console.log('Button press received: '.concat(data.bNum));
   }
 
   // Get player info for an id.
