@@ -39,13 +39,17 @@ class Communication {
    Create the instance and provide an rpc for connecting players.
    */
   createInstance(_name, callback) {
-    this.client.rpc.make('services/createInstance', { id: this.client.getUid(), name: _name }, (err, data) => {
-      if (!err && !data.error) {
-        this.instance = _name;
-        this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
+    this.client.rpc.make(
+      'services/createInstance',
+      { id: this.client.getUid(), name: _name },
+      (err, data) => {
+        if (!err && !data.error) {
+          this.instance = _name;
+          this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
+        }
+        callback(err, data);
       }
-      callback(err, data);
-    });
+    );
   }
 
   /*
@@ -56,7 +60,11 @@ class Communication {
     console.log(`Player ${data.id} has connected`);
     this.players[data.id] = { name: data.name, sensor: data.sensor };
     this.client.event.subscribe(`data/${this.instance}/${data.id}`, this.readSensorData);
-    this.client.event.emit(`services/playerAdded`, {instanceName: this.instance, playerName: data.name});
+    this.client.event.subscribe(`data/button/${this.instance}/${data.id}`, this.buttonPressed);
+    this.client.event.emit('services/playerAdded', {
+      instanceName: this.instance,
+      playerName: data.name,
+    });
     response.send(data.id);
     // this.client.presence.subscribe(data.id, this.presenceUpdate);
 
@@ -85,6 +93,17 @@ class Communication {
     if (data.sensor) {
       this.players[data.id].sensor = data.sensor;
     }
+  }
+
+  /** This function is called whenever a player presses a button on the controller.
+   * The number of the button is used to identify which button was pressed, note that
+   * button enumeration begins at 0.
+   * @param data is an object such that {id: playerid, bnum: buttonNumber}
+   */
+  buttonPressed(data) {
+    // TODO make this function change the game state in some way
+    console.log(data);
+    console.log('Button press received');
   }
 
   // Get player info for an id.
