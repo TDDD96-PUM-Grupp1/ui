@@ -91,9 +91,9 @@ class Communication {
   readSensorData(data) {
     if (data.sensor) {
       this.players[data.id].sensor = data.sensor;
-      for (let i = 0; i < data.bnum.length(); i += 1) {
-        this.buttonPressed(data.bnum[i]);
-      }
+    }
+    for (let i = 0; i < data.bnum.length; i += 1) {
+      this.buttonPressed(data.bnum[i]);
     }
   }
 
@@ -104,7 +104,8 @@ class Communication {
    */
   buttonPressed(data) {
     // TODO make this function change the game state in some way
-    console.log('Button press received: '.concat(data.bNum));
+    console.log('Button press received: ');
+    console.log(data);
   }
 
   // Get player info for an id.
