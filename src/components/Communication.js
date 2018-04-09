@@ -15,8 +15,9 @@ class Communication {
     this.pingrate = options.pingrate;
     this.serviceName = options.service_name;
     this.id = undefined;
-
-    this.connectDeepstream(options.host_ip, options.auth, onConnected);
+    // If we are testing things don't connect to deepstream.   
+    if(options.host_ip != undefined)
+      this.connectDeepstream(options.host_ip, options.auth, onConnected);
 
     // Bind callbacks
     this.getPlayers = this.getPlayers.bind(this);

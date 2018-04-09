@@ -34,12 +34,11 @@ class App extends Component {
 
     // This is needed because of a weird TravisCI bug that caused the test
     // to get stuck when connecting.
-    if (!props.test) {
-      this.com = new Communication(settings.communication, onConnect);
-    } else {
-      // Provide no ip to force a failed connection
-      this.com = new Communication('', onConnect);
+    if (props.test) {
+      settings.communication.host_ip = undefined;
     }
+    this.com = new Communication(settings.communication, onConnect);
+    
   }
 
   setGameActive() {
