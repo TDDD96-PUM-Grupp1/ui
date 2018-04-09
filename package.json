@@ -16,7 +16,7 @@
     "start": "react-scripts start",
     "start-pc": "set PORT=3001&& react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test --forceExit --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint src/",
     "lintfix": "eslint src/ --fix"
