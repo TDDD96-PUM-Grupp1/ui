@@ -24,6 +24,12 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    if (process.env.REACT_APP_LOCAL) {
+      console.log('Using local Deepstream host');
+    } else {
+      console.log('Using remote Deepstream host');
+    }
+
     this.state = {
       gameActive: false,
     };
@@ -38,7 +44,6 @@ class App extends Component {
       settings.communication.host_ip = undefined;
     }
     this.com = new Communication(settings.communication, onConnect);
-    
   }
 
   setGameActive() {
