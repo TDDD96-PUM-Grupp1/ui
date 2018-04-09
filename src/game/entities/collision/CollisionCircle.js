@@ -29,26 +29,6 @@ class CollisionCircle extends CollisionBase {
       const cpx = (x * otherEntity.collision.radius + x2 * this.radius) / rad;
       const cpy = (y * otherEntity.collision.radius + y2 * this.radius) / rad;
       this.collide(otherEntity.collision, cpx, cpy, x2 - x, y2 - y, dt);
-      /*
-      const dvx = this.entity.vx - otherEntity.vx;
-      const dvy = this.entity.vy - otherEntity.vy;
-      const dcx = xdif * (this.radius / rad);
-      const dcy = ydif * (this.radius / rad);
-      // parallel proj dv on dc
-      const cl = Math.sqrt(dcx * dcx + dcy * dcy);
-      const nx = dcx / cl;
-      const ny = dcy / cl;
-      const scalar = dvx * nx + dvy * ny;
-      // Abort if scalar is below 0 (try to figure out why ;) )
-      if (scalar > 0) {
-        const px = scalar * nx;
-        const py = scalar * ny;
-        // no mass / restitution involved right now
-        this.entity.vx += -px;
-        this.entity.vy += -py;
-        otherEntity.vx += px;
-        otherEntity.vy += py;
-      } */
     }
   }
 }

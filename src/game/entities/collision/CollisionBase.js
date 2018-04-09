@@ -14,7 +14,7 @@ class CollisionBase {
   }
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
-  // Check if we are colliding with another entity.
+  // Check if we are colliding with another entity. UNUSED
   isColliding(otherEntity, dt) {}
 
   // Resolve a collision with another entity.
@@ -70,7 +70,7 @@ class CollisionBase {
       const tv = tx * vdx + ty * vdy;
       const frictionInertiaSum = tn1 * tn1 / this.entity.I + tn2 * tn2 / other.entity.I;
       let frictionSize = -(1 + restitution) * tv;
-      frictionSize /= massInverseSum;
+      frictionSize /= massInverseSum + frictionInertiaSum;
 
       // Prettier could not handle this inside the sqrt function
       const fss =
