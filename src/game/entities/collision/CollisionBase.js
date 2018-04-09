@@ -23,7 +23,7 @@ class CollisionBase {
   /*
   Perform a collision between two collision objects.
   p is the collision point
-  n is the collision vector (or its normal?)
+  c is the collision normal (normal to edge) (normalized into n)
   */
   collide(other, px, py, cx, cy, dt) {
     const restitution = 0.5; // TODO: calc from objects
@@ -41,8 +41,11 @@ class CollisionBase {
     const [r1vx, r1vy] = this.calculatePointVelocity(r1x, r1y);
     const [r2vx, r2vy] = other.calculatePointVelocity(r2x, r2y);
     const vdx = r2vx - r1vx;
-    const vdy = r2vy - r2vx;
+    const vdy = r2vy - r1vy;
     const cv = nx * vdx + ny * vdy;
+    if (Math.abs(cv) > 1) {
+      console.log(cv);
+    }
     // if contact velocity is positive, do nothing
     if (cv <= 0) {
       const cn1 = r1x * ny - r1y * nx;

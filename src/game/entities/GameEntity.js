@@ -19,7 +19,7 @@ class GameEntity {
 
     // Rotation
     this.rotation = 0;
-    this.rv = 1;
+    this.rv = 0;
 
     // Physic properties
     this.mass = 0;

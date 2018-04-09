@@ -13,17 +13,17 @@ class TestGamemode extends Gamemode {
     super(game);
     // Make a test circle;
     const circle = new PlayerCircle(this.game.app);
-    const controller = new TestController(300, 300, 150, 150, 1, 1.2);
+    const controller = new TestController(300, 300, 0, 0, 1, 1.2);
     circle.setController(controller);
     this.game.entityHandler.register(circle);
 
     const circle2 = new PlayerCircle(this.game.app);
-    const controller2 = new TestController(450, 300, 150, 150, 0.7, 1.5);
+    const controller2 = new TestController(450, 300, 0, 0, 0.7, 1.5);
     circle2.setController(controller2);
     this.game.entityHandler.register(circle2);
 
     const rect = new BasicRectangle(this.game.app, 64, 64, 0x88ee11);
-    const rectc = new TestController(750, 500, 200, 160, 0.8, 1.1);
+    const rectc = new TestController(750, 500, 0, 0, 0.8, 1.1);
     rect.setController(rectc);
     rect.collisionGroup = 1;
     rect.mass = 1;
