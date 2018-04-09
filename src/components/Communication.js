@@ -60,7 +60,6 @@ class Communication {
     console.log(`Player ${data.id} has connected`);
     this.players[data.id] = { name: data.name, sensor: data.sensor };
     this.client.event.subscribe(`data/${this.instance}/${data.id}`, this.readSensorData);
-    this.client.event.subscribe(`data/button/${this.instance}/${data.id}`, this.buttonPressed);
     this.client.event.emit('services/playerAdded', {
       instanceName: this.instance,
       playerName: data.name
@@ -92,6 +91,9 @@ class Communication {
   readSensorData(data) {
     if (data.sensor) {
       this.players[data.id].sensor = data.sensor;
+      for (let i = 0; i < data.bnum.length(); i += 1) {
+        this.buttonPressed(data.bnum[i]);
+      }
     }
   }
 
