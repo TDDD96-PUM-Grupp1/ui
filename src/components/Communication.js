@@ -13,9 +13,10 @@ class Communication {
     this.timeoutCount = options.timeout_count;
     this.pingtimer = 0;
     this.pingrate = options.pingrate;
+    this.serviceName = options.service_name;
     this.id = undefined;
 
-    this.connectDeepstream(options.host_ip, onConnected);
+    this.connectDeepstream(options.host_ip, options.auth, onConnected);
 
     // Bind callbacks
     this.getPlayers = this.getPlayers.bind(this);
@@ -30,16 +31,18 @@ class Communication {
    * @param ip The ip that will be connected to.
    * @param onConnected The callback that will be run when connected (or not).
    */
-  connectDeepstream(ip, onConnected) {
+  connectDeepstream(ip, auth, onConnected) {
     this.client = deepstream(ip);
     // Topic and data isn't used but cannot be removed since it is a callback function.
     /* eslint-disable no-unused-vars */
     this.client.on('error', (err, event, topic) => {
-      onConnected(false);
+      onConnected(false,event);
+      
     });
     this.id = this.client.getUid();
-    this.client.login({ username: this.id }, (success, data) => {
-      onConnected(success);
+    auth.username = this.id;
+    this.client.login(auth, (success, data) => {
+      onConnected(success,data);
     });
     /* eslint-enable no-unused-vars */
   }
@@ -50,14 +53,19 @@ class Communication {
    * @param callback the function that will be called when the service responds.
    */
   createInstance(name, callback) {
-    this.client.rpc.make('services/createInstance', { id: this.id, name }, (err, data) => {
-      if (!err && !data.error) {
-        this.instance = name;
-        this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
-        this.client.event.subscribe(`data/${this.instance}`, this.readData);
+    this.client.rpc.make(
+      `${this.serviceName}/createInstance`,
+      { id: this.id, name },
+      (err, data) => {
+        if (!err && !data.error) {
+          this.instance = name;
+          this.client.rpc.provide(`${this.serviceName}/addPlayer/${this.instance}`, this.addPlayer);
+          this.client.event.subscribe(`${this.serviceName}/data/${this.instance}`, this.readData);
+        }
+        console.log(err);
+        callback(err, data);
       }
-      callback(err, data);
-    });
+    );
   }
 
   /*
@@ -67,11 +75,10 @@ class Communication {
   * @param response the response from the RPC
   */
   addPlayer(data, response) {
-    console.log(`Player ${data.id} has connected`);
     this.players[data.id] = { name: data.name, sensor: data.sensor };
-    this.client.event.emit('services/playerAdded', {
+    this.client.event.emit(`${this.serviceName}/playerAdded`, {
       instanceName: this.instance,
-      playerName: data.name,
+      playerName: data.name
     });
     response.send(data.id);
 
@@ -86,10 +93,9 @@ class Communication {
    * @param id the id of the player that has disconnected.
    */
   removePlayer(id) {
-    console.log('Player disconnected');
-    this.client.event.emit('services/playerRemoved', {
+    this.client.event.emit(`${this.serviceName}/playerRemoved`, {
       instanceName: this.instance,
-      playerName: this.players[id].name,
+      playerName: this.players[id].name
     });
 
     if (this.gameListener != null) {

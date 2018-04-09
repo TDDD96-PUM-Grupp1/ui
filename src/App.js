@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import './css/App.css';
 
 import GameComponent from './components/GameComponent';
@@ -10,12 +12,12 @@ import InstanceNameHandler from './components/InstanceNameHandler';
 import StartMenu from './components/StartMenu';
 import settings from './config';
 
-function onConnect(success) {
+function onConnect(success, data) {
   if (success) {
     console.log('Deepstream instanciated.');
   } else {
     // TODO: Maybe some form of indication to the user that the deepstream server is down.
-    console.log("Couldn't instanciate deepstream connection.");
+    console.log(data);
   }
 }
 
@@ -30,7 +32,15 @@ class App extends Component {
     this.setGameActive = this.setGameActive.bind(this);
 
     this.instanceNameHandler = new InstanceNameHandler();
-    this.com = new Communication(settings.communication, onConnect);
+
+    // This is needed because of a weird TravisCI bug that caused the test
+    // to get stuck when connecting.
+    if (!props.test) {
+      this.com = new Communication(settings.communication, onConnect);
+    } else {
+      // Provide no ip to force a failed connection
+      this.com = new Communication('', onConnect);
+    }
   }
 
   setGameActive() {
@@ -57,5 +67,13 @@ class App extends Component {
     );
   }
 }
+
+App.defaultProps = {
+  test: false,
+};
+
+App.propTypes = {
+  test: PropTypes.bool,
+};
 
 export default App;
