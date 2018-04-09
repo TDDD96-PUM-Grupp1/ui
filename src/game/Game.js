@@ -1,7 +1,7 @@
 // import * as PIXI from 'pixi.js';
 import EntityHandler from './EntityHandler';
-import TestGamemode from './gamemodes/TestGamemode';
 import CollisionHandler from './CollisionHandler';
+import GamemodeHandler from './GamemodeHandler';
 
 /*
 Game.
@@ -17,7 +17,9 @@ class Game {
     this.collisionHandler = new CollisionHandler(this.entityHandler);
 
     // Create gamemode
-    this.currentGamemode = new TestGamemode(this);
+    const gamemodeHandler = GamemodeHandler.getInstance();
+    const SelectedMode = gamemodeHandler.getSelected();
+    this.currentGamemode = new SelectedMode(this);
   }
 
   // Main game loop
