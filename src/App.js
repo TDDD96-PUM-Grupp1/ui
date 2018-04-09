@@ -12,12 +12,11 @@ import InstanceNameHandler from './components/InstanceNameHandler';
 import StartMenu from './components/StartMenu';
 import settings from './config';
 
-function onConnect(success) {
-  if (success) {
-    console.log('Deepstream instanciated.');
-  } else {
+function onConnect(success, data) {
+  if (!success) {
     // TODO: Maybe some form of indication to the user that the deepstream server is down.
-    console.log("Couldn't instanciate deepstream connection.");
+    // eslint-disable-next-line
+    console.log(data);
   }
 }
 
@@ -35,12 +34,11 @@ class App extends Component {
 
     // This is needed because of a weird TravisCI bug that caused the test
     // to get stuck when connecting.
-    if (!props.test) {
-      this.com = new Communication(settings.communication, onConnect);
-    } else {
-      // Provide no ip to force a failed connection
-      this.com = new Communication('', onConnect);
+    if (props.test) {
+      settings.communication.host_ip = undefined;
     }
+    this.com = new Communication(settings.communication, onConnect);
+    
   }
 
   setGameActive() {

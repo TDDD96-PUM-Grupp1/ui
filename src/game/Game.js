@@ -1,6 +1,7 @@
 // import * as PIXI from 'pixi.js';
 import EntityHandler from './EntityHandler';
 import CollisionHandler from './CollisionHandler';
+import ResourceServer from './ResourceServer';
 import GamemodeHandler from './GamemodeHandler';
 
 /*
@@ -15,6 +16,7 @@ class Game {
     // Create all handlers
     this.entityHandler = new EntityHandler();
     this.collisionHandler = new CollisionHandler(this.entityHandler);
+    this.resourceServer = new ResourceServer();
 
     // Create gamemode
     const gamemodeHandler = GamemodeHandler.getInstance();
@@ -33,11 +35,17 @@ class Game {
     this.collisionHandler.handleCollisions(dt);
     this.currentGamemode.postUpdate(dt);
     this.entityHandler.updateGraphics(dt);
+    this.communication.update(dt);
   }
 
   // Called when a new player joins.
   onPlayerJoin(idTag) {
     this.currentGamemode.onPlayerJoin(idTag);
+  }
+
+  // Called when a player leaves the game.
+  onPlayerLeave(idTag) {
+    this.currentGamemode.onPlayerLeave(idTag);
   }
 }
 
