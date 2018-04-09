@@ -15,8 +15,9 @@ class Communication {
     this.pingrate = options.pingrate;
     this.serviceName = options.service_name;
     this.id = undefined;
-    // If we are testing things don't connect to deepstream.   
-    if(options.host_ip != undefined)
+
+    // If we are testing things don't connect to deepstream.
+    if (options.host_ip !== undefined)
       this.connectDeepstream(options.host_ip, options.auth, onConnected);
 
     // Bind callbacks
@@ -24,9 +25,11 @@ class Communication {
     this.connectDeepstream = this.connectDeepstream.bind(this);
     this.readData = this.readData.bind(this);
     this.addPlayer = this.addPlayer.bind(this);
+    this.removePlayer = this.removePlayer.bind(this);
     this.createInstance = this.createInstance.bind(this);
     this.update = this.update.bind(this);
   }
+
   /*
    * Connects to the deepstream socket.
    * @param ip The ip that will be connected to.
@@ -63,7 +66,7 @@ class Communication {
           this.client.event.subscribe(`${this.serviceName}/data/${this.instance}`, this.readData);
         }
         callback(err, data);
-      },
+      }
     );
   }
 
@@ -74,10 +77,12 @@ class Communication {
   * @param response the response from the RPC
   */
   addPlayer(data, response) {
-    this.players[data.id] = { name: data.name, sensor: data.sensor };
+    if(data.id === undefined || data.name === undefined || data.sensor === undefined)
+      return;
+    this.players[data.id] = { name: data.name, sensor: data.sensor, ping: this.timeoutCount };
     this.client.event.emit(`${this.serviceName}/playerAdded`, {
       instanceName: this.instance,
-      playerName: data.name,
+      playerName: data.name
     });
     response.send(data.id);
 
@@ -92,9 +97,11 @@ class Communication {
    * @param id the id of the player that has disconnected.
    */
   removePlayer(id) {
+    if(this.players[id] === undefined)
+      return;
     this.client.event.emit(`${this.serviceName}/playerRemoved`, {
       instanceName: this.instance,
-      playerName: this.players[id].name,
+      playerName: this.players[id].name
     });
 
     if (this.gameListener != null) {
@@ -109,7 +116,10 @@ class Communication {
   * @param data the data sent from a controller.
   */
   readData(data) {
+    if(data === undefined || data.id === undefined)
+      return;
     if (this.players[data.id] !== undefined) {
+      this.players[data.id].ping = this.timeoutCount;
       if (data.sensor !== undefined) {
         this.players[data.id].sensor = data.sensor;
       }
@@ -121,25 +131,26 @@ class Communication {
    * if all the players are still connected.
    * @param timeElapsed time elapsed since the last update, in seconds
    */
-  // eslint-disable-next-line
   update(timeElapsed) {
-    // TODO: Need to update the ping system.
-    /*
     this.pingtimer += timeElapsed;
     if (this.pingtimer >= 1 / this.pingrate) {
       // No need to decrease the timer by 1/pingrate since the precision
       // is not necessary
       this.pingtimer = 0;
-      this.client.presence.getAll(Object.keys(this.players), users => {
-        const userKeys = Object.keys(users);
-        for (let i = 0; i < userKeys.length; i += 1) {
-          if (users[userKeys[i]] === false) {
-            this.removePlayer(userKeys[i]);
-          }
+
+      // Ping the service
+      this.client.event.emit(`${this.serviceName}/instancePing`, {name: this.instance});
+
+      //
+      const playerKeys = Object.keys(this.players);
+
+      for (let i = 0; i < playerKeys.length; i += 1) {
+        this.players[playerKeys[i]].ping -= 1;
+        if (this.players[playerKeys[i]].ping === 0) {
+          this.removePlayer(playerKeys[i]);
         }
-      });
+      }
     }
-    */
   }
 
   /*
