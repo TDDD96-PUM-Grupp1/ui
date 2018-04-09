@@ -36,7 +36,7 @@ class GameEntity {
 
   // Update this entity
   update(dt) {
-    if (this.controller != null) {
+    if (this.controller !== undefined) {
       this.controller.update(dt);
     }
     this.vx += this.ax * dt;
