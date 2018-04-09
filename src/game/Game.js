@@ -1,6 +1,7 @@
 // import * as PIXI from 'pixi.js';
 import EntityHandler from './EntityHandler';
 import CollisionHandler from './CollisionHandler';
+import ResourceServer from './ResourceServer';
 import GamemodeHandler from './GamemodeHandler';
 
 /*
@@ -15,6 +16,7 @@ class Game {
     // Create all handlers
     this.entityHandler = new EntityHandler();
     this.collisionHandler = new CollisionHandler(this.entityHandler);
+    this.resourceServer = new ResourceServer();
 
     // Create gamemode
     const gamemodeHandler = GamemodeHandler.getInstance();
