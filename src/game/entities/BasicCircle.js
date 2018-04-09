@@ -6,10 +6,14 @@ import CollisionCircle from './collision/CollisionCircle';
 Game object with a basic circle graphic
 */
 class BasicCircle extends GameEntity {
-  constructor(app, radius, color) {
+  constructor(app, radius, mass, color) {
     super(app);
 
     this.radius = radius;
+    this.mass = mass;
+
+    // Calculate inertia
+    this.I = 0.5 * mass * radius * radius;
 
     // Create a graphical circle
     const circle = new PIXI.Graphics();

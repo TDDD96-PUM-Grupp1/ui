@@ -23,8 +23,9 @@ class GameEntity {
 
     // Physic properties
     this.mass = 0;
-    this.friction = 0;
-    this.restitution = 1;
+    this.staticFriction = 0;
+    this.dynamicFriction = 0;
+    this.restitution = Math.sqrt(0.5);
     this.I = 1; // rotational inertia, super important to calculate from the shape of the object!
     this.floorFriction = 0.005;
 
@@ -51,6 +52,7 @@ class GameEntity {
     // this.px = this.x + this.vx * dt;
     // this.py = this.y + this.vy * dt;
 
+    this.rv *= 1 - this.floorFriction;
     this.rotation += this.rv * dt;
   }
 

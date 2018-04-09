@@ -1,15 +1,14 @@
 import BasicCircle from './BasicCircle';
 
 const RADIUS = 32;
+const MASS = 1;
 
 /*
 Game object representing a player
 */
 class PlayerCircle extends BasicCircle {
   constructor(app) {
-    super(app, RADIUS, 0xff6600);
-    // set mass
-    this.mass = 1;
+    super(app, RADIUS, MASS, 0xff6600);
 
     // set collision group
     this.collisionGroup = 1;

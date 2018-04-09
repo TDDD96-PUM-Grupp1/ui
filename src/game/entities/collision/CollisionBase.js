@@ -20,13 +20,16 @@ class CollisionBase {
   // Resolve a collision with another entity.
   resolveCollision(otherEntity, dt) {}
 
+  /* eslint-enable class-methods-use-this, no-unused-vars */
+
   /*
   Perform a collision between two collision objects.
   p is the collision point
   c is the collision normal (normal to edge) (normalized into n)
   */
   collide(other, px, py, cx, cy, dt) {
-    const restitution = 0.5; // TODO: calc from objects
+    // const restitution = 0.5; // TODO: calc from objects
+    const restitution = this.entity.restitution * other.entity.restitution;
 
     const cl = Math.sqrt(cx * cx + cy * cy);
     const nx = cx / cl;
@@ -43,26 +46,54 @@ class CollisionBase {
     const vdx = r2vx - r1vx;
     const vdy = r2vy - r1vy;
     const cv = nx * vdx + ny * vdy;
-    if (Math.abs(cv) > 1) {
-      console.log(cv);
-    }
     // if contact velocity is positive, do nothing
     if (cv <= 0) {
       const cn1 = r1x * ny - r1y * nx;
       const cn2 = r2x * ny - r2y * nx;
-      const massInverseSum =
-        1 / this.entity.mass +
-        1 / other.entity.mass +
-        cn1 * cn1 / this.entity.I +
-        cn2 * cn2 / other.entity.I;
+      const massInverseSum = 1 / this.entity.mass + 1 / other.entity.mass;
+      const impulseInertiaSum = cn1 * cn1 / this.entity.I + cn2 * cn2 / other.entity.I;
       let impulseSize = -(1 + restitution) * cv;
-      impulseSize /= massInverseSum;
+      impulseSize /= massInverseSum + impulseInertiaSum;
       const ix = nx * impulseSize;
       const iy = ny * impulseSize;
       this.applyImpulse(r1x, r1y, -ix, -iy);
       other.applyImpulse(r2x, r2y, ix, iy);
 
-      // TODO: friction
+      // normal tangent
+      let tx = vdx - cv * nx;
+      let ty = vdy - cv * ny;
+      const tl = Math.sqrt(tx * tx + ty * ty);
+      tx /= tl;
+      ty /= tl;
+      const tn1 = r1x * ty - r1y * tx;
+      const tn2 = r2x * ty - r2y * tx;
+      const tv = tx * vdx + ty * vdy;
+      const frictionInertiaSum = tn1 * tn1 / this.entity.I + tn2 * tn2 / other.entity.I;
+      let frictionSize = -(1 + restitution) * tv;
+      frictionSize /= massInverseSum;
+
+      // Prettier could not handle this inside the sqrt function
+      const fss =
+        this.entity.staticFriction * this.entity.staticFriction +
+        other.entity.staticFriction * other.entity.staticFriction;
+      const mu = Math.sqrt(fss);
+
+      let fx;
+      let fy;
+      if (Math.abs(frictionSize) < impulseSize * mu) {
+        fx = frictionSize * tx;
+        fy = frictionSize * ty;
+      } else {
+        const fds =
+          this.entity.dynamicFriction * this.entity.dynamicFriction +
+          other.entity.dynamicFriction * other.entity.dynamicFriction;
+        const dmu = Math.sqrt(fds);
+        fx = -impulseSize * dmu * tx;
+        fy = -impulseSize * dmu * ty;
+      }
+
+      this.applyImpulse(r1x, r1y, -fx, -fy);
+      other.applyImpulse(r2x, r2y, fx, fy);
     }
   }
 
@@ -82,7 +113,6 @@ class CollisionBase {
     const cross = px * ivy - py * ivx;
     this.entity.rv += cross / this.entity.I;
   }
-  /* eslint-enable class-methods-use-this, no-unused-vars */
 }
 
 export default CollisionBase;

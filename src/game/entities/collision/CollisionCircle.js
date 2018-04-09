@@ -25,7 +25,7 @@ class CollisionCircle extends CollisionBase {
     const rad = this.radius + otherEntity.collision.radius;
     const radsq = rad * rad;
     // compare squared data because sqrt is slow
-    if (sqdist <= radsq) {
+    if (sqdist <= radsq && sqdist !== 0) {
       const cpx = (x * otherEntity.collision.radius + x2 * this.radius) / rad;
       const cpy = (y * otherEntity.collision.radius + y2 * this.radius) / rad;
       this.collide(otherEntity.collision, cpx, cpy, x2 - x, y2 - y, dt);
