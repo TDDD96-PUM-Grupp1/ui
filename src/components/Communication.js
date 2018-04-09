@@ -39,13 +39,17 @@ class Communication {
    Create the instance and provide an rpc for connecting players.
    */
   createInstance(_name, callback) {
-    this.client.rpc.make('services/createInstance', { id: this.client.getUid(), name: _name }, (err, data) => {
-      if (!err && !data.error) {
-        this.instance = _name;
-        this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
+    this.client.rpc.make(
+      'services/createInstance',
+      { id: this.client.getUid(), name: _name },
+      (err, data) => {
+        if (!err && !data.error) {
+          this.instance = _name;
+          this.client.rpc.provide(`data/${this.instance}/addPlayer`, this.addPlayer);
+        }
+        callback(err, data);
       }
-      callback(err, data);
-    });
+    );
   }
 
   /*
@@ -56,7 +60,10 @@ class Communication {
     console.log(`Player ${data.id} has connected`);
     this.players[data.id] = { name: data.name, sensor: data.sensor };
     this.client.event.subscribe(`data/${this.instance}/${data.id}`, this.readSensorData);
-    this.client.event.emit(`services/playerAdded`, {instanceName: this.instance, playerName: data.name});
+    this.client.event.emit('services/playerAdded', {
+      instanceName: this.instance,
+      playerName: data.name
+    });
     response.send(data.id);
     // this.client.presence.subscribe(data.id, this.presenceUpdate);
 
@@ -84,7 +91,20 @@ class Communication {
   readSensorData(data) {
     if (data.sensor) {
       this.players[data.id].sensor = data.sensor;
+      for (let i = 0; i < data.bnum.length(); i += 1) {
+        this.buttonPressed(data.bnum[i]);
+      }
     }
+  }
+
+  /** This function is called whenever a player presses a button on the controller.
+   * The number of the button is used to identify which button was pressed, note that
+   * button enumeration begins at 0.
+   * @param data is an object such that {id: playerid, bNum: buttonNumber}
+   */
+  buttonPressed(data) {
+    // TODO make this function change the game state in some way
+    console.log('Button press received: '.concat(data.bNum));
   }
 
   // Get player info for an id.
