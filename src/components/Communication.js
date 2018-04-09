@@ -15,9 +15,10 @@ class Communication {
     this.pingrate = options.pingrate;
     this.serviceName = options.service_name;
     this.id = undefined;
-    // If we are testing things don't connect to deepstream.   
-    if(options.host_ip != undefined)
+    // If we are testing things don't connect to deepstream.
+    if (options.host_ip !== undefined) {
       this.connectDeepstream(options.host_ip, options.auth, onConnected);
+    }
 
     // Bind callbacks
     this.getPlayers = this.getPlayers.bind(this);
@@ -114,6 +115,10 @@ class Communication {
         this.players[data.id].sensor = data.sensor;
       }
     }
+
+    for (let i = 0; i < data.bnum.length; i += 1) {
+      this.buttonPressed(data.bnum[i]);
+    }
   }
 
   /*
@@ -140,9 +145,6 @@ class Communication {
       });
     }
     */
-    for (let i = 0; i < data.bnum.length; i += 1) {
-      this.buttonPressed(data.bnum[i]);
-    }
   }
 
   /** This function is called whenever a player presses a button on the controller.
