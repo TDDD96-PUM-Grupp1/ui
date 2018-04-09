@@ -140,6 +140,20 @@ class Communication {
       });
     }
     */
+    for (let i = 0; i < data.bnum.length; i += 1) {
+      this.buttonPressed(data.bnum[i]);
+    }
+  }
+
+  /** This function is called whenever a player presses a button on the controller.
+   * The number of the button is used to identify which button was pressed, note that
+   * button enumeration begins at 0.
+   * @param data is an object such that {id: playerid, bNum: buttonNumber}
+   */
+  buttonPressed(data) {
+    // TODO make this function change the game state in some way
+    console.log('Button press received: ');
+    console.log(data);
   }
 
   /*
