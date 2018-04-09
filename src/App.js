@@ -13,10 +13,9 @@ import StartMenu from './components/StartMenu';
 import settings from './config';
 
 function onConnect(success, data) {
-  if (success) {
-    console.log('Deepstream instanciated.');
-  } else {
+  if (!success) {
     // TODO: Maybe some form of indication to the user that the deepstream server is down.
+    // eslint-disable-next-line
     console.log(data);
   }
 }

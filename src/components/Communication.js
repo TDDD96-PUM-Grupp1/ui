@@ -36,13 +36,12 @@ class Communication {
     // Topic and data isn't used but cannot be removed since it is a callback function.
     /* eslint-disable no-unused-vars */
     this.client.on('error', (err, event, topic) => {
-      onConnected(false,event);
-      
+      onConnected(false, event);
     });
     this.id = this.client.getUid();
     auth.username = this.id;
     this.client.login(auth, (success, data) => {
-      onConnected(success,data);
+      onConnected(success, data);
     });
     /* eslint-enable no-unused-vars */
   }
@@ -62,9 +61,8 @@ class Communication {
           this.client.rpc.provide(`${this.serviceName}/addPlayer/${this.instance}`, this.addPlayer);
           this.client.event.subscribe(`${this.serviceName}/data/${this.instance}`, this.readData);
         }
-        console.log(err);
         callback(err, data);
-      }
+      },
     );
   }
 
@@ -78,7 +76,7 @@ class Communication {
     this.players[data.id] = { name: data.name, sensor: data.sensor };
     this.client.event.emit(`${this.serviceName}/playerAdded`, {
       instanceName: this.instance,
-      playerName: data.name
+      playerName: data.name,
     });
     response.send(data.id);
 
@@ -95,7 +93,7 @@ class Communication {
   removePlayer(id) {
     this.client.event.emit(`${this.serviceName}/playerRemoved`, {
       instanceName: this.instance,
-      playerName: this.players[id].name
+      playerName: this.players[id].name,
     });
 
     if (this.gameListener != null) {
@@ -122,7 +120,10 @@ class Communication {
    * if all the players are still connected.
    * @param timeElapsed time elapsed since the last update, in seconds
    */
+  // eslint-disable-next-line
   update(timeElapsed) {
+    // TODO: Need to update the ping system.
+    /*
     this.pingtimer += timeElapsed;
     if (this.pingtimer >= 1 / this.pingrate) {
       // No need to decrease the timer by 1/pingrate since the precision
@@ -137,6 +138,7 @@ class Communication {
         }
       });
     }
+    */
   }
 
   /*
