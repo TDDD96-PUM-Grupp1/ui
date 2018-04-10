@@ -24,12 +24,6 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    if (process.env.REACT_APP_LOCAL) {
-      console.log('Using local Deepstream host');
-    } else {
-      console.log('Using remote Deepstream host');
-    }
-
     this.state = {
       gameActive: false,
     };
@@ -42,6 +36,12 @@ class App extends Component {
     // to get stuck when connecting.
     if (props.test) {
       settings.communication.host_ip = undefined;
+    } else if (process.env.REACT_APP_LOCAL) {
+      // Use local deepstream server instead of Cybercom's
+      // Log it to console to make sure the dev is aware ;)
+      /* eslint-disable-next-line */
+      console.log('Using local Deepstream host');
+      settings.communication.host_ip = 'localhost';
     }
     this.com = new Communication(settings.communication, onConnect);
   }
