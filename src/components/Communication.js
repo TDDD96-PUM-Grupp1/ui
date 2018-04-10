@@ -17,8 +17,9 @@ class Communication {
     this.id = undefined;
 
     // If we are testing things don't connect to deepstream.
-    if (options.host_ip !== undefined)
+    if (options.host_ip !== undefined) {
       this.connectDeepstream(options.host_ip, options.auth, onConnected);
+    }
 
     // Bind callbacks
     this.getPlayers = this.getPlayers.bind(this);
@@ -124,6 +125,10 @@ class Communication {
         this.players[data.id].sensor = data.sensor;
       }
     }
+
+    for (let i = 0; i < data.bnum.length; i += 1) {
+      this.buttonPressed(data.bnum[i]);
+    }
   }
 
   /*
@@ -151,6 +156,17 @@ class Communication {
         }
       }
     }
+  }
+
+  /** This function is called whenever a player presses a button on the controller.
+   * The number of the button is used to identify which button was pressed, note that
+   * button enumeration begins at 0.
+   * @param data is an object such that {id: playerid, bNum: buttonNumber}
+   */
+  buttonPressed(data) {
+    // TODO make this function change the game state in some way
+    console.log('Button press received: ');
+    console.log(data);
   }
 
   /*
