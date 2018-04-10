@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "deepstream.io-client-js": "^2.3.0",
+    "extended-ds-client": "^6.1.3",
     "pixi.js": "^4.7.0",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
