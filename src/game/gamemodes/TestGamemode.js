@@ -4,6 +4,7 @@ import TestController from '../entities/controllers/TestController';
 import PlayerController from '../entities/controllers/PlayerController';
 import LocalPlayerController from '../entities/controllers/LocalPlayerController';
 import BasicRectangle from '../entities/BasicRectangle';
+import BasicLine from '../entities/BasicLine';
 
 /*
 Test gamemode.
@@ -38,24 +39,45 @@ class TestGamemode extends Gamemode {
     circle3.y = 0;
     circle3.setColor(0xee6666);
     this.game.entityHandler.register(circle3);
+
+    this.addLine(0, 0, this.game.app.screen.width, 0);
+    this.addLine(
+      this.game.app.screen.width,
+      0,
+      this.game.app.screen.width,
+      this.game.app.screen.height,
+    );
+    this.addLine(0, 0, 0, this.game.app.screen.height);
+    this.addLine(
+      0,
+      this.game.app.screen.height,
+      this.game.app.screen.width,
+      this.game.app.screen.height,
+    );
   }
 
-  /* eslint-disable no-unused-vars */
+  addLine(x, y, ex, ey) {
+    const line = new BasicLine(this.game.app, x, y, ex, ey, 0x6633ff);
+    line.staticFriction = 0;
+    line.dynamicFriction = 0;
+    line.restitution = 1;
+    line.collisionGroup = 1;
+    this.game.entityHandler.register(line);
+  }
+
+  /* eslint-disable class-methods-use-this, no-unused-vars */
   // Called before the game objects are updated.
   preUpdate(dt) {
     // Simple bounce when ball leaves boundary
-    this.game.entityHandler.getEntities().forEach(entity => {
+    /* this.game.entityHandler.getEntities().forEach(entity => {
       if (entity.x < 0 || entity.x > this.game.app.screen.width) {
         entity.vx *= -1;
       }
       if (entity.y < 0 || entity.y > this.game.app.screen.height) {
         entity.vy *= -1;
       }
-    });
+    }); */
   }
-  /* eslint-enable no-unused-vars */
-
-  /* eslint-disable class-methods-use-this, no-unused-vars */
 
   // Called after the game objects are updated.
   postUpdate(dt) {}

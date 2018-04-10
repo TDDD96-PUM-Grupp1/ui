@@ -53,15 +53,42 @@ class CollisionCircle extends CollisionBase {
     const xdif2 = x3 - x;
     const ydif2 = y3 - y;
 
-    /* this.debugtime += dt;
-    if (this.debugtime >= 0.1) {
-      this.debugtime -= 0.1;
-      console.log(x2, y2);
-    } */
+    /*  */
 
     const sqdist = xdif2 * xdif2 + ydif2 * ydif2;
     if (sqdist <= this.radius * this.radius) {
       this.collide(rectangle, x3, y3, xdif2, ydif2, dt);
+    }
+  }
+
+  // Resolve a collision with a line.
+  resolveLineCollision(line, dt) {
+    const [x, y] = this.entity.getNextPosition(dt);
+    const [x2, y2] = line.entity.getNextPosition(dt);
+    // find closest point on line
+    let lx = line.x2 - x2;
+    let ly = line.y2 - y2;
+    const ls = Math.sqrt(lx * lx + ly * ly);
+    lx /= ls;
+    ly /= ls;
+    const xdif = x - x2;
+    const ydif = y - y2;
+    let difs = lx * xdif + ly * ydif;
+    difs = Math.max(0, Math.min(difs, ls));
+    const x3 = x2 + lx * difs;
+    const y3 = y2 + ly * difs;
+    const xdif2 = x3 - x;
+    const ydif2 = y3 - y;
+    const sqdist = xdif2 * xdif2 + ydif2 * ydif2;
+
+    /* this.debugtime += dt;
+    if (this.debugtime >= 0.1) {
+      this.debugtime -= 0.1;
+      console.log(x3, y3);
+    } */
+
+    if (sqdist <= this.radius * this.radius) {
+      this.collide(line, x3, y3, xdif2, ydif2, dt);
     }
   }
 }
