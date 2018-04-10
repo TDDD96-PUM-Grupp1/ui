@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import GameEntity from './GameEntity';
-import CollisionCircle from './collision/CollisionCircle';
+import CollisionRectangle from './collision/CollisionRectangle';
 
 /*
 Game object with a basic rectangle graphic
@@ -26,7 +26,7 @@ class BasicRectangle extends GameEntity {
     this.graphic = circle;
 
     // Create the collison circle
-    this.collision = new CollisionCircle(width * 0.5);
+    this.collision = new CollisionRectangle(width, height);
     this.collision.setEntity(this);
   }
 }

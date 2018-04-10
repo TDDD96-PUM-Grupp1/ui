@@ -22,12 +22,13 @@ class TestGamemode extends Gamemode {
     circle2.setController(controller2);
     this.game.entityHandler.register(circle2);
 
-    const rect = new BasicRectangle(this.game.app, 64, 64, 10, 0x88ee11);
-    const rectc = new TestController(750, 500, 0, 0, 0.8, 1.1);
+    const rect = new BasicRectangle(this.game.app, 640, 32, 10, 0x88ee11);
+    const rectc = new TestController(700, 500, 0, 0, 0.8, 1.1);
     rect.setController(rectc);
     rect.collisionGroup = 1;
     rect.staticFriction = 0.8;
     rect.dynamicFriction = 0.4;
+    rect.rv = 1;
     this.game.entityHandler.register(rect);
 
     const circle3 = new PlayerCircle(this.game.app);

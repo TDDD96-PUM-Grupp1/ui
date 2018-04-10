@@ -13,12 +13,21 @@ class CollisionBase {
     this.entity = entity;
   }
 
-  /* eslint-disable class-methods-use-this, no-unused-vars */
-  // Check if we are colliding with another entity. UNUSED
-  isColliding(otherEntity, dt) {}
+  /* eslint-disable class-methods-use-this, no-unused-vars, prettier/prettier */
+  // Tell the other collision object to resolve a collision with the right type of shape.
+  checkCollision(other, dt) {
+    throw new Error('You must implement the checkCollision method of your collision subclass.');
+  }
 
-  // Resolve a collision with another entity.
-  resolveCollision(otherEntity, dt) {}
+  // Resolve a collision with a circle.
+  resolveCircleCollision(circle, dt) {
+    throw new Error('You must implement the resolveCircleCollision method of your controller subclass.');
+  }
+
+  // Resolve a collision with a rectangle.
+  resolveRectangleCollision(rectangle, dt) {
+    throw new Error('You must implement the resolveRectangleCollision method of your controller subclass.');
+  }
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
 
@@ -72,6 +81,7 @@ class CollisionBase {
       let frictionSize = -(1 + restitution) * tv;
       frictionSize /= massInverseSum + frictionInertiaSum;
 
+      // Estimate collision friction by taking pythagorean average
       // Prettier could not handle this inside the sqrt function
       const fss =
         this.entity.staticFriction * this.entity.staticFriction +
@@ -100,7 +110,7 @@ class CollisionBase {
   // Calculate velocity at point
   calculatePointVelocity(px, py) {
     // rotational velocity * point vector rotated 90 degrees clockwise
-    return [this.entity.vx + py * this.entity.rv, this.entity.vy + -px * this.entity.rv];
+    return [this.entity.vx + -py * this.entity.rv, this.entity.vy + px * this.entity.rv];
   }
 
   // Apply an impulse vector at a certain point
