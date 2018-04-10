@@ -67,7 +67,7 @@ class Communication {
           this.client.event.subscribe(`${this.serviceName}/data/${this.instance}`, this.readData);
         }
         callback(err, data);
-      }
+      },
     );
   }
 
@@ -78,12 +78,13 @@ class Communication {
   * @param response the response from the RPC
   */
   addPlayer(data, response) {
-    if(data.id === undefined || data.name === undefined || data.sensor === undefined)
+    if (data.id === undefined || data.name === undefined || data.sensor === undefined) {
       return;
+    }
     this.players[data.id] = { name: data.name, sensor: data.sensor, ping: this.timeoutCount };
     this.client.event.emit(`${this.serviceName}/playerAdded`, {
       instanceName: this.instance,
-      playerName: data.name
+      playerName: data.name,
     });
     response.send(data.id);
 
@@ -98,11 +99,12 @@ class Communication {
    * @param id the id of the player that has disconnected.
    */
   removePlayer(id) {
-    if(this.players[id] === undefined)
+    if (this.players[id] === undefined) {
       return;
+    }
     this.client.event.emit(`${this.serviceName}/playerRemoved`, {
       instanceName: this.instance,
-      playerName: this.players[id].name
+      playerName: this.players[id].name,
     });
 
     if (this.gameListener != null) {
@@ -117,8 +119,9 @@ class Communication {
   * @param data the data sent from a controller.
   */
   readData(data) {
-    if(data === undefined || data.id === undefined)
+    if (data === undefined || data.id === undefined) {
       return;
+    }
     if (this.players[data.id] !== undefined) {
       this.players[data.id].ping = this.timeoutCount;
       if (data.sensor !== undefined) {
@@ -137,6 +140,10 @@ class Communication {
    * @param timeElapsed time elapsed since the last update, in seconds
    */
   update(timeElapsed) {
+    // Instance is not yet created
+    if (this.instance === undefined) {
+      return;
+    }
     this.pingtimer += timeElapsed;
     if (this.pingtimer >= 1 / this.pingrate) {
       // No need to decrease the timer by 1/pingrate since the precision
@@ -144,7 +151,7 @@ class Communication {
       this.pingtimer = 0;
 
       // Ping the service
-      this.client.event.emit(`${this.serviceName}/instancePing`, {name: this.instance});
+      this.client.event.emit(`${this.serviceName}/instancePing`, { name: this.instance });
 
       //
       const playerKeys = Object.keys(this.players);
@@ -163,10 +170,11 @@ class Communication {
    * button enumeration begins at 0.
    * @param data is an object such that {id: playerid, bNum: buttonNumber}
    */
+  // eslint-disable-next-line
   buttonPressed(data) {
     // TODO make this function change the game state in some way
+    // eslint-disable-next-line
     console.log('Button press received: ');
-    console.log(data);
   }
 
   /*
