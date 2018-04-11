@@ -1,4 +1,5 @@
 import deepstream from 'deepstream.io-client-js';
+import Instance from './../game/Instance';
 
 class Communication {
   /*
@@ -22,13 +23,14 @@ class Communication {
     }
 
     // Bind callbacks
-    this.getPlayers = this.getPlayers.bind(this);
     this.connectDeepstream = this.connectDeepstream.bind(this);
-    this.readData = this.readData.bind(this);
+    this.createInstance = this.createInstance.bind(this);
     this.addPlayer = this.addPlayer.bind(this);
     this.removePlayer = this.removePlayer.bind(this);
-    this.createInstance = this.createInstance.bind(this);
+    this.readData = this.readData.bind(this);
     this.update = this.update.bind(this);
+    this.getInstance = this.getInstance.bind(this);
+    this.onPingTime = this.onPingTime.bind(this);
   }
 
   /*
@@ -56,19 +58,26 @@ class Communication {
    * @param name the name of the instance that wants to be created.
    * @param callback the function that will be called when the service responds.
    */
-  createInstance(name, callback) {
-    this.client.rpc.make(
-      `${this.serviceName}/createInstance`,
-      { id: this.id, name },
-      (err, data) => {
-        if (!err && !data.error) {
-          this.instance = name;
-          this.client.rpc.provide(`${this.serviceName}/addPlayer/${this.instance}`, this.addPlayer);
-          this.client.event.subscribe(`${this.serviceName}/data/${this.instance}`, this.readData);
-        }
-        callback(err, data);
-      },
-    );
+  createInstance(gameInfo, callback) {
+    gameInfo.id = this.id;
+    this.client.rpc.make(`${this.serviceName}/createInstance`, gameInfo, (err, data) => {
+      if (!err && !data.error) {
+        this.instance = new Instance(gameInfo.name, gameInfo.maxPlayers, gameInfo.gamemode);
+        this.client.rpc.provide(
+          `${this.serviceName}/addPlayer/${this.instance.getName()}`,
+          this.addPlayer
+        );
+        this.client.rpc.provide(
+          `${this.serviceName}/pingTime/${this.instance.getName()}`,
+          this.onPingTime
+        );
+        this.client.event.subscribe(
+          `${this.serviceName}/data/${this.instance.getName()}`,
+          this.readData
+        );
+      }
+      callback(err, data);
+    });
   }
 
   /*
@@ -78,19 +87,22 @@ class Communication {
   * @param response the response from the RPC
   */
   addPlayer(data, response) {
-    if (data.id === undefined || data.name === undefined || data.sensor === undefined) {
+    if (data.id === undefined || data.name === undefined) {
+      response.error('Invalid data format');
+    }
+
+    if (!this.instance.addPlayer(data.id, data.name)) {
+      response.error('cannot add player.');
       return;
     }
-    this.players[data.id] = { name: data.name, sensor: data.sensor, ping: this.timeoutCount };
-    this.client.event.emit(`${this.serviceName}/playerAdded`, {
-      instanceName: this.instance,
-      playerName: data.name,
-    });
-    response.send(data.id);
+    this.players[data.id] = { ping: this.timeoutCount };
 
-    if (this.gameListener != null) {
-      this.gameListener.onPlayerJoin(data.id);
-    }
+    this.client.event.emit(`${this.serviceName}/playerAdded`, {
+      instanceName: this.instance.getName(),
+      playerName: data.name
+    });
+
+    response.send(data.id);
   }
 
   /*
@@ -103,15 +115,12 @@ class Communication {
       return;
     }
     this.client.event.emit(`${this.serviceName}/playerRemoved`, {
-      instanceName: this.instance,
-      playerName: this.players[id].name,
+      instanceName: this.instance.getName(),
+      playerName: this.instance.getPlayer(id).name
     });
 
-    if (this.gameListener != null) {
-      this.gameListener.onPlayerLeave(id);
-    }
-
     delete this.players[id];
+    this.instance.removePlayer();
   }
 
   /*
@@ -122,16 +131,21 @@ class Communication {
     if (data === undefined || data.id === undefined) {
       return;
     }
+
     if (this.players[data.id] !== undefined) {
       this.players[data.id].ping = this.timeoutCount;
       if (data.sensor !== undefined) {
-        this.players[data.id].sensor = data.sensor;
+        this.instance.sensorMoved(data.id, data.sensor);
+      }
+
+      for (let i = 0; i < data.bnum.length; i += 1) {
+        this.instance.buttonPressed(data.id, data.bnum[i]);
       }
     }
+  }
 
-    for (let i = 0; i < data.bnum.length; i += 1) {
-      this.buttonPressed(data.bnum[i]);
-    }
+  onPingTime(data, response) {
+    response.send({});
   }
 
   /*
@@ -151,7 +165,7 @@ class Communication {
       this.pingtimer = 0;
 
       // Ping the service
-      this.client.event.emit(`${this.serviceName}/instancePing`, { name: this.instance });
+      this.client.event.emit(`${this.serviceName}/instancePing`, { name: this.instance.getName() });
 
       //
       const playerKeys = Object.keys(this.players);
@@ -165,39 +179,8 @@ class Communication {
     }
   }
 
-  /** This function is called whenever a player presses a button on the controller.
-   * The number of the button is used to identify which button was pressed, note that
-   * button enumeration begins at 0.
-   * @param data is an object such that {id: playerid, bNum: buttonNumber}
-   */
-  // eslint-disable-next-line
-  buttonPressed(data) {
-    // TODO make this function change the game state in some way
-    // eslint-disable-next-line
-    console.log('Button press received: ');
-  }
-
-  /*
-   * Get player info from an id.
-   * @param id the id of the player that is wanted.
-   */
-  getPlayerInfo(id) {
-    return this.players[id];
-  }
-
-  /*
-   * Get all the connected players
-   */
-  getPlayers() {
-    return this.players;
-  }
-
-  /*
-   * Add a game listener to listen for events.
-   * @param gameListener the listener that will get called.
-   */
-  setGameListener(gameListener) {
-    this.gameListener = gameListener;
+  getInstance() {
+    return this.instance;
   }
 }
 

@@ -61,9 +61,7 @@ class App extends Component {
           <StartMenu
             onGameStart={this.setGameActive}
             getRandomInstanceName={this.instanceNameHandler.getRandomInstanceName}
-            onCreateInstance={this.com.createInstance}
-            onGetRandomName={this.com.getRandomName}
-            getPlayers={this.com.getPlayers}
+            communication={this.com}
           />
         )}
       </div>

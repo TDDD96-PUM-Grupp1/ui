@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import CreateMenu from './CreateMenu';
 import FirstMenu from './FirstMenu';
-import PlayerList from './PlayerList';
 
 /*
 Menu in UI with interchangeable content.
@@ -50,7 +49,7 @@ class StartMenu extends Component {
         <CreateMenu
           onStart={this.props.onGameStart}
           onBack={this.showFirst}
-          onCreateInstance={this.props.onCreateInstance}
+          communication={this.props.communication}
           getRandomInstanceName={this.props.getRandomInstanceName}
         />
       ),
@@ -62,7 +61,6 @@ class StartMenu extends Component {
       <div className="center-menu">
         <h1 className="game-title">Ball Game</h1>
         <div className="menu-button-holder">{menus[this.state.menu]}</div>
-        <PlayerList getPlayers={this.props.getPlayers} />
       </div>
     );
   }
@@ -70,9 +68,10 @@ class StartMenu extends Component {
 
 StartMenu.propTypes = {
   onGameStart: PropTypes.func.isRequired,
-  onCreateInstance: PropTypes.func.isRequired,
   getRandomInstanceName: PropTypes.func.isRequired,
-  getPlayers: PropTypes.func.isRequired,
+  /* eslint-disable */
+  communication: PropTypes.object.isRequired,
+  /* eslint-enable */
 };
 
 export default StartMenu;
