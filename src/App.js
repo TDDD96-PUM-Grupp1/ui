@@ -16,7 +16,7 @@ function onConnect(success, data) {
   if (!success) {
     // TODO: Maybe some form of indication to the user that the deepstream server is down.
     // eslint-disable-next-line
-    console.log(data);
+    console.log('Unable to connect to deepstream');
   }
 }
 
