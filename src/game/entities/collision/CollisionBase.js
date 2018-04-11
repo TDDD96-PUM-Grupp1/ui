@@ -2,11 +2,21 @@
 Base collision class
 */
 class CollisionBase {
-  /* eslint-disable class-methods-use-this, no-unused-vars, no-useless-constructor,
-  no-empty-function */
-  constructor() {}
-  /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
-  no-empty-function */
+  constructor() {
+    this.listeners = [];
+  }
+
+  // Add a listener that will be called when a collision occurs.
+  addListener(listener) {
+    this.listeners.push(listener);
+  }
+
+  // Call all listeners.
+  notifyListeners(other) {
+    for (let i; i < this.listeners.length; i += 1) {
+      this.listeners[i](this, other);
+    }
+  }
 
   // Set the owner of this collision.
   setEntity(entity) {
@@ -67,6 +77,10 @@ class CollisionBase {
       const iy = ny * impulseSize;
       this.applyImpulse(r1x, r1y, -ix, -iy);
       other.applyImpulse(r2x, r2y, ix, iy);
+
+      if (Math.abs(impulseSize) > 1) {
+        this.notifyListeners();
+      }
 
       // normal tangent
       let tx = vdx - cv * nx;
