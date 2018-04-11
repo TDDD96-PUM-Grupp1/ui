@@ -2,8 +2,7 @@
 Game entity base class
 */
 class GameEntity {
-  /* eslint-disable class-methods-use-this, no-unused-vars, no-useless-constructor,
-  no-empty-function */
+  /* eslint-disable no-unused-vars */
   constructor(app) {
     // Position
     this.x = 0;
@@ -30,18 +29,17 @@ class GameEntity {
     this.floorFriction = 0.005;
 
     // Not implemented
-    this.maxVelocity = 100; // Maybe do max kinetic energy?
+    // this.maxVelocity = 100; // Maybe do max kinetic energy?
 
     // Collision group
     // The entity will only collide with entities with the same group number.
     this.collisionGroup = 0;
   }
-  /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
-  no-empty-function */
+  /* eslint-enable no-unused-vars */
 
   // Update this entity
   update(dt) {
-    if (this.controller != null) {
+    if (this.controller !== undefined) {
       this.controller.update(dt);
     }
     const frictionMultiplier = 1 - this.floorFriction;
@@ -49,8 +47,6 @@ class GameEntity {
     this.vy *= frictionMultiplier;
     this.vx += this.ax * dt;
     this.vy += this.ay * dt;
-    // this.px = this.x + this.vx * dt;
-    // this.py = this.y + this.vy * dt;
 
     this.rv *= 1 - this.floorFriction;
     this.rotation += this.rv * dt;

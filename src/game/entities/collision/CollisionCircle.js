@@ -80,13 +80,6 @@ class CollisionCircle extends CollisionBase {
     const xdif2 = x3 - x;
     const ydif2 = y3 - y;
     const sqdist = xdif2 * xdif2 + ydif2 * ydif2;
-
-    /* this.debugtime += dt;
-    if (this.debugtime >= 0.1) {
-      this.debugtime -= 0.1;
-      console.log(x3, y3);
-    } */
-
     if (sqdist <= this.radius * this.radius) {
       this.collide(line, x3, y3, xdif2, ydif2, dt);
     }

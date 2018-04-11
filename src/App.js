@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import './css/App.css';
 
 import GameComponent from './components/GameComponent';
@@ -10,12 +12,11 @@ import InstanceNameHandler from './components/InstanceNameHandler';
 import StartMenu from './components/StartMenu';
 import settings from './config';
 
-function onConnect(success) {
-  if (success) {
-    console.log('Deepstream instanciated.');
-  } else {
+function onConnect(success, data) {
+  if (!success) {
     // TODO: Maybe some form of indication to the user that the deepstream server is down.
-    console.log("Couldn't instanciate deepstream connection.");
+    // eslint-disable-next-line
+    console.log(data);
   }
 }
 
@@ -30,6 +31,18 @@ class App extends Component {
     this.setGameActive = this.setGameActive.bind(this);
 
     this.instanceNameHandler = new InstanceNameHandler();
+
+    // This is needed because of a weird TravisCI bug that caused the test
+    // to get stuck when connecting.
+    if (props.test) {
+      settings.communication.host_ip = undefined;
+    } else if (process.env.REACT_APP_LOCAL) {
+      // Use local deepstream server instead of Cybercom's
+      // Log it to console to make sure the dev is aware ;)
+      /* eslint-disable-next-line */
+      console.log('Using local Deepstream host');
+      settings.communication.host_ip = 'localhost:60020';
+    }
     this.com = new Communication(settings.communication, onConnect);
   }
 
@@ -57,5 +70,13 @@ class App extends Component {
     );
   }
 }
+
+App.defaultProps = {
+  test: false,
+};
+
+App.propTypes = {
+  test: PropTypes.bool,
+};
 
 export default App;
