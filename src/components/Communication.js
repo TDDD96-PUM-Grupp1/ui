@@ -1,4 +1,3 @@
-import deepstream from 'deepstream.io-client-js';
 import getClient from 'extended-ds-client';
 
 class Communication {
@@ -50,6 +49,7 @@ class Communication {
         onConnected(success, data);
       })
       .catch(data => {
+        /* eslint-disable-next-line */
         console.log('Login failed', data);
       });
 
