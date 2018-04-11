@@ -5,8 +5,11 @@ import Gamemode from './Gamemode';
 import PlayerController from '../entities/controllers/PlayerController';
 import LocalPlayerController from '../entities/controllers/LocalPlayerController';
 
+// Respawn time in seconds
+const RESPAWN_TIME = 3;
+
 /*
-Test gamemode.
+  Main gamemode.
 */
 class KnockOff extends Gamemode {
   constructor(game) {
@@ -36,11 +39,17 @@ class KnockOff extends Gamemode {
     circle3.setColor(0xee6666);
     circle3.setEntityListener(this);
     this.game.entityHandler.register(circle3);
+
+    this.respawnCounter = [];
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
   // Called before the game objects are updated.
-  preUpdate(dt) {}
+  preUpdate(dt) {
+    if (this.respawnCounter.length > 0) {
+      this.checkRespawn();
+    }
+  }
   /* eslint-enable no-unused-vars, class-methods-use-this */
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
@@ -60,6 +69,7 @@ class KnockOff extends Gamemode {
 
   // Called when a new player connects
   onPlayerJoin(idTag) {
+    console.log('Player join');
     const circle = new PlayerCircle(this.game.app);
     const controller = new PlayerController(this.game, idTag);
     circle.setController(controller);
@@ -67,6 +77,7 @@ class KnockOff extends Gamemode {
     circle.x = 500;
     circle.y = 500;
     circle.setColor(0xff3333);
+    circle.setEntityListener(this);
     this.game.entityHandler.register(circle);
   }
 
@@ -80,15 +91,47 @@ class KnockOff extends Gamemode {
     this.game.entityHandler.clear();
   }
 
+  // Checks if some entities should respawn.
+  checkRespawn() {
+    let removed = 0;
+    const currentTime = new Date();
+    this.respawnCounter.forEach(timeEntityPair => {
+      const time = timeEntityPair[0];
+      if (time <= currentTime) {
+        removed += 1;
+        const entitiy = timeEntityPair[1];
+        this.respawn(entitiy);
+      }
+    });
+
+    this.respawnCounter = this.respawnCounter.slice(removed);
+  }
+
+  // Respawn entities by registering them in the entityHandler.
+  respawn(entity) {
+    console.log('Player respawn');
+    entity.x = 400;
+    entity.y = 400;
+    entity.graphic.visible = true;
+    this.game.entityHandler.register(entity);
+  }
+
   /* eslint-disable class-methods-use-this */
   // Gets called when entity dies.
   onDeath(entity) {
     console.log('Player died');
-    entity.x = 400;
-    entity.y = 400;
-
+    entity.x = 0;
+    entity.y = 0;
     entity.vx = 0;
     entity.vy = 0;
+
+    this.game.entityHandler.unregister(entity);
+    entity.graphic.visible = false;
+
+    const respawnTime = new Date();
+    respawnTime.setSeconds(respawnTime.getSeconds() + RESPAWN_TIME);
+
+    this.respawnCounter.push([respawnTime, entity]);
   }
 }
 

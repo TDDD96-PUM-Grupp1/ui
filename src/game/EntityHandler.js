@@ -26,6 +26,20 @@ class EntityHandler {
     this.entities.push(obj);
   }
 
+  // Removes an entity from this entity handler.
+  unregister(obj) {
+    const index = this.entities.indexOf(obj);
+    this.entities.splice(index, 1);
+  }
+
+  // Removes an entity from this entity handler.
+  // Also destorys its graphics.
+  unregisterFully(obj) {
+    const index = this.entities.indexOf(obj);
+    this.entities.splice(index, 1);
+    obj.destroy();
+  }
+
   // Returns an array containing all entities.
   getEntities() {
     const copy = [];
