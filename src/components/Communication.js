@@ -1,4 +1,4 @@
-import deepstream from 'deepstream.io-client-js';
+import getClient from 'extended-ds-client';
 
 class Communication {
   /*
@@ -37,7 +37,7 @@ class Communication {
    * @param onConnected The callback that will be run when connected (or not).
    */
   connectDeepstream(ip, auth, onConnected) {
-    this.client = deepstream(ip);
+    this.client = getClient(ip);
     // Topic and data isn't used but cannot be removed since it is a callback function.
     /* eslint-disable no-unused-vars */
     this.client.on('error', (err, event, topic) => {
@@ -45,9 +45,17 @@ class Communication {
     });
     this.id = this.client.getUid();
     auth.username = this.id;
-    this.client.login(auth, (success, data) => {
-      onConnected(success, data);
-    });
+
+    this.client.p
+      .login(auth)
+      .then((success, data) => {
+        onConnected(success, data);
+      })
+      .catch(data => {
+        /* eslint-disable-next-line */
+        console.log('Login failed', data);
+      });
+
     /* eslint-enable no-unused-vars */
   }
 
@@ -57,18 +65,17 @@ class Communication {
    * @param callback the function that will be called when the service responds.
    */
   createInstance(name, callback) {
-    this.client.rpc.make(
-      `${this.serviceName}/createInstance`,
-      { id: this.id, name },
-      (err, data) => {
-        if (!err && !data.error) {
-          this.instance = name;
-          this.client.rpc.provide(`${this.serviceName}/addPlayer/${this.instance}`, this.addPlayer);
-          this.client.event.subscribe(`${this.serviceName}/data/${this.instance}`, this.readData);
-        }
-        callback(err, data);
-      },
-    );
+    const rpcCall = `${this.serviceName}/createInstance`;
+    const rpcData = { id: this.id, name };
+
+    this.client.rpc.p.make(rpcCall, rpcData).then((err, data) => {
+      if (!err && !data.error) {
+        this.instance = name;
+        this.client.rpc.provide(`${this.serviceName}/addPlayer/${this.instance}`, this.addPlayer);
+        this.client.event.subscribe(`${this.serviceName}/data/${this.instance}`, this.readData);
+      }
+      callback(err, data);
+    });
   }
 
   /*
