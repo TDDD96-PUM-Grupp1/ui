@@ -1,4 +1,5 @@
 import TestGamemode from './gamemodes/TestGamemode';
+import KnockOff from './gamemodes/KnockOff';
 
 /*
 Singleton class for handling gamemode storage and selection
@@ -8,6 +9,7 @@ class GMHandlerClass {
     // List of all available gamemodes
     this.gamemodes = {
       test: TestGamemode,
+      knockOff: KnockOff,
     };
 
     this.selected = '';
