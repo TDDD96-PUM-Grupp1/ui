@@ -25,7 +25,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      gameActive: false,
+      gameActive: settings.skipmenu,
     };
 
     this.setGameActive = this.setGameActive.bind(this);
@@ -36,9 +36,14 @@ class App extends Component {
     // to get stuck when connecting.
     if (props.test) {
       settings.communication.host_ip = undefined;
+    } else if (process.env.REACT_APP_LOCAL) {
+      // Use local deepstream server instead of Cybercom's
+      // Log it to console to make sure the dev is aware ;)
+      /* eslint-disable-next-line */
+      console.log('Using local Deepstream host');
+      settings.communication.host_ip = 'localhost:60020';
     }
     this.com = new Communication(settings.communication, onConnect);
-    
   }
 
   setGameActive() {

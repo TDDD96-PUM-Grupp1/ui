@@ -3,9 +3,11 @@ Configuration file for different project parameters.
 */
 
 const settings = {
+  skipmenu: false,
   communication: {
     host_ip: 'ds.tddd96.i4demo.com:80',
     pingrate: 1,
+    timeout_count: 5,
     service_name: 'tddd96client',
     auth: {
       id: 'tddd96client',

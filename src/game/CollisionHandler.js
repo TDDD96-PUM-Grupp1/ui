@@ -33,9 +33,7 @@ class CollisionHandler {
           for (let k = j + 1; k < group.length; k += 1) {
             entity1 = group[j];
             entity2 = group[k];
-            // if (entity1.collision.isColliding(entity2, dt)) {
-            entity1.collision.resolveCollision(entity2, dt);
-            // }
+            entity1.collision.checkCollision(entity2.collision, dt);
           }
         }
       }

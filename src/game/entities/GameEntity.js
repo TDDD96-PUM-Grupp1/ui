@@ -2,16 +2,11 @@
 Game entity base class
 */
 class GameEntity {
-  /* eslint-disable class-methods-use-this, no-unused-vars, no-useless-constructor,
-  no-empty-function */
+  /* eslint-disable no-unused-vars */
   constructor(app) {
     // Position
     this.x = 0;
     this.y = 0;
-
-    // Predicted next position
-    this.px = 0;
-    this.py = 0;
 
     // Velocity
     this.vx = 0;
@@ -21,28 +16,40 @@ class GameEntity {
     this.ax = 0;
     this.ay = 0;
 
+    // Rotation
+    this.rotation = 0;
+    this.rv = 0;
+
     // Physic properties
     this.mass = 0;
-    this.friction = 0;
-    this.restitution = 1;
-    this.maxVelocity = 100; // Maybe do max kinetic energy?
+    this.staticFriction = 0;
+    this.dynamicFriction = 0;
+    this.restitution = Math.sqrt(0.5);
+    this.I = 1; // rotational inertia, super important to calculate from the shape of the object!
+    this.floorFriction = 0.005;
+
+    // Not implemented
+    // this.maxVelocity = 100; // Maybe do max kinetic energy?
 
     // Collision group
     // The entity will only collide with entities with the same group number.
     this.collisionGroup = 0;
   }
-  /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
-  no-empty-function */
+  /* eslint-enable no-unused-vars */
 
   // Update this entity
   update(dt) {
     if (this.controller !== undefined) {
       this.controller.update(dt);
     }
+    const frictionMultiplier = 1 - this.floorFriction;
+    this.vx *= frictionMultiplier;
+    this.vy *= frictionMultiplier;
     this.vx += this.ax * dt;
     this.vy += this.ay * dt;
-    this.px = this.x + this.vx * dt;
-    this.py = this.y + this.vy * dt;
+
+    this.rv *= 1 - this.floorFriction;
+    this.rotation += this.rv * dt;
   }
 
   // Update this entity's graphics
@@ -52,6 +59,8 @@ class GameEntity {
 
     this.graphic.x = this.x;
     this.graphic.y = this.y;
+
+    this.graphic.rotation = this.rotation;
   }
 
   // Return the predicted next position
