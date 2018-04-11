@@ -41,7 +41,7 @@ class KnockOff extends Gamemode {
     circle3.setEntityListener(this);
     this.game.entityHandler.register(circle3);
 
-    this.respawnHandler = new RespawnHandler(RESPAWN_TIME);
+    this.respawnHandler = new RespawnHandler(this.game.entityHandler, RESPAWN_TIME);
 
     this.respawnHandler.registerRespawnListener(this);
   }
@@ -105,15 +105,10 @@ class KnockOff extends Gamemode {
   // Gets called when entity dies.
   onDeath(entity) {
     console.log('Player died');
-    entity.x = 0;
-    entity.y = 0;
-    entity.vx = 0;
-    entity.vy = 0;
 
-    this.game.entityHandler.unregister(entity);
-    entity.graphic.visible = false;
+    const deathTime = new Date();
 
-    this.respawnHandler.registerDeath(entity);
+    this.respawnHandler.registerDeath(entity, deathTime);
   }
 }
 

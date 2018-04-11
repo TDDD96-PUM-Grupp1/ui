@@ -9,10 +9,11 @@ function getRespawnTime(timeEntityPair) {
 }
 
 class RespawnHandler {
-  constructor(respawnTime) {
+  constructor(entityHandler, respawnTime) {
     this.respawnList = [];
 
     this.respawnTime = respawnTime;
+    this.entityHandler = entityHandler;
 
     this.respawnListeners = [];
   }
@@ -36,9 +37,28 @@ class RespawnHandler {
     this.respawnList = this.respawnList.slice(removed);
   }
 
-  registerDeath(entity) {
-    const respawnTime = new Date();
-    respawnTime.setSeconds(respawnTime.getSeconds() + this.respawnTime);
+  respawnAll() {
+    this.respawnList.forEach(timeEntityPair => {
+      const entitiy = getEntity(timeEntityPair);
+      this.respawnListeners.forEach(listener => {
+        listener.onRespawn(entitiy);
+      });
+    });
+  }
+
+  registerDeath(entity, timeOfDeath) {
+    // Kill entity
+    this.entityHandler.unregister(entity);
+    entity.graphic.visible = false;
+    entity.resetPhysics();
+
+    let respawnTime;
+    if (timeOfDeath) {
+      respawnTime = new Date();
+      respawnTime.setSeconds(timeOfDeath.getSeconds() + this.respawnTime);
+    } else {
+      respawnTime = Infinity;
+    }
 
     this.respawnList.push([respawnTime, entity]);
   }

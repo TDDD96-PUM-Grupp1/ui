@@ -43,6 +43,9 @@ class GameEntity {
       this.entityListener.onDeath(this);
     }
   }
+
+  // TODO implement
+  resetPhysics() {}
   /* eslint-enable no-unused-vars */
 
   // Update this entity
