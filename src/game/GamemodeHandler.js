@@ -8,8 +8,8 @@ class GMHandlerClass {
   constructor() {
     // List of all available gamemodes
     this.gamemodes = {
-      test: TestGamemode,
       knockOff: KnockOff,
+      test: TestGamemode,
     };
 
     this.selected = '';
