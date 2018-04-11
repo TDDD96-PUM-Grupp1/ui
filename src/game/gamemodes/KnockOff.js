@@ -4,6 +4,7 @@ import Gamemode from './Gamemode';
 // import TestController from '../entities/controllers/TestController';
 import PlayerController from '../entities/controllers/PlayerController';
 import LocalPlayerController from '../entities/controllers/LocalPlayerController';
+import RespawnHandler from './RespawnHandler';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 3;
@@ -40,15 +41,15 @@ class KnockOff extends Gamemode {
     circle3.setEntityListener(this);
     this.game.entityHandler.register(circle3);
 
-    this.respawnCounter = [];
+    this.respawnHandler = new RespawnHandler(RESPAWN_TIME);
+
+    this.respawnHandler.registerRespawnListener(this);
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
   // Called before the game objects are updated.
   preUpdate(dt) {
-    if (this.respawnCounter.length > 0) {
-      this.checkRespawn();
-    }
+    this.respawnHandler.checkRespawns();
   }
   /* eslint-enable no-unused-vars, class-methods-use-this */
 
@@ -91,24 +92,8 @@ class KnockOff extends Gamemode {
     this.game.entityHandler.clear();
   }
 
-  // Checks if some entities should respawn.
-  checkRespawn() {
-    let removed = 0;
-    const currentTime = new Date();
-    this.respawnCounter.forEach(timeEntityPair => {
-      const time = timeEntityPair[0];
-      if (time <= currentTime) {
-        removed += 1;
-        const entitiy = timeEntityPair[1];
-        this.respawn(entitiy);
-      }
-    });
-
-    this.respawnCounter = this.respawnCounter.slice(removed);
-  }
-
   // Respawn entities by registering them in the entityHandler.
-  respawn(entity) {
+  onRespawn(entity) {
     console.log('Player respawn');
     entity.x = 400;
     entity.y = 400;
@@ -128,10 +113,7 @@ class KnockOff extends Gamemode {
     this.game.entityHandler.unregister(entity);
     entity.graphic.visible = false;
 
-    const respawnTime = new Date();
-    respawnTime.setSeconds(respawnTime.getSeconds() + RESPAWN_TIME);
-
-    this.respawnCounter.push([respawnTime, entity]);
+    this.respawnHandler.registerDeath(entity);
   }
 }
 
