@@ -35,12 +35,12 @@ class GameEntity {
     // The entity will only collide with entities with the same group number.
     this.collisionGroup = 0;
 
-    this.deathListener = null;
+    this.entityListener = null;
   }
 
   die() {
-    if (this.deathListener) {
-      this.deathListener.onDeath(this);
+    if (this.entityListener) {
+      this.entityListener.onDeath(this);
     }
   }
   /* eslint-enable no-unused-vars */
@@ -94,8 +94,8 @@ class GameEntity {
     this.graphic.tint = color;
   }
 
-  setDeathListener(listener) {
-    this.deathListener = listener;
+  setEntityListener(listener) {
+    this.entityListener = listener;
   }
 }
 

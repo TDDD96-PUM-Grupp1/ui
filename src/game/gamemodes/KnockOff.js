@@ -34,7 +34,7 @@ class KnockOff extends Gamemode {
     circle3.x = 400;
     circle3.y = 400;
     circle3.setColor(0xee6666);
-    circle3.setDeathListener(this);
+    circle3.setEntityListener(this);
     this.game.entityHandler.register(circle3);
   }
 
