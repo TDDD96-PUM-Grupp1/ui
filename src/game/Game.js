@@ -3,6 +3,7 @@ import EntityHandler from './EntityHandler';
 import CollisionHandler from './CollisionHandler';
 import ResourceServer from './ResourceServer';
 import GamemodeHandler from './GamemodeHandler';
+import ScoreManager from './ScoreManager';
 
 /*
 Game.
@@ -17,6 +18,7 @@ class Game {
     this.entityHandler = new EntityHandler();
     this.collisionHandler = new CollisionHandler(this.entityHandler);
     this.resourceServer = new ResourceServer();
+    this.scoreManager = new ScoreManager(communication.getPlayers());
 
     // Create gamemode
     const gamemodeHandler = GamemodeHandler.getInstance();
@@ -40,11 +42,13 @@ class Game {
 
   // Called when a new player joins.
   onPlayerJoin(idTag) {
+    this.scoreManager.addPlayer(idTag);
     this.currentGamemode.onPlayerJoin(idTag);
   }
 
   // Called when a player leaves the game.
   onPlayerLeave(idTag) {
+    this.scoreManager.removePlayer(idTag);
     this.currentGamemode.onPlayerLeave(idTag);
   }
 }
