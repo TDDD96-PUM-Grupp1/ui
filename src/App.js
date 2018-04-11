@@ -41,7 +41,7 @@ class App extends Component {
       // Log it to console to make sure the dev is aware ;)
       /* eslint-disable-next-line */
       console.log('Using local Deepstream host');
-      settings.communication.host_ip = 'localhost';
+      settings.communication.host_ip = 'localhost:60020';
     }
     this.com = new Communication(settings.communication, onConnect);
   }
