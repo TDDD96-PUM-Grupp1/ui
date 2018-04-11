@@ -1,5 +1,6 @@
 import TestGamemode from './gamemodes/TestGamemode';
 import KnockOff from './gamemodes/KnockOff';
+import settings from '../config';
 
 /*
 Singleton class for handling gamemode storage and selection
@@ -12,7 +13,11 @@ class GMHandlerClass {
       knockOff: KnockOff,
     };
 
-    this.selected = '';
+    if (settings.skipmenu) {
+      this.selected = settings.defaultGamemode;
+    } else {
+      this.selected = '';
+    }
   }
 
   /*
