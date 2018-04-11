@@ -12,10 +12,6 @@ class CollisionRectangle extends CollisionBase {
     this.halfHeight = height / 2;
   }
 
-  /* eslint-disable class-methods-use-this, no-unused-vars */
-
-  /* eslint-enable class-methods-use-this, no-unused-vars */
-
   getBases() {
     const ex = Math.cos(this.entity.rotation);
     const ey = Math.sin(this.entity.rotation);
@@ -35,10 +31,19 @@ class CollisionRectangle extends CollisionBase {
     circle.resolveRectangleCollision(this, dt);
   }
 
+  /* eslint-disable class-methods-use-this, no-unused-vars */
+
   // Resolve a collision with a rectangle.
   resolveRectangleCollision(rectangle, dt) {
-    this.rectangle.crash(dt);
+    // TODO?
   }
+
+  // Resolve a collision with a rectangle.
+  resolveLineCollision(rectangle, dt) {
+    // TODO?
+  }
+
+  /* eslint-enable class-methods-use-this, no-unused-vars */
 }
 
 export default CollisionRectangle;
