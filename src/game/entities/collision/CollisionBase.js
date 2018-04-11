@@ -21,12 +21,12 @@ class CollisionBase {
 
   // Resolve a collision with a circle.
   resolveCircleCollision(circle, dt) {
-    throw new Error('You must implement the resolveCircleCollision method of your controller subclass.');
+    throw new Error('You must implement the resolveCircleCollision method of your collision subclass.');
   }
 
   // Resolve a collision with a rectangle.
   resolveRectangleCollision(rectangle, dt) {
-    throw new Error('You must implement the resolveRectangleCollision method of your controller subclass.');
+    throw new Error('You must implement the resolveRectangleCollision method of your collision subclass.');
   }
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
