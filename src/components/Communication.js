@@ -176,6 +176,7 @@ class Communication {
     // eslint-disable-next-line
     console.log('Button press received: ');
   }
+  /* eslint-enable class-methods-use-this, no-console */
 
   /*
    * Get player info from an id.

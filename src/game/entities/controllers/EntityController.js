@@ -22,7 +22,7 @@ class EntityController {
   /* eslint-disable class-methods-use-this, no-unused-vars */
   // Update
   update(dt) {
-    throw new Error('You must implement the update method of your controller subclass. ');
+    throw new Error('You must implement the update method of your controller subclass.');
   }
   /* eslint-enable class-methods-use-this, no-unused-vars */
 }
