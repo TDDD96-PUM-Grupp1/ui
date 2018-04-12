@@ -13,7 +13,7 @@ class StartMenu extends Component {
     super(props);
 
     this.state = {
-      menu: 'first',
+      menu: 'first'
     };
 
     this.showCreate = this.showCreate.bind(this);
@@ -43,6 +43,7 @@ class StartMenu extends Component {
   }
 
   render() {
+    console.log(this.state.menu);
     const menus = {
       first: <FirstMenu showCreate={this.showCreate} showAbout={this.showAbout} />,
 
@@ -54,8 +55,14 @@ class StartMenu extends Component {
           getRandomInstanceName={this.props.getRandomInstanceName}
         />
       ),
-
-      about: <div />, // TODO possibly add about page
+      // TODO add actual about page
+      about: (
+        <div>
+          <button onClick={this.showFirst} className="menu-button">
+            {'\u2B05'} Back
+          </button>
+        </div>
+      ),
     };
 
     return (
