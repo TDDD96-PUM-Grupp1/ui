@@ -44,7 +44,6 @@ class GameEntity {
     }
   }
 
-  // TODO implement
   resetPhysics() {
     // Position
     this.x = 0;
@@ -62,7 +61,6 @@ class GameEntity {
     this.rotation = 0;
     this.rv = 0;
   }
-  /* eslint-enable no-unused-vars */
 
   // Update this entity
   update(dt) {
