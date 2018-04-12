@@ -33,8 +33,6 @@ class PlayerController extends EntityController {
 
       this.entity.vx = xacc;
       this.entity.vy = yacc;
-      // this.entity.vx *= 0.97;
-      // this.entity.vy *= 0.97;
     }
   }
 }
