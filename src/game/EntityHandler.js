@@ -33,10 +33,9 @@ class EntityHandler {
   }
 
   // Removes an entity from this entity handler.
-  // Also destorys its graphics.
+  // Also destroys its graphics.
   unregisterFully(obj) {
-    const index = this.entities.indexOf(obj);
-    this.entities.splice(index, 1);
+    unregister(obj);
     obj.destroy();
   }
 
