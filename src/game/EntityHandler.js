@@ -35,7 +35,7 @@ class EntityHandler {
   // Removes an entity from this entity handler.
   // Also destroys its graphics.
   unregisterFully(obj) {
-    unregister(obj);
+    this.unregister(obj);
     obj.destroy();
   }
 
