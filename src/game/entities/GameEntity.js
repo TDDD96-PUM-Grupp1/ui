@@ -45,7 +45,23 @@ class GameEntity {
   }
 
   // TODO implement
-  resetPhysics() {}
+  resetPhysics() {
+    // Position
+    this.x = 0;
+    this.y = 0;
+
+    // Velocity
+    this.vx = 0;
+    this.vy = 0;
+
+    // Acceleration
+    this.ax = 0;
+    this.ay = 0;
+
+    // Rotation
+    this.rotation = 0;
+    this.rv = 0;
+  }
   /* eslint-enable no-unused-vars */
 
   // Update this entity
