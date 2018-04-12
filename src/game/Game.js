@@ -12,7 +12,13 @@ class Game {
     this.app = app;
     this.communication = communication;
     this.instance = this.communication.getInstance();
-    this.instance.addInstanceListener(this);
+
+    // This will be undefined when running tests since we havn't
+    // started an instance.
+    if (this.instance !== undefined) {
+      this.instance.addInstanceListener(this);
+    }
+
     // Create all handlers
     this.entityHandler = new EntityHandler();
     this.collisionHandler = new CollisionHandler(this.entityHandler);

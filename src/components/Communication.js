@@ -60,20 +60,29 @@ class Communication {
    */
   createInstance(gameInfo, callback) {
     gameInfo.id = this.id;
+    // Ask the service if the UI can start an instance.
     this.client.rpc.make(`${this.serviceName}/createInstance`, gameInfo, (err, data) => {
       if (!err && !data.error) {
+        // Instance can be created.
         this.instance = new Instance(gameInfo.name, gameInfo.maxPlayers, gameInfo.gamemode);
+
+        // Provide an RPC that will let players join.
         this.client.rpc.provide(
           `${this.serviceName}/addPlayer/${this.instance.getName()}`,
-          this.addPlayer
+          this.addPlayer,
         );
+
+        // Provide an RPC to let controllers test the ping to the UI.
         this.client.rpc.provide(
           `${this.serviceName}/pingTime/${this.instance.getName()}`,
-          this.onPingTime
+          this.onPingTime,
         );
+
+        // Subsribe to the data channel of the players.
+        // The sensor data and button data will be sent here.
         this.client.event.subscribe(
           `${this.serviceName}/data/${this.instance.getName()}`,
-          this.readData
+          this.readData,
         );
       }
       callback(err, data);
@@ -89,17 +98,22 @@ class Communication {
   addPlayer(data, response) {
     if (data.id === undefined || data.name === undefined) {
       response.error('Invalid data format');
+      return;
     }
 
+    // If false this usually means the instance is full.
     if (!this.instance.addPlayer(data.id, data.name)) {
       response.error('cannot add player.');
       return;
     }
+
+    // Initialize the communication players, keeping count of the timeout.
     this.players[data.id] = { ping: this.timeoutCount };
 
+    // Tell the service that another player has joined this instance.
     this.client.event.emit(`${this.serviceName}/playerAdded`, {
       instanceName: this.instance.getName(),
-      playerName: data.name
+      playerName: data.name,
     });
 
     response.send(data.id);
@@ -114,12 +128,16 @@ class Communication {
     if (this.players[id] === undefined) {
       return;
     }
+
+    // Tell the service a player has disconnected.
     this.client.event.emit(`${this.serviceName}/playerRemoved`, {
       instanceName: this.instance.getName(),
-      playerName: this.instance.getPlayer(id).name
+      playerName: this.instance.getPlayer(id).name,
     });
 
+    // Remove the communication player. Stop keeping track of timeouts
     delete this.players[id];
+    // Remove the player from the instance.
     this.instance.removePlayer();
   }
 
@@ -132,20 +150,30 @@ class Communication {
       return;
     }
 
+    // Check if the player is in this instance.
     if (this.players[data.id] !== undefined) {
+      // Reset the timout.
       this.players[data.id].ping = this.timeoutCount;
       if (data.sensor !== undefined) {
+        // Update the sensor data.
         this.instance.sensorMoved(data.id, data.sensor);
       }
 
       for (let i = 0; i < data.bnum.length; i += 1) {
+        // Update the button data.
         this.instance.buttonPressed(data.id, data.bnum[i]);
       }
     }
   }
-
+  /*
+   * This function will be called when a user pings this instance.
+   */
   onPingTime(data, response) {
-    response.send({});
+    if (this.instance !== undefined) {
+      response.send({});
+    } else {
+      response.error('No instance started');
+    }
   }
 
   /*
@@ -158,6 +186,8 @@ class Communication {
     if (this.instance === undefined) {
       return;
     }
+
+    // Increase the pingtimer.
     this.pingtimer += timeElapsed;
     if (this.pingtimer >= 1 / this.pingrate) {
       // No need to decrease the timer by 1/pingrate since the precision
@@ -167,11 +197,11 @@ class Communication {
       // Ping the service
       this.client.event.emit(`${this.serviceName}/instancePing`, { name: this.instance.getName() });
 
-      //
       const playerKeys = Object.keys(this.players);
 
       for (let i = 0; i < playerKeys.length; i += 1) {
         this.players[playerKeys[i]].ping -= 1;
+        // Check if the player has timed out.
         if (this.players[playerKeys[i]].ping === 0) {
           this.removePlayer(playerKeys[i]);
         }
@@ -179,6 +209,10 @@ class Communication {
     }
   }
 
+  /*
+   * This function will return the started instance.
+   * @return Instance The current instance of the game.
+   */
   getInstance() {
     return this.instance;
   }

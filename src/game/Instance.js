@@ -19,7 +19,6 @@ class Instance {
   /*
    * Set the instance listeners that listens for players joining, leaving,
    * moving the sensor or pressing buttons.
-   * Needs
    * @param listener the listener that is called.
    */
   addInstanceListener(listener) {
@@ -28,6 +27,8 @@ class Instance {
 
   /*
    * Adds a player to the instance.
+   * @param String id Id of the player.
+   * @param String name Name of the player.
    * @return true if the player was added and false otherwise.
    */
   addPlayer(id, name) {
@@ -55,8 +56,8 @@ class Instance {
 
   /*
    * Updates the sensor data of a player and notifies the game about it.
-   * @param id the id of the player.
-   * @param sensor {beta, gamma} an object containing beta and gamma of the sensor.
+   * @param String id Id of the player.
+   * @param {beta,gamma} sensor Object containing beta and gamma of the sensor.
    */
   sensorMoved(id, sensor) {
     this.players[id].sensor = sensor;
@@ -67,8 +68,8 @@ class Instance {
 
   /*
    * Notifies the game that a buttons has been pressed by a player.
-   * @param id the id of the player.
-   * @param button the button number of the button
+   * @param String id Id of the player.
+   * @param Int button Button number of the button
    */
   buttonPressed(id, button) {
     if (this.instanceListener !== undefined) {

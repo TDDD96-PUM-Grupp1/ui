@@ -20,6 +20,7 @@ class CreateMenu extends Component {
     this.state = {
       instanceName: '',
       errors: [],
+      serviceError: false,
       maxPlayers: DEFAULT_MAX_PLAYERS,
       loading: false,
       gamemodeHandler,
@@ -38,7 +39,7 @@ class CreateMenu extends Component {
   Try to start new game when done setting options
   */
   startGame() {
-    if (this.state.errors.length === 0) {
+    if (this.state.errors.length === 0 || this.state.serviceError) {
       this.setState({ loading: true });
       this.setState({ errors: [] });
 
@@ -55,11 +56,11 @@ class CreateMenu extends Component {
         this.setState({ loading: false });
         if (err) {
           if (err === deepstream.CONSTANTS.EVENT.NO_RPC_PROVIDER) {
-            this.setState({ errors: ['Service server is not running.'] });
+            this.setState({ errors: ['Service server is not running.'], serviceError: true });
           }
         } else if (data.error) {
           // Instance is not valid
-          this.setState({ errors: [data.error] });
+          this.setState({ errors: [data.error], serviceError: true });
         } else {
           this.props.onStart();
           // Instance is valid
@@ -105,7 +106,7 @@ class CreateMenu extends Component {
       newMax = maxVal;
     }
 
-    this.setState({ errors: newErrors, maxPlayers: newMax });
+    this.setState({ errors: newErrors, maxPlayers: newMax, serviceError: false });
   }
 
   // Change the state if the textbox is changed.
