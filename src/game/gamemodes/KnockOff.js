@@ -44,6 +44,10 @@ class KnockOff extends Gamemode {
     this.respawnHandler = new RespawnHandler(this.game.entityHandler, RESPAWN_TIME);
 
     this.respawnHandler.registerRespawnListener(this);
+
+    // Set up scores
+    game.scoreManager.addScoreType('points', 0, true);
+    game.scoreManager.setAscOrder(false);
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */

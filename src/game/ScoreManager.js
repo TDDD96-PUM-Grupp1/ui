@@ -101,16 +101,26 @@ class ScoreManager {
   Remove a player to not keep counting score for
   */
   removePlayer(idTag){
-    delete this.scores[idTag];
+    let remId = -1;
+
+    this.highscoreList.forEach((val, index) => {
+      if(val.id === idTag){
+        remId = index;
+      }
+    });
+
+    if(remId !== -1){
+      this.highscoreList.splice(remId, 1);
+    }
   }
 
   /*
   Reset all scores of the given type to their default values
   if idTag is given only the player with the given tag has their score reset
   */
-  resetScore(scoreType, idTag = undefined) {
+  resetScore(scoreType) {
     this.highscoreList.forEach((val, index) => {
-      this.highscoreList[index].score = 0;
+      this.highscoreList[index][scoreType] = 0;
     });
 
     this.triggerUpdate();
@@ -126,7 +136,7 @@ class ScoreManager {
 
     this.highscoreList.forEach((val, index) => {
       if(val.id === idTag){
-        this.highscoreList[index].score = muteFunc(this.highscoreList[index].score);
+        this.highscoreList[index][scoreType] = muteFunc(this.highscoreList[index][scoreType]);
       }
     });
 
