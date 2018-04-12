@@ -70,7 +70,6 @@ class KnockOff extends Gamemode {
 
   // Called when a new player connects
   onPlayerJoin(idTag) {
-    console.log('Player join');
     const circle = new PlayerCircle(this.game.app);
     const controller = new PlayerController(this.game, idTag);
     circle.setController(controller);
@@ -94,7 +93,6 @@ class KnockOff extends Gamemode {
 
   // Respawn entities by registering them in the entityHandler.
   onRespawn(entity) {
-    console.log('Player respawn');
     entity.x = 400;
     entity.y = 400;
     entity.graphic.visible = true;
@@ -104,8 +102,6 @@ class KnockOff extends Gamemode {
   /* eslint-disable class-methods-use-this */
   // Gets called when entity dies.
   onDeath(entity) {
-    console.log('Player died');
-
     const deathTime = new Date();
 
     this.respawnHandler.registerDeath(entity, deathTime);

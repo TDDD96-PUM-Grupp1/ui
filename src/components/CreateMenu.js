@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { PulseLoader } from 'react-spinners';
 import deepstream from 'deepstream.io-client-js';
 import GamemodeHandler from '../game/GamemodeHandler';
-import getRandomInstanceName from './InstanceNameHandler'
+import getRandomInstanceName from './InstanceNameHandler';
 
 const DEFAULT_MAX_PLAYERS = 8;
 const MAX_ALLOWED_PLAYERS = 100;

@@ -55,10 +55,7 @@ class App extends Component {
         {this.state.gameActive ? (
           <GameComponent communication={this.com} />
         ) : (
-          <StartMenu
-            onGameStart={this.setGameActive}
-            communication={this.com}
-          />
+          <StartMenu onGameStart={this.setGameActive} communication={this.com} />
         )}
       </div>
     );
