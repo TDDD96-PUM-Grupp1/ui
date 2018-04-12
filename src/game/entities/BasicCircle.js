@@ -7,7 +7,7 @@ import iconData from '../iconData';
 Game object with a basic circle graphic and collision
 */
 class BasicCircle extends GameEntity {
-  constructor(app, radius, mass, color, resource) {
+  constructor(app, radius, mass, color) {
     super(app);
 
     this.radius = radius;

@@ -9,7 +9,7 @@ Game object representing a player
 */
 class PlayerCircle extends BasicCircle {
   constructor(app, resource) {
-    super(app, RADIUS, MASS, 0xff6600, resource);
+    super(app, RADIUS, MASS, 0xff6600);
 
     this.sprite = new PIXI.Sprite(resource);
     this.sprite.width = 50;
