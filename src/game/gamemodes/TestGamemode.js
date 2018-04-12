@@ -5,6 +5,7 @@ import PlayerController from '../entities/controllers/PlayerController';
 import LocalPlayerController from '../entities/controllers/LocalPlayerController';
 import BasicRectangle from '../entities/BasicRectangle';
 import BasicLine from '../entities/BasicLine';
+import iconData from '../iconData';
 
 /*
 Test gamemode.
@@ -12,34 +13,34 @@ Test gamemode.
 class TestGamemode extends Gamemode {
   constructor(game) {
     super(game);
-    // Make a test circle;
-    // const circle = new PlayerCircle(this.game.app);
-    // const controller = new TestController(300, 300, 150, 150, 1, 1.2);
-    // circle.setController(controller);
-    // this.game.entityHandler.register(circle);
+    // Make a test circle
+    const circle = new PlayerCircle(this.game.app);
+    const controller = new TestController(300, 300, 150, 150, 1, 1.2);
+    circle.setController(controller);
+    this.game.entityHandler.register(circle);
 
-    // const circle2 = new PlayerCircle(this.game.app);
-    // const controller2 = new TestController(450, 300, 150, 150, 0.7, 1.5);
-    // circle2.setController(controller2);
-    // this.game.entityHandler.register(circle2);
+    const circle2 = new PlayerCircle(this.game.app);
+    const controller2 = new TestController(450, 300, 150, 150, 0.7, 1.5);
+    circle2.setController(controller2);
+    this.game.entityHandler.register(circle2);
 
-    // const rect = new BasicRectangle(this.game.app, 640, 32, 10, 0x88ee11);
-    // const rectc = new TestController(700, 500, 0, 0, 0.8, 1.1);
-    // rect.setController(rectc);
-    // rect.x = 700;
-    // rect.y = 500;
-    // rect.collisionGroup = 1;
-    // rect.staticFriction = 0.8;
-    // rect.dynamicFriction = 0.4;
-    // rect.rv = 1;
-    // rect.mass = Infinity;
-    // rect.floorFriction = 0;
-    // this.game.entityHandler.register(rect);
+    const rect = new BasicRectangle(this.game.app, 640, 32, 10, 0x88ee11);
+    const rectc = new TestController(700, 500, 0, 0, 0.8, 1.1);
+    rect.setController(rectc);
+    rect.x = 700;
+    rect.y = 500;
+    rect.collisionGroup = 1;
+    rect.staticFriction = 0.8;
+    rect.dynamicFriction = 0.4;
+    rect.rv = 1;
+    rect.mass = Infinity;
+    rect.floorFriction = 0;
+    this.game.entityHandler.register(rect);
 
     this.game.resourceServer
-      .requestResources([{ name: '1', path: '/icons/tiger.svg' }])
+      .requestResources([{ name: iconData[5].name, path: iconData[5].img }])
       .then(resources => {
-        const circle3 = new PlayerCircle(this.game.app, resources[1]);
+        const circle3 = new PlayerCircle(this.game.app, resources[iconData[5].name]);
         const controller3 = new LocalPlayerController(1);
         circle3.setController(controller3);
         circle3.x = 50;
@@ -48,20 +49,20 @@ class TestGamemode extends Gamemode {
         this.game.entityHandler.register(circle3);
       });
 
-    // this.addLine(0, 0, this.game.app.screen.width, 0);
-    // this.addLine(
-    //   this.game.app.screen.width,
-    //   0,
-    //   this.game.app.screen.width,
-    //   this.game.app.screen.height,
-    // );
-    // this.addLine(0, 0, 0, this.game.app.screen.height);
-    // this.addLine(
-    //   0,
-    //   this.game.app.screen.height,
-    //   this.game.app.screen.width,
-    //   this.game.app.screen.height,
-    // );
+    this.addLine(0, 0, this.game.app.screen.width, 0);
+    this.addLine(
+      this.game.app.screen.width,
+      0,
+      this.game.app.screen.width,
+      this.game.app.screen.height,
+    );
+    this.addLine(0, 0, 0, this.game.app.screen.height);
+    this.addLine(
+      0,
+      this.game.app.screen.height,
+      this.game.app.screen.width,
+      this.game.app.screen.height,
+    );
   }
 
   addLine(x, y, ex, ey) {
@@ -92,13 +93,17 @@ class TestGamemode extends Gamemode {
 
   // Called when a new player connects
   onPlayerJoin(idTag) {
-    const circle = new PlayerCircle(this.game.app);
-    const controller = new PlayerController(this.game, idTag);
-    circle.setController(controller);
-    circle.x = 400;
-    circle.y = 400;
-    circle.setColor(0xff3333);
-    this.game.entityHandler.register(circle);
+    this.game.resourceServer
+      .requestResources([{ name: iconData[5].name, path: iconData[5].img }])
+      .then(resources => {
+        const circle = new PlayerCircle(this.game.app, resources[iconData[5].name]);
+        const controller = new PlayerController(this.game, idTag);
+        circle.setController(controller);
+        circle.x = 400;
+        circle.y = 400;
+        circle.setColor(0xff3333);
+        this.game.entityHandler.register(circle);
+      });
   }
 
   // Called when a player disconnects

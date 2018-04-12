@@ -11,7 +11,13 @@ class Game {
   constructor(app, communication) {
     this.app = app;
     this.communication = communication;
-    this.communication.setGameListener(this);
+    this.instance = this.communication.getInstance();
+
+    // This will be undefined when running tests since we havn't
+    // started an instance.
+    if (this.instance !== undefined) {
+      this.instance.addInstanceListener(this);
+    }
 
     // Create all handlers
     this.entityHandler = new EntityHandler();
@@ -47,6 +53,11 @@ class Game {
   onPlayerLeave(idTag) {
     this.currentGamemode.onPlayerLeave(idTag);
   }
+  // eslint-disable-next-line
+  onSensorMoved(id, sensor) {}
+
+  // eslint-disable-next-line
+  onButtonPressed(id, button) {}
 }
 
 export default Game;

@@ -1,4 +1,5 @@
 import TestGamemode from './gamemodes/TestGamemode';
+import KnockOff from './gamemodes/KnockOff';
 
 /*
 Singleton class for handling gamemode storage and selection
@@ -7,7 +8,8 @@ class GMHandlerClass {
   constructor() {
     // List of all available gamemodes
     this.gamemodes = {
-      test: TestGamemode,
+      knockOff: KnockOff,
+      testGamemode: TestGamemode,
     };
 
     this.selected = '';
@@ -40,6 +42,14 @@ class GMHandlerClass {
     }
 
     return this.gamemodes[this.selected];
+  }
+
+  /*
+   * Get the selected mode identifier, this will return the name
+   * of the current gamemode.
+   */
+  getSelectedId() {
+    return this.selected;
   }
 }
 
