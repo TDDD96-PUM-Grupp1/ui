@@ -5,10 +5,13 @@ import Gamemode from './Gamemode';
 import PlayerController from '../entities/controllers/PlayerController';
 import LocalPlayerController from '../entities/controllers/LocalPlayerController';
 
-import RespawnHandler from './RespawnHandler';
+import RespawnHandler from '../RespawnHandler';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 3;
+
+// The max time between a collision and a player dying in order to count as a kill.
+const TAG_TIME = 4;
 
 /*
   Knock off gamemode, get score by knocking other players off the arena.
@@ -99,22 +102,31 @@ class KnockOff extends Gamemode {
     circle.setColor(0xff3333);
     this.game.entityHandler.register(circle);
 
-    circle.setEntityListener(this);
-
     this.players[idTag] = circle;
     this.score[idTag] = 0;
-    circle.setDeathListener(entity => {
-      const { id } = entity.controller;
-      // this.score[id] -= 1;
-      this.tags[id].forEach(item => {
-        this.score[item.id] += 1;
-      });
+    this.tags[idTag] = [];
+
+    circle.addEntityListener({
+      onDeath(entity) {
+        const { id } = entity.controller;
+        this.tags[id].forEach(item => {
+          this.score[item.id] += 1;
+        });
+
+        // TODO: move this to a better place
+        console.log('Player died');
+
+        const deathTime = new Date();
+
+        this.respawnHandler.registerDeath(entity, deathTime);
+      },
     });
+
     circle.collision.addListener((player, victim) => {
       // Check if victim is a player
       if (victim.id !== undefined) {
-        this.tags[victim.id].push({ id: player.id, timer: 4 });
-        this.tags[player.id].push({ id: victim.id, timer: 4 });
+        this.tags[victim.id].push({ id: player.id, timer: TAG_TIME });
+        this.tags[player.id].push({ id: victim.id, timer: TAG_TIME });
       }
     });
   }
@@ -142,14 +154,6 @@ class KnockOff extends Gamemode {
   }
 
   /* eslint-disable class-methods-use-this */
-  // Gets called when entity dies.
-  onDeath(entity) {
-    console.log('Player died');
-
-    const deathTime = new Date();
-
-    this.respawnHandler.registerDeath(entity, deathTime);
-  }
 }
 
 export default KnockOff;

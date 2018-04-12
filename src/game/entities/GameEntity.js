@@ -35,13 +35,13 @@ class GameEntity {
     // The entity will only collide with entities with the same group number.
     this.collisionGroup = 0;
 
-    this.entityListener = null;
+    this.listeners = [];
   }
 
   die() {
-    if (this.entityListener) {
-      this.entityListener.onDeath(this);
-    }
+    this.listeners.forEach(listener => {
+      listener.onDeath(this);
+    });
   }
 
   resetPhysics() {
@@ -111,8 +111,8 @@ class GameEntity {
     this.graphic.tint = color;
   }
 
-  setEntityListener(listener) {
-    this.entityListener = listener;
+  addEntityListener(listener) {
+    this.listeners.push(listener);
   }
 }
 
