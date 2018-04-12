@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { PulseLoader } from 'react-spinners';
 import deepstream from 'deepstream.io-client-js';
-
 import GamemodeHandler from '../game/GamemodeHandler';
 
 const DEFAULT_MAX_PLAYERS = 8;
@@ -21,6 +20,7 @@ class CreateMenu extends Component {
     this.state = {
       instanceName: '',
       errors: [],
+      serviceError: false,
       maxPlayers: DEFAULT_MAX_PLAYERS,
       loading: false,
       gamemodeHandler,
@@ -39,28 +39,31 @@ class CreateMenu extends Component {
   Try to start new game when done setting options
   */
   startGame() {
-    if (this.state.errors.length === 0) {
+    if (this.state.errors.length === 0 || this.state.serviceError) {
       this.setState({ loading: true });
       this.setState({ errors: [] });
 
       // Set game mode
       this.state.gamemodeHandler.selectGameMode(this.state.gamemode);
 
-      this.props.onStart();
+      const gameInfo = {
+        name: this.state.instanceName,
+        maxPlayers: this.state.maxPlayers,
+        gamemode: GamemodeHandler.getInstance().getSelectedId(),
+      };
       // Try to create an instance (as the service if the instance name is unique).
-      this.props.onCreateInstance(this.state.instanceName, (err, data) => {
+      this.props.communication.createInstance(gameInfo, (err, data) => {
         this.setState({ loading: false });
         if (err) {
           if (err === deepstream.CONSTANTS.EVENT.NO_RPC_PROVIDER) {
-            this.setState({ errors: ['Service server is not running.'] });
+            this.setState({ errors: ['Service server is not running.'], serviceError: true });
           }
         } else if (data.error) {
           // Instance is not valid
-          this.setState({ errors: [data.error] });
+          this.setState({ errors: [data.error], serviceError: true });
         } else {
+          this.props.onStart();
           // Instance is valid
-          // TODO: Start the game
-          this.setState({ errors: ['Instance started'] });
         }
       });
     }
@@ -103,7 +106,7 @@ class CreateMenu extends Component {
       newMax = maxVal;
     }
 
-    this.setState({ errors: newErrors, maxPlayers: newMax });
+    this.setState({ errors: newErrors, maxPlayers: newMax, serviceError: false });
   }
 
   // Change the state if the textbox is changed.
@@ -169,8 +172,10 @@ class CreateMenu extends Component {
 CreateMenu.propTypes = {
   onBack: PropTypes.func.isRequired,
   onStart: PropTypes.func.isRequired,
-  onCreateInstance: PropTypes.func.isRequired,
   getRandomInstanceName: PropTypes.func.isRequired,
+  /* eslint-disable */
+  communication: PropTypes.object.isRequired,
+  /* eslint-enable */
 };
 
 export default CreateMenu;
