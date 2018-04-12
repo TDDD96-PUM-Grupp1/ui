@@ -61,3 +61,6 @@ typings/
 
 # Build folder
 build/
+
+# VSCODE
+launch.json
