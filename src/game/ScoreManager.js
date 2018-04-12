@@ -1,5 +1,5 @@
-const ASC_POLICY = ((a, b) => a < b);
-const DESC_POLICY = ((a, b) => a > b);
+const ASC_POLICY = ((a, b) => a - b);
+const DESC_POLICY = ((a, b) => b - a);
 
 class ScoreManager {
   constructor(comList){
@@ -48,7 +48,7 @@ class ScoreManager {
     });
 
     if(primary){
-      this.primaryScore = primary;
+      this.primaryScore = name;
       this.resort()
     }
   }
@@ -61,7 +61,8 @@ class ScoreManager {
       return;
     }
 
-    this.highscoreList.sort((a, b) => this.orderPolicy(a[this.primaryScore], b[this.primaryScore]));
+    const primaryScore = this.primaryScore;
+    this.highscoreList.sort((a, b) => this.orderPolicy(a[primaryScore], b[primaryScore]));
     this.triggerUpdate();
   }
 
