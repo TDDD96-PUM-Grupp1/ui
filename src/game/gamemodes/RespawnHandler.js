@@ -18,34 +18,79 @@ class RespawnHandler {
     this.respawnListeners = [];
   }
 
+  // Goes through the list of respawns and checks if their respawn time has come,
+  // and then notifies respawnListeners about it.
   checkRespawns() {
     if (this.respawnList.length === 0) return;
 
-    let removed = 0;
+    const respawns = [];
     const currentTime = new Date();
-    this.respawnList.forEach(timeEntityPair => {
+
+    this.respawnList.forEach((timeEntityPair, index) => {
       const time = getRespawnTime(timeEntityPair);
       if (time <= currentTime) {
-        removed += 1;
-        const entitiy = getEntity(timeEntityPair);
-        this.respawnListeners.forEach(listener => {
-          listener.onRespawn(entitiy);
-        });
+        const entity = getEntity(timeEntityPair);
+        respawns.push([index, entity]);
       }
     });
 
-    this.respawnList = this.respawnList.slice(removed);
+    respawns.forEach(entityIndexPair => {
+      this.respawnSpecific(getEntity(entityIndexPair), 0);
+    });
+  }
+  // Returns the index of the given entity in this.respawnList.
+  // Throws an error if entity not found.
+  getEntityIndex(entity) {
+    let index = -1;
+
+    for (let i = 0; i < this.respawnList.length; i += 1) {
+      const e = getEntity(this.respawnList[i]);
+
+      if (e === entity) {
+        index = i;
+        break;
+      }
+    }
+
+    if (index === -1) {
+      throw new Error('Entity not found in respawn list.');
+    }
   }
 
+  // Notifies respawnListeners of a specific entity that should respawn.
+  respawnSpecific(entity, index) {
+    let i;
+    if (typeof index === 'undefined') {
+      i = this.getEntityIndex(entity);
+    } else {
+      i = index;
+    }
+    this.respawnList.splice(i, 1);
+    this.notifyListeners(entity);
+  }
+
+  // Respawns all entities in the respawn list.
   respawnAll() {
     this.respawnList.forEach(timeEntityPair => {
-      const entitiy = getEntity(timeEntityPair);
-      this.respawnListeners.forEach(listener => {
-        listener.onRespawn(entitiy);
-      });
+      const entity = getEntity(timeEntityPair);
+      this.notifyListeners(entity);
+    });
+
+    this.respawnList = [];
+  }
+
+  // Notify listeners that the given entity has respawned.
+  notifyListeners(entity) {
+    this.respawnListeners.forEach(listener => {
+      listener.onRespawn(entity);
     });
   }
 
+  // Registers a new death in the respawn list.
+  // If timeOfDeath is given, the entity will be set to respawn this.respawnTime
+  // seconds after it.
+  // If omitted, the respawn time will be set to inf and the entity needs to be
+  // manually respawned.
   registerDeath(entity, timeOfDeath) {
     // Kill entity
     this.entityHandler.unregister(entity);
@@ -53,7 +98,7 @@ class RespawnHandler {
     entity.resetPhysics();
 
     let respawnTime;
-    if (timeOfDeath) {
+    if (typeof timeOfDeath !== 'undefined') {
       respawnTime = new Date();
       respawnTime.setSeconds(timeOfDeath.getSeconds() + this.respawnTime);
     } else {
