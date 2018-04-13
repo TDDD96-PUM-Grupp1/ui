@@ -34,8 +34,33 @@ class GameEntity {
     // Collision group
     // The entity will only collide with entities with the same group number.
     this.collisionGroup = 0;
+
+    this.entityListener = null;
   }
-  /* eslint-enable no-unused-vars */
+
+  die() {
+    if (this.entityListener) {
+      this.entityListener.onDeath(this);
+    }
+  }
+
+  resetPhysics() {
+    // Position
+    this.x = 0;
+    this.y = 0;
+
+    // Velocity
+    this.vx = 0;
+    this.vy = 0;
+
+    // Acceleration
+    this.ax = 0;
+    this.ay = 0;
+
+    // Rotation
+    this.rotation = 0;
+    this.rv = 0;
+  }
 
   // Update this entity
   update(dt) {
@@ -84,6 +109,10 @@ class GameEntity {
   // Set the graphic tint
   setColor(color) {
     this.graphic.tint = color;
+  }
+
+  setEntityListener(listener) {
+    this.entityListener = listener;
   }
 }
 

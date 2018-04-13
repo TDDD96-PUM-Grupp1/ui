@@ -1,4 +1,5 @@
 import deepstream from 'deepstream.io-client-js';
+import Instance from './../game/Instance';
 
 class Communication {
   /*
@@ -22,13 +23,14 @@ class Communication {
     }
 
     // Bind callbacks
-    this.getPlayers = this.getPlayers.bind(this);
     this.connectDeepstream = this.connectDeepstream.bind(this);
-    this.readData = this.readData.bind(this);
+    this.createInstance = this.createInstance.bind(this);
     this.addPlayer = this.addPlayer.bind(this);
     this.removePlayer = this.removePlayer.bind(this);
-    this.createInstance = this.createInstance.bind(this);
+    this.readData = this.readData.bind(this);
     this.update = this.update.bind(this);
+    this.getInstance = this.getInstance.bind(this);
+    this.onPingTime = this.onPingTime.bind(this);
   }
 
   /*
@@ -56,19 +58,35 @@ class Communication {
    * @param name the name of the instance that wants to be created.
    * @param callback the function that will be called when the service responds.
    */
-  createInstance(name, callback) {
-    this.client.rpc.make(
-      `${this.serviceName}/createInstance`,
-      { id: this.id, name },
-      (err, data) => {
-        if (!err && !data.error) {
-          this.instance = name;
-          this.client.rpc.provide(`${this.serviceName}/addPlayer/${this.instance}`, this.addPlayer);
-          this.client.event.subscribe(`${this.serviceName}/data/${this.instance}`, this.readData);
-        }
-        callback(err, data);
-      },
-    );
+  createInstance(gameInfo, callback) {
+    gameInfo.id = this.id;
+    // Ask the service if the UI can start an instance.
+    this.client.rpc.make(`${this.serviceName}/createInstance`, gameInfo, (err, data) => {
+      if (!err && !data.error) {
+        // Instance can be created.
+        this.instance = new Instance(gameInfo.name, gameInfo.maxPlayers, gameInfo.gamemode);
+
+        // Provide an RPC that will let players join.
+        this.client.rpc.provide(
+          `${this.serviceName}/addPlayer/${this.instance.getName()}`,
+          this.addPlayer,
+        );
+
+        // Provide an RPC to let controllers test the ping to the UI.
+        this.client.rpc.provide(
+          `${this.serviceName}/pingTime/${this.instance.getName()}`,
+          this.onPingTime,
+        );
+
+        // Subsribe to the data channel of the players.
+        // The sensor data and button data will be sent here.
+        this.client.event.subscribe(
+          `${this.serviceName}/data/${this.instance.getName()}`,
+          this.readData,
+        );
+      }
+      callback(err, data);
+    });
   }
 
   /*
@@ -78,19 +96,27 @@ class Communication {
   * @param response the response from the RPC
   */
   addPlayer(data, response) {
-    if (data.id === undefined || data.name === undefined || data.sensor === undefined) {
+    if (data.id === undefined || data.name === undefined) {
+      response.error('Invalid data format');
       return;
     }
-    this.players[data.id] = { name: data.name, sensor: data.sensor, ping: this.timeoutCount };
+
+    // If false this usually means the instance is full.
+    if (!this.instance.addPlayer(data.id, data.name, data.iconID)) {
+      response.error('cannot add player.');
+      return;
+    }
+
+    // Initialize the communication players, keeping count of the timeout.
+    this.players[data.id] = { ping: this.timeoutCount };
+
+    // Tell the service that another player has joined this instance.
     this.client.event.emit(`${this.serviceName}/playerAdded`, {
-      instanceName: this.instance,
+      instanceName: this.instance.getName(),
       playerName: data.name,
     });
-    response.send(data.id);
 
-    if (this.gameListener != null) {
-      this.gameListener.onPlayerJoin(data.id);
-    }
+    response.send(data.id);
   }
 
   /*
@@ -102,16 +128,17 @@ class Communication {
     if (this.players[id] === undefined) {
       return;
     }
+
+    // Tell the service a player has disconnected.
     this.client.event.emit(`${this.serviceName}/playerRemoved`, {
-      instanceName: this.instance,
-      playerName: this.players[id].name,
+      instanceName: this.instance.getName(),
+      playerName: this.instance.getPlayer(id).name,
     });
 
-    if (this.gameListener != null) {
-      this.gameListener.onPlayerLeave(id);
-    }
-
+    // Remove the communication player. Stop keeping track of timeouts
     delete this.players[id];
+    // Remove the player from the instance.
+    this.instance.removePlayer(id);
   }
 
   /*
@@ -122,15 +149,30 @@ class Communication {
     if (data === undefined || data.id === undefined) {
       return;
     }
+
+    // Check if the player is in this instance.
     if (this.players[data.id] !== undefined) {
+      // Reset the timout.
       this.players[data.id].ping = this.timeoutCount;
       if (data.sensor !== undefined) {
-        this.players[data.id].sensor = data.sensor;
+        // Update the sensor data.
+        this.instance.sensorMoved(data.id, data.sensor);
+      }
+
+      for (let i = 0; i < data.bnum.length; i += 1) {
+        // Update the button data.
+        this.instance.buttonPressed(data.id, data.bnum[i]);
       }
     }
-
-    for (let i = 0; i < data.bnum.length; i += 1) {
-      this.buttonPressed(data.bnum[i]);
+  }
+  /*
+   * This function will be called when a user pings this instance.
+   */
+  onPingTime(data, response) {
+    if (this.instance !== undefined) {
+      response.send({});
+    } else {
+      response.error('No instance started');
     }
   }
 
@@ -144,6 +186,8 @@ class Communication {
     if (this.instance === undefined) {
       return;
     }
+
+    // Increase the pingtimer.
     this.pingtimer += timeElapsed;
     if (this.pingtimer >= 1 / this.pingrate) {
       // No need to decrease the timer by 1/pingrate since the precision
@@ -151,13 +195,13 @@ class Communication {
       this.pingtimer = 0;
 
       // Ping the service
-      this.client.event.emit(`${this.serviceName}/instancePing`, { name: this.instance });
+      this.client.event.emit(`${this.serviceName}/instancePing`, { name: this.instance.getName() });
 
-      //
       const playerKeys = Object.keys(this.players);
 
       for (let i = 0; i < playerKeys.length; i += 1) {
         this.players[playerKeys[i]].ping -= 1;
+        // Check if the player has timed out.
         if (this.players[playerKeys[i]].ping === 0) {
           this.removePlayer(playerKeys[i]);
         }
@@ -165,40 +209,12 @@ class Communication {
     }
   }
 
-  /** This function is called whenever a player presses a button on the controller.
-   * The number of the button is used to identify which button was pressed, note that
-   * button enumeration begins at 0.
-   * @param data is an object such that {id: playerid, bNum: buttonNumber}
-   */
-  // eslint-disable-next-line
-  buttonPressed(data) {
-    // TODO make this function change the game state in some way
-    // eslint-disable-next-line
-    console.log('Button press received: ');
-  }
-  /* eslint-enable class-methods-use-this, no-console */
-
   /*
-   * Get player info from an id.
-   * @param id the id of the player that is wanted.
+   * This function will return the started instance.
+   * @return Instance The current instance of the game.
    */
-  getPlayerInfo(id) {
-    return this.players[id];
-  }
-
-  /*
-   * Get all the connected players
-   */
-  getPlayers() {
-    return this.players;
-  }
-
-  /*
-   * Add a game listener to listen for events.
-   * @param gameListener the listener that will get called.
-   */
-  setGameListener(gameListener) {
-    this.gameListener = gameListener;
+  getInstance() {
+    return this.instance;
   }
 }
 

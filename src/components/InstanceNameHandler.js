@@ -1,57 +1,200 @@
-// var fs = require('fs');
+const nouns = [
+  'Alchemist',
+  'Amulet',
+  'Apprentice',
+  'Beast',
+  'Beauty',
+  'Bersek',
+  'Bogeyman',
+  'Brew',
+  'Castle',
+  'Cauldron',
+  'Cave',
+  'Chalice',
+  'Creature',
+  'Crow',
+  'Curse',
+  'Demon',
+  'Detective',
+  'Dragon',
+  'Dream',
+  'Dwarf',
+  'Elf',
+  'Empire',
+  'Fairy',
+  'Ghost',
+  'Giant',
+  'Gifts',
+  'Gnome',
+  'Goblin',
+  'Godmother',
+  'Gowns',
+  'Graveyard',
+  'Hag',
+  'Harbinger',
+  'Herbs',
+  'Horror',
+  'Illusion',
+  'Imp',
+  'Incantation',
+  'Joker',
+  'Kettle',
+  'King',
+  'Kingdom',
+  'Lands',
+  'Legend',
+  'Leprechauns',
+  'Lore',
+  'Magic',
+  'Magician',
+  'Majesty',
+  'Mask',
+  'Medium',
+  'Miracle',
+  'Monster',
+  'Moon',
+  'Muse',
+  'Mystery',
+  'Myth',
+  'Nature',
+  'Necromancer',
+  'Necromancy',
+  'Nemesis',
+  'Newt',
+  'Ogre',
+  'Oracle',
+  'Owl',
+  'Pixie',
+  'Potion',
+  'Powder',
+  'Power',
+  'Prey',
+  'Prince',
+  'Princess',
+  'Prophet',
+  'Queen',
+  'Quest',
+  'Quiver',
+  'Realm',
+  'Reign',
+  'Robe',
+  'Rule',
+  'Sandman',
+  'Scroll',
+  'Seer',
+  'Shaman',
+  'Soothsayer',
+  'Sorcerer',
+  'Sorcery',
+  'Specter',
+  'Spell',
+  'Spider',
+  'Spirit',
+  'Star',
+  'Story',
+  'Superstition',
+  'Talisman',
+  'Theory',
+  'Torch',
+  'Trick',
+  'Troll',
+  'Unicorn',
+  'Vampire',
+  'Vanguard',
+  'Victim',
+  'Visionary',
+  'Wand',
+  'Ward',
+  'Werewolf',
+  'Whisper',
+  'Wish',
+  'Witch',
+  'Youth',
+];
 
-class InstanceNameHandler {
-  // This constructor will be used when we implement the random name generator.
-  /* eslint-disable no-useless-constructor */
-  constructor() {
-    /* eslint-enable no-useless-constructor */
-    /*
-    // Load in nouns
-    fs.readFile('InstanceWordsNouns.txt', (err, data) => {
-      if (err) throw err;
-      this.nouns = `${data}`.split('\n');
-      for (let i = this.nouns.length - 1; i >= 0; i -= 1) {
-        // Sometimes there are empty strings in the list. Remove them
-        if (this.nouns[i] === '') {
-          this.nouns.splice(i, 1);
-        }
-      }
-    });
+const adjectives = [
+  'Abnormal',
+  'Awful',
+  'Beautiful',
+  'Bewitched',
+  'Bizarre',
+  'Captivated',
+  'Charismatic',
+  'Charming',
+  'Cruel',
+  'Dancing',
+  'Delirious',
+  'Dramatic',
+  'Enchanting',
+  'Evil',
+  'Familiar',
+  'Fantastic',
+  'Fascinating',
+  'Fierce',
+  'Forged',
+  'Glimmering',
+  'Grateful',
+  'Grim',
+  'Grotesque',
+  'Helpful',
+  'Heroic',
+  'Horrifying',
+  'Imaginary',
+  'Impressive',
+  'Informative',
+  'Ingenious',
+  'Invisible',
+  'Kidnapping',
+  'Legendary',
+  'Lucky',
+  'Magical',
+  'Malevolent',
+  'Medieval',
+  'Mischievous',
+  'Mysterious',
+  'Mystical',
+  'Mythical',
+  'Odd',
+  'Otherworldly',
+  'Overpowered',
+  'Petrifying',
+  'Poisonous',
+  'Potent',
+  'Powerful',
+  'Raging',
+  'Reasoning',
+  'Scolded',
+  'Seeking',
+  'Supernatural',
+  'Terrifying',
+  'Thrilling',
+  'Tragic',
+  'Transformed',
+  'Unbelievable',
+  'Unexplained',
+  'Unique',
+  'Unusual',
+  'Valiant',
+  'Venomous',
+  'Vice',
+  'Vicious',
+  'Visionary',
+  'Vital',
+  'Watchful',
+  'Weird',
+  'Western',
+  'Whimsical',
+  'Wicked',
+  'Wise',
+  'Wrinkled',
+];
 
-    // Load in adjectives
-    fs.readFile('InstanceWordsAdjectives.txt', (err, data) => {
-      if (err) throw err;
-      this.adjectives = `${data}`.split('\n');
-      for (let i = this.adjectives.length - 1; i >= 0; i -= 1) {
-        // Sometimes there are empty strings in the list. Remove them
-        if (this.adjectives[i] === '') {
-          this.adjectives.splice(i, 1);
-        }
-      }
-    });
-    this.getRandomItemFromList = this.getRandomItemFromList.bind(this);
-    this.getRandomInstaneName = this.getRandomInstanceName.bind(this);
-    */
-  }
-
-  /*
-   * returns a random item from a given list.
-   */
-  /* eslint-disable class-methods-use-this */
-  getRandomItemFromList(list) {
-    /* eslint-enable class-methods-use-this */
-
-    return list[Math.floor(Math.random() * list.length)];
-  }
-
-  /*
-   * returns a random instance name from a list of adjectives and nouns.
-   */
-  /* eslint-disable class-methods-use-this */
-  getRandomInstanceName() {
-    /* eslint-enable class-methods-use-this */
-    return 'FierceCastle'; // this.getRandomItemFromList(this.adjectives) + this.getRandomItemFromList(this.nouns);
-  }
+function getRandomFromList(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+// eslint-disable-next-line
+function getRandomInstanceName() {
+  return getRandomFromList(adjectives) + getRandomFromList(nouns);
 }
 
-export default InstanceNameHandler;
+export default getRandomInstanceName;
