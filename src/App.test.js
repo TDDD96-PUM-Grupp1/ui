@@ -86,8 +86,8 @@ describe('ScoreManager', () => {
     sm.addScoreType('score', 0, true);
     sm.setAscOrder(false);
 
-    sm.addPlayer('id1', 'player1');
-    sm.addPlayer('id2', 'player2');
+    sm.addPlayer({id: 'id1', name: 'player1'});
+    sm.addPlayer({id: 'id2', name: 'player2'});
 
 
     sm.addScore('score', 'id1', 2);
@@ -106,9 +106,9 @@ describe('ScoreManager', () => {
     sm.addScoreType('score', 10, true);
     sm.setAscOrder(true);
 
-    sm.addPlayer('id1', 'player1');
-    sm.addPlayer('id2', 'player2');
-    sm.addPlayer('id3', 'player3');
+    sm.addPlayer({id: 'id1', name: 'player1'});
+    sm.addPlayer({id: 'id2', name: 'player2'});
+    sm.addPlayer({id: 'id3', name: 'player3'});
 
 
     sm.removeScore('score', 'id1', 2);
@@ -129,8 +129,8 @@ describe('ScoreManager', () => {
     sm.addScoreType('score', 0, true);
     sm.setAscOrder(true);
 
-    sm.addPlayer('id1');
-    sm.addPlayer('id2');
+    sm.addPlayer({id: 'id1', name: 'player1'});
+    sm.addPlayer({id: 'id2', name: 'player2'});
 
     sm.addScore('score', 'id1', 3);
     sm.addScore('score', 'id2', 3);
@@ -147,9 +147,9 @@ describe('ScoreManager', () => {
     sm.addScoreType('score', 0, true);
     sm.setAscOrder(false);
 
-    sm.addPlayer('id1', 'player1');
-    sm.addPlayer('id2', 'player2');
-    sm.addPlayer('id3', 'player3');
+    sm.addPlayer({id: 'id1', name: 'player1'});
+    sm.addPlayer({id: 'id2', name: 'player2'});
+    sm.addPlayer({id: 'id3', name: 'player3'});
 
     sm.setScore('score', 'id1', 3);
     sm.setScore('score', 'id2', 8);
@@ -171,8 +171,8 @@ describe('ScoreManager', () => {
     sm.addScoreType('score1', 0);
     sm.addScoreType('score2', 0, true);
 
-    sm.addPlayer('id1', 'player1');
-    sm.addPlayer('id2', 'player2');
+    sm.addPlayer({id: 'id1', name:'player1'});
+    sm.addPlayer({id: 'id2', name:'player2'});
 
     sm.addScore('score1', 'id1', 2);
     sm.addScore('score1', 'id2', 1);

@@ -89,10 +89,10 @@ class ScoreManager {
   /*
   Add a new player to keep track of score for
   */
-  addPlayer(idTag, name){
+  addPlayer(playerObj){
     let newObj = {
-      'id': idTag,
-      'name': name
+      'id': playerObj.id,
+      'name': playerObj.name,
     };
 
     // Add default values of all score types
