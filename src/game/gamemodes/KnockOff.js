@@ -112,8 +112,12 @@ class KnockOff extends Gamemode {
     circle.collision.addListener((player, victim) => {
       // Check if victim is a player
       if (victim.controller.id !== undefined) {
-        this.tags[victim.controller.id].push({ id: player.controller.id, timer: TAG_TIME });
-        this.tags[player.controller.id].push({ id: victim.controller.id, timer: TAG_TIME });
+        const vid = victim.controller.id;
+        const pid = player.controller.id;
+        this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
+        this.tags[vid].push({ id: pid, timer: TAG_TIME });
+        this.tags[pid] = this.tags[pid].filter(e => e.id !== vid);
+        this.tags[pid].push({ id: vid, timer: TAG_TIME });
       }
     });
   }
@@ -138,8 +142,8 @@ class KnockOff extends Gamemode {
   onRespawn(entity) {
     console.log('Player respawn');
     // Move the entity to the center
-    entity.x = 400;
-    entity.y = 400;
+    entity.x = this.arenaCenterx;
+    entity.y = this.arenaCentery;
     // TODO: randomize a bit
   }
 
