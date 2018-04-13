@@ -49,8 +49,8 @@ class Game {
   }
 
   // Called when a new player joins.
-  onPlayerJoin(idTag) {
-    this.currentGamemode.onPlayerJoin(idTag);
+  onPlayerJoin(idTag, iconID) {
+    this.currentGamemode.onPlayerJoin(idTag, iconID);
   }
 
   // Called when a player leaves the game.
@@ -61,7 +61,8 @@ class Game {
   onSensorMoved(id, sensor) {}
 
   onButtonsPressed(id, button) {
-    console.log('Button pressed ')
+    // eslint-disable-next-line
+    console.log('Button pressed');
     console.log(button);
   }
 

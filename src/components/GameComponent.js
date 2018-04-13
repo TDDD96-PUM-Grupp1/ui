@@ -23,6 +23,7 @@ class GameComponent extends Component {
     };
     const app = new PIXI.Application(options);
     this.app = app;
+
     this.refElement.appendChild(this.app.renderer.view);
 
     // Make the canvas resolution scale to fit the window size
@@ -33,6 +34,7 @@ class GameComponent extends Component {
 
     // set background color
     app.renderer.backgroundColor = 0x061639;
+    // app.renderer.backgroundColor = 0xffffff;
 
     // Initialize game
     const game = new Game(app, this.communication);

@@ -102,7 +102,7 @@ class Communication {
     }
 
     // If false this usually means the instance is full.
-    if (!this.instance.addPlayer(data.id, data.name)) {
+    if (!this.instance.addPlayer(data.id, data.name, data.iconID)) {
       response.error('cannot add player.');
       return;
     }

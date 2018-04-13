@@ -4,6 +4,7 @@ import Gamemode from './Gamemode';
 // import TestController from '../entities/controllers/TestController';
 import PlayerController from '../entities/controllers/PlayerController';
 // import LocalPlayerController from '../entities/controllers/LocalPlayerController';
+// import iconData from '../iconData';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 3;
@@ -52,6 +53,19 @@ class KnockOff extends Gamemode {
     fakePlayer.setColor(0xeeff66);
     fakePlayer.x = 600;
     fakePlayer.y = 300; */
+
+    /* this.game.resourceServer
+      .requestResources([{ name: iconData[5].name, path: iconData[5].img }])
+      .then(resources => {
+        const circle3 = new PlayerCircle(this.game.app, resources[iconData[5].name]);
+        const controller3 = new LocalPlayerController(1);
+        circle3.setController(controller3);
+        circle3.x = 500;
+        circle3.y = 500;
+        circle3.setColor(0xee6666);
+        circle3.setEntityListener(this);
+        this.game.entityHandler.register(circle3);
+      }); */
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
@@ -91,34 +105,40 @@ class KnockOff extends Gamemode {
   }
 
   // Called when a new player connects
-  onPlayerJoin(idTag) {
-    const circle = new PlayerCircle(this.game.app);
-    const controller = new PlayerController(this.game, idTag);
-    circle.setController(controller);
-    // Place them in the middle of the arena for now
-    circle.x = 500;
-    circle.y = 500;
-    circle.setColor(0xff3333);
-    this.game.entityHandler.register(circle);
+  onPlayerJoin(idTag, iconID) {
+    // console.log('Player join');
 
-    this.players[idTag] = circle;
-    this.score[idTag] = 0;
-    this.tags[idTag] = [];
-    this.respawn[idTag] = true;
+    this.game.resourceServer
+      .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
+      .then(resources => {
+        const circle = new PlayerCircle(this.game.app, resources[iconData[iconID].name]);
+        const controller = new PlayerController(this.game, idTag);
+        circle.setController(controller);
+        // Place them in the middle of the arena for now
+        circle.x = 500;
+        circle.y = 500;
+        circle.setColor(0xff3333);
+        this.game.entityHandler.register(circle);
 
-    circle.addEntityListener(this);
+        this.players[idTag] = circle;
+        this.score[idTag] = 0;
+        this.tags[idTag] = [];
+        this.respawn[idTag] = true;
 
-    circle.collision.addListener((player, victim) => {
-      // Check if victim is a player
-      if (victim.controller && victim.controller.id !== undefined) {
-        const vid = victim.controller.id;
-        const pid = player.controller.id;
-        this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
-        this.tags[vid].push({ id: pid, timer: TAG_TIME });
-        this.tags[pid] = this.tags[pid].filter(e => e.id !== vid);
-        this.tags[pid].push({ id: vid, timer: TAG_TIME });
-      }
-    });
+        circle.addEntityListener(this);
+
+        circle.collision.addListener((player, victim) => {
+          // Check if victim is a player
+          if (victim.controller && victim.controller.id !== undefined) {
+            const vid = victim.controller.id;
+            const pid = player.controller.id;
+            this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
+            this.tags[vid].push({ id: pid, timer: TAG_TIME });
+            this.tags[pid] = this.tags[pid].filter(e => e.id !== vid);
+            this.tags[pid].push({ id: vid, timer: TAG_TIME });
+          }
+        });
+      });
   }
 
   // Called when a player disconnects

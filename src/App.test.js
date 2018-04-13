@@ -21,7 +21,7 @@ describe('ResourceServer', () => {
     const filenames = [];
 
     const errorName = 'hejsan';
-    const errorFilepath = 'NO_EXIST.txt';
+    const errorFilepath = '/NO_EXIST.txt';
 
     filenames.push({
       name: errorName,
@@ -32,7 +32,7 @@ describe('ResourceServer', () => {
     const rs = new ResourceServer();
     /* eslint-disable function-paren-newline */
     await expect(rs.requestResources(filenames)).rejects.toEqual(
-      new Error(`Failed to load resource ${errorName} from path resources/${errorFilepath}`),
+      new Error(`Failed to load resource ${errorName} from path resources${errorFilepath}`),
     );
     /* eslint-enable function-paren-newline */
   });
@@ -72,7 +72,6 @@ describe('GamemodeHandler', () => {
 
     for (let i = 0; i < gmList.length; i += 1) {
       gmHandler.selectGameMode(gmList[i]);
-
       GamemodeClass = gmHandler.getSelected();
       gamemode = new GamemodeClass(game);
     }
