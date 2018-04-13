@@ -35,13 +35,13 @@ class GameEntity {
     // The entity will only collide with entities with the same group number.
     this.collisionGroup = 0;
 
-    this.entityListener = null;
+    this.listeners = [];
   }
 
   die() {
-    if (this.entityListener) {
-      this.entityListener.onDeath(this);
-    }
+    this.listeners.forEach(listener => {
+      listener.onDeath(this);
+    });
   }
 
   resetPhysics() {
@@ -64,7 +64,7 @@ class GameEntity {
 
   // Update this entity
   update(dt) {
-    if (this.controller !== undefined) {
+    if (this.controller != null) {
       this.controller.update(dt);
     }
     const frictionMultiplier = 1 - this.floorFriction;
@@ -96,7 +96,9 @@ class GameEntity {
   // Set the controller for this object.
   setController(controller) {
     this.controller = controller;
-    controller.register(this);
+    if (controller !== null) {
+      controller.register(this);
+    }
   }
 
   // Clean up resources used by this entity.
@@ -111,8 +113,8 @@ class GameEntity {
     this.graphic.tint = color;
   }
 
-  setEntityListener(listener) {
-    this.entityListener = listener;
+  addEntityListener(listener) {
+    this.listeners.push(listener);
   }
 }
 

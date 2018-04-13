@@ -41,11 +41,12 @@ class EntityHandler {
 
   // Returns an array containing all entities.
   getEntities() {
-    const copy = [];
+    /* const copy = [];
     for (let i = 0; i < this.entities.length; i += 1) {
       copy.push(this.entities[i]);
-    }
-    return copy;
+    } */
+    // return this.entities.slice();
+    return this.entities;
   }
 
   // Destroy all entities and clear the entity list.

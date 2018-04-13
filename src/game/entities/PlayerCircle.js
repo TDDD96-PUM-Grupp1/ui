@@ -3,7 +3,7 @@ import BasicCircle from './BasicCircle';
 
 const RADIUS = 32;
 const MASS = 1;
-const SQUAREROOTOF2 = 1.41;
+const SQUAREROOTOF2 = 1.4142135623730951;
 const ICONSIZE = Math.floor(RADIUS * SQUAREROOTOF2);
 
 /*
