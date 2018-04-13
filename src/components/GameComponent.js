@@ -28,8 +28,8 @@ class GameComponent extends Component {
     app.renderer.resize(window.innerWidth, window.innerHeight);
 
     // set background color
-    // app.renderer.backgroundColor = 0x061639;
-    app.renderer.backgroundColor = 0xffffff;
+    app.renderer.backgroundColor = 0x061639;
+    // app.renderer.backgroundColor = 0xffffff;
 
     // Initialize game
     const game = new Game(app, this.communication);
