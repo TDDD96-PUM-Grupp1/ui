@@ -26,7 +26,10 @@ class Gamemode {
 
     for (let i = 0; i < entities.length; i += 1) {
       const currentEntity = entities[i];
-      if (typeof currentEntity.controller !== 'undefined' && currentEntity.controller.id === idTag) {
+      if (
+        typeof currentEntity.controller !== 'undefined' &&
+        currentEntity.controller.id === idTag
+      ) {
         this.game.entityHandler.unregisterFully(currentEntity);
         return;
       }

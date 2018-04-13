@@ -9,10 +9,10 @@ function getRespawnTime(timeEntityPair) {
 }
 
 class RespawnHandler {
-  constructor(entityHandler, respawnTime) {
+  constructor(entityHandler) {
     this.respawnList = [];
 
-    this.respawnTime = respawnTime;
+    // this.respawnTime = respawnTime;
     this.entityHandler = entityHandler;
 
     this.respawnListeners = [];
@@ -66,6 +66,9 @@ class RespawnHandler {
       i = index;
     }
     this.respawnList.splice(i, 1);
+    entity.graphic.visible = true;
+    this.entityHandler.register(entity);
+
     this.notifyListeners(entity);
   }
 
@@ -73,6 +76,9 @@ class RespawnHandler {
   respawnAll() {
     this.respawnList.forEach(timeEntityPair => {
       const entity = getEntity(timeEntityPair);
+      entity.graphic.visible = true;
+      this.entityHandler.register(entity);
+
       this.notifyListeners(entity);
     });
 
@@ -101,6 +107,25 @@ class RespawnHandler {
     if (typeof timeOfDeath !== 'undefined') {
       respawnTime = new Date();
       respawnTime.setSeconds(timeOfDeath.getSeconds() + this.respawnTime);
+    } else {
+      respawnTime = Infinity;
+    }
+
+    this.respawnList.push([respawnTime, entity]);
+  }
+
+  // Registers an entity to respawn in respawnDelay seconds
+  // If no delay is specified, it will not respawn automatically
+  addRespawn(entity, respawnDelay) {
+    // Kill entity
+    this.entityHandler.unregister(entity);
+    entity.graphic.visible = false;
+    entity.resetPhysics();
+
+    let respawnTime;
+    if (typeof respawnDelay !== 'undefined') {
+      respawnTime = new Date();
+      respawnTime.setSeconds(respawnTime.getSeconds() + respawnDelay);
     } else {
       respawnTime = Infinity;
     }
