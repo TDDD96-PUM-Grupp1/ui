@@ -155,6 +155,8 @@ class KnockOff extends Gamemode {
 
     if (this.respawn[id]) {
       this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
+    } else {
+      entity.destroy();
     }
   }
 
