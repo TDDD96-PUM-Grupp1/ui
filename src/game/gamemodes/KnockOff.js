@@ -82,7 +82,17 @@ class KnockOff extends Gamemode {
   }
 
   // Called when a player disconnects
-  onPlayerLeave(idTag) {}
+  onPlayerLeave(idTag) {
+    const entities = this.game.entityHandler.getEntities();
+
+    for (let i = 0; i < entities.length; i += 1) {
+      const currentEntity = entities[i];
+      if (typeof currentEntity.controller !== 'undefined' && currentEntity.controller.id === idTag) {
+        this.game.entityHandler.unregisterFully(currentEntity);
+        return;
+      }
+    }
+  }
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
 
