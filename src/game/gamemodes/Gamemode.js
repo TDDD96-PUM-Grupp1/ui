@@ -18,7 +18,7 @@ class Gamemode {
   postUpdate(dt) {}
 
   // Called when a new player connects
-  onPlayerJoin(idTag) {}
+  onPlayerJoin(idTag, iconID) {}
 
   // Called when a player disconnects
   onPlayerLeave(idTag) {}

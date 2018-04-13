@@ -13,16 +13,6 @@ Test gamemode.
 class TestGamemode extends Gamemode {
   constructor(game) {
     super(game);
-    // Make a test circle
-    const circle = new PlayerCircle(this.game.app);
-    const controller = new TestController(300, 300, 150, 150, 1, 1.2);
-    circle.setController(controller);
-    this.game.entityHandler.register(circle);
-
-    const circle2 = new PlayerCircle(this.game.app);
-    const controller2 = new TestController(450, 300, 150, 150, 0.7, 1.5);
-    circle2.setController(controller2);
-    this.game.entityHandler.register(circle2);
 
     const rect = new BasicRectangle(this.game.app, 640, 32, 10, 0x88ee11);
     const rectc = new TestController(700, 500, 0, 0, 0.8, 1.1);
@@ -92,11 +82,11 @@ class TestGamemode extends Gamemode {
   postUpdate(dt) {}
 
   // Called when a new player connects
-  onPlayerJoin(idTag) {
+  onPlayerJoin(idTag, iconID) {
     this.game.resourceServer
-      .requestResources([{ name: iconData[5].name, path: iconData[5].img }])
+      .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
       .then(resources => {
-        const circle = new PlayerCircle(this.game.app, resources[iconData[5].name]);
+        const circle = new PlayerCircle(this.game.app, resources[iconData[iconID].name]);
         const controller = new PlayerController(this.game, idTag);
         circle.setController(controller);
         circle.x = 400;

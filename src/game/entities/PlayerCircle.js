@@ -34,6 +34,7 @@ class PlayerCircle extends BasicCircle {
 
     this.sprite.x = this.x;
     this.sprite.y = this.y;
+    this.sprite.rotation = this.rotation;
   }
 }
 

@@ -69,7 +69,7 @@ class KnockOff extends Gamemode {
   }
 
   // Called when a new player connects
-  onPlayerJoin(idTag) {
+  onPlayerJoin(idTag, iconID) {
     console.log('Player join');
     const circle = new PlayerCircle(this.game.app);
     const controller = new PlayerController(this.game, idTag);

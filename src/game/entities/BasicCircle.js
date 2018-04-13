@@ -1,7 +1,6 @@
 import * as PIXI from 'pixi.js';
 import GameEntity from './GameEntity';
 import CollisionCircle from './collision/CollisionCircle';
-import iconData from '../iconData';
 
 /*
 Game object with a basic circle graphic and collision

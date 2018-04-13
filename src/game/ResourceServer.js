@@ -37,8 +37,8 @@ class ResourceServer {
       const path = this.resourceDir + resource.path;
 
       // Check if already cached
-      if (resource.path in this.cache) {
-        resources[resource.name] = this.cache[resource.path];
+      if (path in this.cache) {
+        resources[resource.name] = this.cache[path];
       } else {
         this.loader.add(resource.name, path);
         loadNeeded = true;
