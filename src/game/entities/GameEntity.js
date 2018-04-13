@@ -64,7 +64,7 @@ class GameEntity {
 
   // Update this entity
   update(dt) {
-    if (this.controller !== undefined) {
+    if (this.controller != null) {
       this.controller.update(dt);
     }
     const frictionMultiplier = 1 - this.floorFriction;
@@ -96,7 +96,9 @@ class GameEntity {
   // Set the controller for this object.
   setController(controller) {
     this.controller = controller;
-    controller.register(this);
+    if (controller !== null) {
+      controller.register(this);
+    }
   }
 
   // Clean up resources used by this entity.

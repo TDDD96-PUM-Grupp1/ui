@@ -78,7 +78,7 @@ class RespawnHandler {
       const entity = getEntity(timeEntityPair);
       entity.graphic.visible = true;
       this.entityHandler.register(entity);
-      
+
       this.notifyListeners(entity);
     });
 

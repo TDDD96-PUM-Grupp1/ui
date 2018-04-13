@@ -82,7 +82,7 @@ class CollisionBase {
       if (Math.abs(impulseSize) > 1) {
         this.notifyListeners(other);
       }
-      //this.notifyListeners(other);
+      // this.notifyListeners(other);
 
       // normal tangent
       let tx = vdx - cv * nx;

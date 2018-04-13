@@ -3,7 +3,7 @@ import PlayerCircle from '../entities/PlayerCircle';
 import Gamemode from './Gamemode';
 // import TestController from '../entities/controllers/TestController';
 import PlayerController from '../entities/controllers/PlayerController';
-import LocalPlayerController from '../entities/controllers/LocalPlayerController';
+// import LocalPlayerController from '../entities/controllers/LocalPlayerController';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 3;
@@ -110,7 +110,7 @@ class KnockOff extends Gamemode {
 
     circle.collision.addListener((player, victim) => {
       // Check if victim is a player
-      if (victim.controller.id !== undefined) {
+      if (victim.controller && victim.controller.id !== undefined) {
         const vid = victim.controller.id;
         const pid = player.controller.id;
         this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);

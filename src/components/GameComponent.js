@@ -17,7 +17,7 @@ class GameComponent extends Component {
 
   componentDidMount() {
     // Setup PIXI Canvas in componentDidMount
-    const options = { 
+    const options = {
       forceCanvas: settings.game.forceCanvas,
       antialias: settings.game.antialias,
     };

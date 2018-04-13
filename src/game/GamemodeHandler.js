@@ -10,7 +10,7 @@ class GMHandlerClass {
     // List of all available gamemodes
     this.gamemodes = {
       knockOff: KnockOff,
-      test: TestGamemode,
+      testGamemode: TestGamemode,
     };
 
     if (settings.skipmenu) {
@@ -47,6 +47,14 @@ class GMHandlerClass {
     }
 
     return this.gamemodes[this.selected];
+  }
+
+  /*
+   * Get the selected mode identifier, this will return the name
+   * of the current gamemode.
+   */
+  getSelectedId() {
+    return this.selected;
   }
 }
 

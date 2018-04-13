@@ -19,6 +19,7 @@
     "linebreak-style": ["off"],
     "no-mixed-operators": "off",
     "no-param-reassign": ["error", { "props": false}],
-    "arrow-parens": "off"
+    "arrow-parens": "off",
+    "comma-dangle" : ["error"] 
   }
 }
