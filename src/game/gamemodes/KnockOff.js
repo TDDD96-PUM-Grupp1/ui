@@ -5,6 +5,7 @@ import Gamemode from './Gamemode';
 import PlayerController from '../entities/controllers/PlayerController';
 import LocalPlayerController from '../entities/controllers/LocalPlayerController';
 import RespawnHandler from './RespawnHandler';
+import iconData from '../iconData';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 3;
@@ -31,15 +32,18 @@ class KnockOff extends Gamemode {
     graphic.y = this.arenaCentery;
     this.arenaGraphic = graphic;
 
-    // TODO remove
-    const circle3 = new PlayerCircle(this.game.app);
-    const controller3 = new LocalPlayerController(1);
-    circle3.setController(controller3);
-    circle3.x = 400;
-    circle3.y = 400;
-    circle3.setColor(0xee6666);
-    circle3.setEntityListener(this);
-    this.game.entityHandler.register(circle3);
+    this.game.resourceServer
+      .requestResources([{ name: iconData[5].name, path: iconData[5].img }])
+      .then(resources => {
+        const circle3 = new PlayerCircle(this.game.app, resources[iconData[5].name]);
+        const controller3 = new LocalPlayerController(1);
+        circle3.setController(controller3);
+        circle3.x = 500;
+        circle3.y = 500;
+        circle3.setColor(0xee6666);
+        circle3.setEntityListener(this);
+        this.game.entityHandler.register(circle3);
+      });
 
     this.respawnHandler = new RespawnHandler(this.game.entityHandler, RESPAWN_TIME);
 
@@ -69,16 +73,22 @@ class KnockOff extends Gamemode {
   }
 
   // Called when a new player connects
-  onPlayerJoin(idTag) {
-    const circle = new PlayerCircle(this.game.app);
-    const controller = new PlayerController(this.game, idTag);
-    circle.setController(controller);
-    // Place them in the middle of the arena for now
-    circle.x = 500;
-    circle.y = 500;
-    circle.setColor(0xff3333);
-    circle.setEntityListener(this);
-    this.game.entityHandler.register(circle);
+  onPlayerJoin(idTag, iconID) {
+    console.log('Player join');
+
+    this.game.resourceServer
+      .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
+      .then(resources => {
+        const circle = new PlayerCircle(this.game.app, resources[iconData[iconID].name]);
+        const controller = new PlayerController(this.game, idTag);
+        circle.setController(controller);
+        // Place them in the middle of the arena for now
+        circle.x = 500;
+        circle.y = 500;
+        circle.setColor(0xff3333);
+        circle.setEntityListener(this);
+        this.game.entityHandler.register(circle);
+      });
   }
 
   // Called when a player disconnects

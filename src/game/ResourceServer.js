@@ -5,8 +5,8 @@ import * as PIXI from 'pixi.js';
 */
 class ResourceServer {
   constructor() {
-    this.resourceDir = 'resources/';
-    this.loader = PIXI.loader; // Get the PIXI loader
+    this.resourceDir = 'resources';
+    this.cache = {};
   }
 
   /*
@@ -24,19 +24,35 @@ class ResourceServer {
     {name1: --, name2: --, ..., namen: --}, where -- are loaded resources
   */
   requestResources(resourceList) {
+    let loadNeeded = false;
+    const pixiLoader = new PIXI.loaders.Loader();
+
+    const resources = {};
+
     // Add resources to be loaded to loader
     for (let i = 0; i < resourceList.length; i += 1) {
       const resource = resourceList[i];
       const path = this.resourceDir + resource.path;
-      this.loader.add(resource.name, path);
+
+      // Check if already cached
+      if (path in this.cache) {
+        resources[resource.name] = this.cache[path];
+      } else {
+        pixiLoader.add(resource.name, path);
+        loadNeeded = true;
+      }
     }
 
-    const resources = {};
+    if (!loadNeeded) {
+      return new Promise(resolve => {
+        resolve(resources);
+      });
+    }
 
     // Create promise
     const p = new Promise((resolve, reject) => {
       // Perform load
-      this.loader.load((loader, result) => {
+      pixiLoader.load((loader, result) => {
         const resNames = Object.keys(result);
         let errorFree = true;
 
@@ -56,6 +72,8 @@ class ResourceServer {
           } else {
             // Loading successful
             resources[name] = resTexture;
+            // Cache url Path
+            this.cache[result[name].url] = resTexture;
           }
         }
 
