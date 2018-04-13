@@ -61,10 +61,11 @@ class KnockOff extends Gamemode {
     Object.keys(this.tags).forEach(id => {
       const list = this.tags[id];
       while (list.length > 0) {
-        list[0].timer -= dt;
-        if (list[0].timer <= 0) {
+        if (list[0].timer - dt <= 0) {
           // Remove expired tag
           list.shift();
+        } else {
+          break;
         }
       }
       list.forEach(item => {
@@ -111,8 +112,8 @@ class KnockOff extends Gamemode {
     circle.collision.addListener((player, victim) => {
       // Check if victim is a player
       if (victim.controller.id !== undefined) {
-        this.tags[victim.controller.id].push({ id: player.id, timer: TAG_TIME });
-        this.tags[player.controller.id].push({ id: victim.id, timer: TAG_TIME });
+        this.tags[victim.controller.id].push({ id: player.controller.id, timer: TAG_TIME });
+        this.tags[player.controller.id].push({ id: victim.controller.id, timer: TAG_TIME });
       }
     });
   }
@@ -146,7 +147,7 @@ class KnockOff extends Gamemode {
   onDeath(entity) {
     const { id } = entity.controller;
     this.tags[id].forEach(item => {
-      console.log("{} killed {}".format(id, item.id))
+      console.log("%s killed %s", item.id, id);
       this.score[item.id] += 1;
     });
 

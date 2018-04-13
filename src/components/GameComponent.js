@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
+import settings from '../config';
 import Game from '../game/Game';
 /*
 Game testing component.
@@ -16,7 +17,11 @@ class GameComponent extends Component {
 
   componentDidMount() {
     // Setup PIXI Canvas in componentDidMount
-    const app = new PIXI.Application();
+    const options = { 
+      forceCanvas: settings.game.forceCanvas,
+      antialias: settings.game.antialias,
+    };
+    const app = new PIXI.Application(options);
     this.app = app;
     this.refElement.appendChild(this.app.renderer.view);
 

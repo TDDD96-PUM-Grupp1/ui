@@ -89,7 +89,7 @@ class CollisionBase {
       let ty = vdy - cv * ny;
       const tl = Math.sqrt(tx * tx + ty * ty);
       // Don't do friction if there is no tangent!
-      if (tl != 0) {
+      if (tl !== 0) {
         tx /= tl;
         ty /= tl;
         const tn1 = r1x * ty - r1y * tx;
