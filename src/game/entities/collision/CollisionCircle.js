@@ -7,8 +7,6 @@ class CollisionCircle extends CollisionBase {
   constructor(radius) {
     super();
     this.radius = radius;
-
-    this.debugtime = 0;
   }
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
@@ -52,8 +50,6 @@ class CollisionCircle extends CollisionBase {
     const y3 = y2 + ey * es + fy * fs;
     const xdif2 = x3 - x;
     const ydif2 = y3 - y;
-
-    /*  */
 
     const sqdist = xdif2 * xdif2 + ydif2 * ydif2;
     if (sqdist <= this.radius * this.radius) {

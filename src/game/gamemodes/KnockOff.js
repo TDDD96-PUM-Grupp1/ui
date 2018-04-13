@@ -23,6 +23,8 @@ class KnockOff extends Gamemode {
     this.score = {};
     this.tags = {};
 
+    this.game.respawnHandler.registerRespawnListener(this);
+
     this.arenaRadius = 350;
     this.arenaCenterx = 500;
     this.arenaCentery = 500;
@@ -39,7 +41,7 @@ class KnockOff extends Gamemode {
     this.arenaGraphic = graphic;
 
     // TODO remove
-    this.onPlayerJoin(1);
+    /* this.onPlayerJoin(1);
     let fakePlayer = this.players[1];
     fakePlayer.setController(new LocalPlayerController(1));
     fakePlayer.setColor(0xee6666);
@@ -49,9 +51,7 @@ class KnockOff extends Gamemode {
     fakePlayer = this.players[2];
     fakePlayer.setColor(0xeeff66);
     fakePlayer.x = 600;
-    fakePlayer.y = 300;
-
-    this.game.respawnHandler.registerRespawnListener(this);
+    fakePlayer.y = 300; */
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
@@ -92,7 +92,6 @@ class KnockOff extends Gamemode {
 
   // Called when a new player connects
   onPlayerJoin(idTag) {
-    console.log('Player join');
     const circle = new PlayerCircle(this.game.app);
     const controller = new PlayerController(this.game, idTag);
     circle.setController(controller);
@@ -140,7 +139,6 @@ class KnockOff extends Gamemode {
 
   // Called when an entity is respawned.
   onRespawn(entity) {
-    console.log('Player respawn');
     // Move the entity to the center
     entity.x = this.arenaCenterx;
     entity.y = this.arenaCentery;
@@ -151,11 +149,9 @@ class KnockOff extends Gamemode {
   onDeath(entity) {
     const { id } = entity.controller;
     this.tags[id].forEach(item => {
-      console.log("%s killed %s", item.id, id);
+      // console.log("%s killed %s", item.id, id);
       this.score[item.id] += 1;
     });
-
-    console.log('Player died');
 
     if (this.respawn[id]) {
       this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
