@@ -30,6 +30,7 @@ class Game {
     const gamemodeHandler = GamemodeHandler.getInstance();
     const SelectedMode = gamemodeHandler.getSelected();
     this.currentGamemode = new SelectedMode(this);
+    this.currentGamemode.init();
   }
 
   // Main game loop

@@ -12,9 +12,11 @@ class Gamemode {
   no-empty-function */
   constructor(game) {
     this.game = game;
+  }
 
+  init() {
     if (settings.game.localPlayer) {
-      this.onPlayerJoin({ iconID: 1, idTag: 'local' }, localPlayer => {
+      this.onPlayerJoin({ iconID: 1, id: 'local' }, localPlayer => {
         localPlayer.setController(new LocalPlayerController('local'));
         localPlayer.setColor(0xee6666);
         localPlayer.y = 300;
