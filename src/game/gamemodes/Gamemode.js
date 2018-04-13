@@ -22,7 +22,7 @@ class Gamemode {
 
   // Called when a player disconnects
   onPlayerLeave(idTag) {
-    const entities = this.game.entityHandler.getEntities();
+    const entities = this.game.entityHandler.getEntities().splice();
 
     for (let i = 0; i < entities.length; i += 1) {
       const currentEntity = entities[i];
