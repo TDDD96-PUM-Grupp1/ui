@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 
-const BG_COLOR = '0xFFFFFF';
-const TEXT_COLOR = '#000000';
+const BG_COLOR = '0x5C5C5C';
+const TEXT_COLOR = '#FFFFFF';
 
 class HighscoreList{
   constructor(scoreManager, game, x = 0, y = 0){
@@ -41,9 +41,6 @@ class HighscoreList{
         // Update needd scores
         scores.forEach((scoreName, scoreI) => {
           if(curRow[scoreName].text !== val[scoreName].toString()){
-            console.log('updateing score:');
-            console.log(scoreName);
-
             curRow[scoreName].text = val[scoreName];
           }
         });
@@ -60,12 +57,12 @@ class HighscoreList{
 
         let bg = new PIXI.Graphics();
         bg.beginFill(BG_COLOR, 1);
-        bg.drawRoundedRect(0, 0, 300, 50, 10);
+        bg.drawRoundedRect(0, 0, 200 + 30*scores.length, 50, 10);
         bg.endFill();
 
         let name = new PIXI.Text(val.name, textStyle);
-        name.x = 0;
-        name.y = 0;
+        name.x = 10;
+        name.y = 13;
 
         rowCont.addChild(bg);
         rowCont.addChild(name);
@@ -77,8 +74,8 @@ class HighscoreList{
 
         scores.forEach((scoreName, scoreI) => {
           let text = new PIXI.Text(val[scoreName], textStyle);
-          text.x = 200 + (scoreI*20);
-          text.y = 0;
+          text.x = 200 + (scoreI*30);
+          text.y = 13;
 
           newRow[scoreName] = text;
           rowCont.addChild(text);
@@ -89,6 +86,7 @@ class HighscoreList{
       }
     });
 
+    // Remove disconnected players from list
     Object.keys(this.rows).forEach((key, index) => {
       if(!this.rows[key].painted){
         this.container.removeChild(this.rows[key].row);
