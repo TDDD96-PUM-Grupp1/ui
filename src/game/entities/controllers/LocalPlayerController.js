@@ -38,7 +38,7 @@ Local player object controller, takes input from WASD
 class LocalPlayerController extends EntityController {
   constructor(id) {
     super();
-    this.playerid = id;
+    this.id = id;
 
     this.time = 0;
 

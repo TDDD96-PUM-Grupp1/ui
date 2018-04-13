@@ -19,6 +19,9 @@ class PlayerController extends EntityController {
 
   // Update
   update(dt) {
+    if (!this.game.instance) {
+      return;
+    }
     const playerData = this.game.instance.getPlayer(this.id);
     if (playerData !== undefined) {
       let { beta, gamma } = playerData.sensor;

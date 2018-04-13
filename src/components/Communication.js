@@ -102,7 +102,7 @@ class Communication {
     }
 
     // If false this usually means the instance is full.
-    if (!this.instance.addPlayer(data.id, data.name)) {
+    if (!this.instance.addPlayer(data.id, data.name, data.iconID)) {
       response.error('cannot add player.');
       return;
     }
@@ -138,7 +138,7 @@ class Communication {
     // Remove the communication player. Stop keeping track of timeouts
     delete this.players[id];
     // Remove the player from the instance.
-    this.instance.removePlayer();
+    this.instance.removePlayer(id);
   }
 
   /*

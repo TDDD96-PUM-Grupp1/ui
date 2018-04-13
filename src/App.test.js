@@ -33,7 +33,7 @@ describe('ResourceServer', () => {
     const rs = new ResourceServer();
     /* eslint-disable function-paren-newline */
     await expect(rs.requestResources(filenames)).rejects.toEqual(
-      new Error(`Failed to load resource ${errorName} from path resources/${errorFilepath}`),
+      new Error(`Failed to load resource ${errorName} from path resources${errorFilepath}`),
     );
     /* eslint-enable function-paren-newline */
   });

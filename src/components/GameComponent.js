@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
+import settings from '../config';
 import Game from '../game/Game';
 /*
 Game testing component.
@@ -16,8 +17,13 @@ class GameComponent extends Component {
 
   componentDidMount() {
     // Setup PIXI Canvas in componentDidMount
-    const app = new PIXI.Application();
+    const options = {
+      forceCanvas: settings.game.forceCanvas,
+      antialias: settings.game.antialias,
+    };
+    const app = new PIXI.Application(options);
     this.app = app;
+
     this.refElement.appendChild(this.app.renderer.view);
 
     // Make the canvas resolution scale to fit the window size
@@ -28,6 +34,7 @@ class GameComponent extends Component {
 
     // set background color
     app.renderer.backgroundColor = 0x061639;
+    // app.renderer.backgroundColor = 0xffffff;
 
     // Initialize game
     const game = new Game(app, this.communication);
