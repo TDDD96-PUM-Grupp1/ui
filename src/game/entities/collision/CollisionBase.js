@@ -13,9 +13,9 @@ class CollisionBase {
 
   // Call all listeners.
   notifyListeners(other) {
-    for (let i; i < this.listeners.length; i += 1) {
-      this.listeners[i](this, other);
-    }
+    this.listeners.forEach(listener => {
+      listener(this.entity, other.entity);
+    });
   }
 
   // Set the owner of this collision.
@@ -78,9 +78,11 @@ class CollisionBase {
       this.applyImpulse(r1x, r1y, -ix, -iy);
       other.applyImpulse(r2x, r2y, ix, iy);
 
+      // Count as a hit if impulse is big enough
       if (Math.abs(impulseSize) > 1) {
-        this.notifyListeners();
+        this.notifyListeners(other);
       }
+      //this.notifyListeners(other);
 
       // normal tangent
       let tx = vdx - cv * nx;

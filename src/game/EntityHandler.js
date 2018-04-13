@@ -45,7 +45,8 @@ class EntityHandler {
     for (let i = 0; i < this.entities.length; i += 1) {
       copy.push(this.entities[i]);
     } */
-    return this.entities.slice();
+    // return this.entities.slice();
+    return this.entities;
   }
 
   // Destroy all entities and clear the entity list.

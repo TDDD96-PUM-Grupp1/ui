@@ -3,6 +3,7 @@ import EntityHandler from './EntityHandler';
 import CollisionHandler from './CollisionHandler';
 import ResourceServer from './ResourceServer';
 import GamemodeHandler from './GamemodeHandler';
+import RespawnHandler from './RespawnHandler';
 
 /*
 Game.
@@ -16,6 +17,7 @@ class Game {
     // Create all handlers
     this.entityHandler = new EntityHandler();
     this.collisionHandler = new CollisionHandler(this.entityHandler);
+    this.respawnHandler = new RespawnHandler(this.entityHandler);
     this.resourceServer = new ResourceServer();
 
     // Create gamemode
@@ -34,6 +36,7 @@ class Game {
     this.entityHandler.update(dt);
     this.collisionHandler.handleCollisions(dt);
     this.currentGamemode.postUpdate(dt);
+    this.respawnHandler.checkRespawns();
     this.entityHandler.updateGraphics(dt);
     this.communication.update(dt);
   }

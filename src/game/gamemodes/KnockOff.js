@@ -5,8 +5,6 @@ import Gamemode from './Gamemode';
 import PlayerController from '../entities/controllers/PlayerController';
 import LocalPlayerController from '../entities/controllers/LocalPlayerController';
 
-import RespawnHandler from '../RespawnHandler';
-
 // Respawn time in seconds
 const RESPAWN_TIME = 3;
 
@@ -21,6 +19,7 @@ class KnockOff extends Gamemode {
     super(game);
 
     this.players = {};
+    this.respawn = {};
     this.score = {};
     this.tags = {};
 
@@ -33,25 +32,26 @@ class KnockOff extends Gamemode {
     graphic.beginFill(0xfffffff);
     graphic.drawCircle(0, 0, this.arenaRadius);
     graphic.endFill();
-    game.app.stage.addChildAt(graphic, 0);
+    game.app.stage.addChildAt(graphic, 0); // Set arena to be first thing to render
     graphic.tint = 0x555555;
     graphic.x = this.arenaCenterx;
     graphic.y = this.arenaCentery;
     this.arenaGraphic = graphic;
 
     // TODO remove
-    const circle3 = new PlayerCircle(this.game.app);
-    const controller3 = new LocalPlayerController(1);
-    circle3.setController(controller3);
-    circle3.x = 400;
-    circle3.y = 400;
-    circle3.setColor(0xee6666);
-    circle3.setEntityListener(this);
-    this.game.entityHandler.register(circle3);
+    this.onPlayerJoin(1);
+    let fakePlayer = this.players[1];
+    fakePlayer.setController(new LocalPlayerController(1));
+    fakePlayer.setColor(0xee6666);
+    fakePlayer.y = 300;
 
-    this.respawnHandler = new RespawnHandler(this.game.entityHandler, RESPAWN_TIME);
+    this.onPlayerJoin(2);
+    fakePlayer = this.players[2];
+    fakePlayer.setColor(0xeeff66);
+    fakePlayer.x = 600;
+    fakePlayer.y = 300;
 
-    this.respawnHandler.registerRespawnListener(this);
+    this.game.respawnHandler.registerRespawnListener(this);
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
@@ -71,7 +71,6 @@ class KnockOff extends Gamemode {
         item.timer -= dt;
       });
     });
-    this.respawnHandler.checkRespawns();
   }
   /* eslint-enable no-unused-vars, class-methods-use-this */
 
@@ -105,28 +104,15 @@ class KnockOff extends Gamemode {
     this.players[idTag] = circle;
     this.score[idTag] = 0;
     this.tags[idTag] = [];
+    this.respawn[idTag] = true;
 
-    circle.addEntityListener({
-      onDeath(entity) {
-        const { id } = entity.controller;
-        this.tags[id].forEach(item => {
-          this.score[item.id] += 1;
-        });
-
-        // TODO: move this to a better place
-        console.log('Player died');
-
-        const deathTime = new Date();
-
-        this.respawnHandler.registerDeath(entity, deathTime);
-      },
-    });
+    circle.addEntityListener(this);
 
     circle.collision.addListener((player, victim) => {
       // Check if victim is a player
-      if (victim.id !== undefined) {
-        this.tags[victim.id].push({ id: player.id, timer: TAG_TIME });
-        this.tags[player.id].push({ id: victim.id, timer: TAG_TIME });
+      if (victim.controller.id !== undefined) {
+        this.tags[victim.controller.id].push({ id: player.id, timer: TAG_TIME });
+        this.tags[player.controller.id].push({ id: victim.id, timer: TAG_TIME });
       }
     });
   }
@@ -134,7 +120,8 @@ class KnockOff extends Gamemode {
   // Called when a player disconnects
   onPlayerLeave(idTag) {
     // When a player leaves, just leave their entity on the map.
-    // this.players[idTag].setController(null);
+    // But stop them from respawning.
+    this.respawn[idTag] = false;
   }
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
@@ -142,15 +129,32 @@ class KnockOff extends Gamemode {
   // Clean up after the gamemode is finished.
   cleanUp() {
     this.game.entityHandler.clear();
+    // TODO: Clear respawns
+    // this.game.respawnHandler.clear();
   }
 
-  // Respawn entities by registering them in the entityHandler.
+  // Called when an entity is respawned.
   onRespawn(entity) {
     console.log('Player respawn');
+    // Move the entity to the center
     entity.x = 400;
     entity.y = 400;
-    entity.graphic.visible = true;
-    this.game.entityHandler.register(entity);
+    // TODO: randomize a bit
+  }
+
+  // Called when an entity dies.
+  onDeath(entity) {
+    const { id } = entity.controller;
+    this.tags[id].forEach(item => {
+      console.log("{} killed {}".format(id, item.id))
+      this.score[item.id] += 1;
+    });
+
+    console.log('Player died');
+
+    if (this.respawn[id]) {
+      this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
+    }
   }
 
   /* eslint-disable class-methods-use-this */
