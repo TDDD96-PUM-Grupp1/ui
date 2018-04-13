@@ -40,15 +40,15 @@ class KnockOff extends Gamemode {
   /* eslint-disable no-unused-vars, class-methods-use-this */
   // Called before the game objects are updated.
   preUpdate(dt) {
-    this.arenaRadius--;
-
+    //this.arenaRadius = Math.floor(Math.random() * (151) + 150);
+/*
     this.arenaGraphic.beginFill(0xfffffff);
     this.arenaGraphic.drawCircle(0, 0, this.arenaRadius);
     this.arenaGraphic.endFill();
     this.arenaGraphic.tint = 0x555555;
     this.arenaGraphic.x = this.arenaCenterx;
     this.arenaGraphic.y = this.arenaCentery;
-
+*/
     // Update tags
     Object.keys(this.tags).forEach(id => {
       const list = this.tags[id];
