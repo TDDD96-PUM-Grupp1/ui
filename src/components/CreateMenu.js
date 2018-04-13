@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { PulseLoader } from 'react-spinners';
 import deepstream from 'deepstream.io-client-js';
 import GamemodeHandler from '../game/GamemodeHandler';
+import getRandomInstanceName from './InstanceNameHandler';
 
 const DEFAULT_MAX_PLAYERS = 8;
 const MAX_ALLOWED_PLAYERS = 100;
@@ -73,7 +74,7 @@ class CreateMenu extends Component {
    Request random name from the service.
    */
   randomName() {
-    this.setState({ instanceName: this.props.getRandomInstanceName() });
+    this.setState({ instanceName: getRandomInstanceName() });
   }
 
   /*
@@ -172,7 +173,6 @@ class CreateMenu extends Component {
 CreateMenu.propTypes = {
   onBack: PropTypes.func.isRequired,
   onStart: PropTypes.func.isRequired,
-  getRandomInstanceName: PropTypes.func.isRequired,
   /* eslint-disable */
   communication: PropTypes.object.isRequired,
   /* eslint-enable */
