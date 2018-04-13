@@ -122,11 +122,15 @@ class KnockOff extends Gamemode {
   }
 
   // Called when a player disconnects
+<<<<<<< HEAD
   onPlayerLeave(idTag) {
     // When a player leaves, just leave their entity on the map.
     // But stop them from respawning.
     this.respawn[idTag] = false;
   }
+=======
+  onPlayerLeave(idTag) { }
+>>>>>>> 9a145e842aba942e4dd59df914e11432706286fc
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
 
