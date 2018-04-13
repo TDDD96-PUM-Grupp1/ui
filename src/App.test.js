@@ -151,4 +151,51 @@ describe('ScoreManager', () => {
     expect(list[0].score).toBe(0);
     expect(list[1].score).toBe(0);
   });
+
+  it('can set score', () => {
+    let sm = new ScoreManager(comList);
+    sm.addScoreType('score', 0, true);
+    sm.setAscOrder(false);
+
+    sm.addPlayer('id1');
+    sm.addPlayer('id2');
+    sm.addPlayer('id3');
+
+    sm.setScore('score', 'id1', 3);
+    sm.setScore('score', 'id2', 8);
+    sm.setScore('score', 'id3', 5);
+
+    const list = sm.getList();
+    expect(list[0].name).toBe('player2');
+    expect(list[1].name).toBe('player3');
+    expect(list[2].name).toBe('player1');
+    expect(list[0].score).toBe(8);
+    expect(list[1].score).toBe(5);
+    expect(list[2].score).toBe(3);
+  });
+
+  it('can use multiple score types', () => {
+    let sm = new ScoreManager(comList);
+    sm.setAscOrder(false);
+
+    sm.addScoreType('score1', 0);
+    sm.addScoreType('score2', 0, true);
+
+    sm.addPlayer('id1');
+    sm.addPlayer('id2');
+
+    sm.addScore('score1', 'id1', 2);
+    sm.addScore('score1', 'id2', 1);
+
+    sm.addScore('score2', 'id1', 4);
+    sm.addScore('score2', 'id2', 7);
+
+    const list = sm.getList();
+    expect(list[0].name).toBe('player2');
+    expect(list[1].name).toBe('player1');
+    expect(list[0].score1).toBe(1);
+    expect(list[1].score1).toBe(2);
+    expect(list[0].score2).toBe(7);
+    expect(list[1].score2).toBe(4);
+  });
 });
