@@ -57,7 +57,7 @@ class Game {
   onSensorMoved(id, sensor) {}
 
   onButtonsPressed(id, button) {
-    console.log('Button pressed ')
+    console.log('Button pressed ');
     console.log(button);
   }
 

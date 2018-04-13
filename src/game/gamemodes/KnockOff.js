@@ -32,8 +32,6 @@ class KnockOff extends Gamemode {
     graphic.y = this.arenaCentery;
     this.arenaGraphic = graphic;
 
-    // TODO remove
-    /*
     this.game.resourceServer
       .requestResources([{ name: iconData[5].name, path: iconData[5].img }])
       .then(resources => {
@@ -46,9 +44,6 @@ class KnockOff extends Gamemode {
         circle3.setEntityListener(this);
         this.game.entityHandler.register(circle3);
       });
-      */
-
-    // TODO remove
 
     this.respawnHandler = new RespawnHandler(this.game.entityHandler, RESPAWN_TIME);
 

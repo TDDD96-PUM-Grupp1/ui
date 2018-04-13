@@ -3,6 +3,8 @@ import BasicCircle from './BasicCircle';
 
 const RADIUS = 32;
 const MASS = 1;
+const SQUAREROOTOF2 = 1.41;
+const ICONSIZE = Math.floor(RADIUS * SQUAREROOTOF2);
 
 /*
 Game object representing a player
@@ -12,8 +14,8 @@ class PlayerCircle extends BasicCircle {
     super(app, RADIUS, MASS, 0xff6600);
 
     this.sprite = new PIXI.Sprite(resource);
-    this.sprite.width = 50;
-    this.sprite.height = 50;
+    this.sprite.width = ICONSIZE;
+    this.sprite.height = ICONSIZE;
     // Center x,y
     this.sprite.anchor.set(0.5, 0.5);
 
@@ -35,6 +37,12 @@ class PlayerCircle extends BasicCircle {
     this.sprite.x = this.x;
     this.sprite.y = this.y;
     this.sprite.rotation = this.rotation;
+  }
+
+  // Destroy sprite when removed
+  destroy() {
+    super.destroy();
+    this.sprite.destroy();
   }
 }
 
