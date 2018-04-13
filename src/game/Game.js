@@ -60,6 +60,11 @@ class Game {
   // eslint-disable-next-line
   onSensorMoved(id, sensor) {}
 
+  onButtonsPressed(id, button) {
+    console.log('Button pressed ')
+    console.log(button);
+  }
+
   // eslint-disable-next-line
   onButtonPressed(id, button) {}
 }
