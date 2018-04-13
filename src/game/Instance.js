@@ -35,11 +35,12 @@ class Instance {
     if (Object.keys(this.players).length >= this.maxPlayers) {
       return false;
     }
+    this.players[id] = { name, sensor: { beta: 0, gamma: 0 } };
+
     if (this.instanceListener !== undefined) {
       this.instanceListener.onPlayerJoin(id);
     }
 
-    this.players[id] = { name, sensor: { beta: 0, gamma: 0 } };
     return true;
   }
 

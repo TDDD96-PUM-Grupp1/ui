@@ -2,11 +2,10 @@ const ASC_POLICY = ((a, b) => a - b);
 const DESC_POLICY = ((a, b) => b - a);
 
 class ScoreManager {
-  constructor(comList){
+  constructor(){
     this.highscoreList = [];
     this.scoreListeners = [];
 
-    this.comList = comList;
     this.orderPolicy = DESC_POLICY;
 
     this.defaultScores = {};
@@ -83,10 +82,10 @@ class ScoreManager {
   /*
   Add a new player to keep track of score for
   */
-  addPlayer(idTag){
+  addPlayer(idTag, name){
     let newObj = {
       'id': idTag,
-      'name': this.comList[idTag].name
+      'name': name
     };
 
     // Add default values of all score types

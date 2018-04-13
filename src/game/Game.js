@@ -24,7 +24,7 @@ class Game {
     this.entityHandler = new EntityHandler();
     this.collisionHandler = new CollisionHandler(this.entityHandler);
     this.resourceServer = new ResourceServer();
-    this.scoreManager = new ScoreManager(communication.getPlayers());
+    this.scoreManager = new ScoreManager();
 
     // Create gamemode
     const gamemodeHandler = GamemodeHandler.getInstance();
@@ -49,7 +49,9 @@ class Game {
   // Called when a new player joins.
   onPlayerJoin(idTag) {
     this.scoreManager.addPlayer(idTag);
-    this.currentGamemode.onPlayerJoin(idTag);
+
+    const name = this.instance.getPlayers()[idTag].name;
+    this.currentGamemode.onPlayerJoin(idTag, name);
   }
 
   // Called when a player leaves the game.

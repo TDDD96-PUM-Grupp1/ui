@@ -81,23 +81,13 @@ describe('GamemodeHandler', () => {
 });
 
 describe('ScoreManager', () => {
-  // Mockupp netwrok data
-  const comList = {
-    id1: { name: 'player1' },
-    id2: { name: 'player2' },
-    id3: { name: 'player3' },
-    id4: { name: 'player4' },
-    id5: { name: 'player5' },
-    id6: { name: 'player6' },
-  };
-
   it('can add score', () => {
-    let sm = new ScoreManager(comList);
+    let sm = new ScoreManager();
     sm.addScoreType('score', 0, true);
     sm.setAscOrder(false);
 
-    sm.addPlayer('id1');
-    sm.addPlayer('id2');
+    sm.addPlayer('id1', 'player1');
+    sm.addPlayer('id2', 'player2');
 
 
     sm.addScore('score', 'id1', 2);
@@ -112,13 +102,13 @@ describe('ScoreManager', () => {
   });
 
   it('can remove score', () => {
-    let sm = new ScoreManager(comList);
+    let sm = new ScoreManager();
     sm.addScoreType('score', 10, true);
     sm.setAscOrder(true);
 
-    sm.addPlayer('id1');
-    sm.addPlayer('id2');
-    sm.addPlayer('id3');
+    sm.addPlayer('id1', 'player1');
+    sm.addPlayer('id2', 'player2');
+    sm.addPlayer('id3', 'player3');
 
 
     sm.removeScore('score', 'id1', 2);
@@ -135,7 +125,7 @@ describe('ScoreManager', () => {
   });
 
   it('can reset score', () => {
-    let sm = new ScoreManager(comList);
+    let sm = new ScoreManager();
     sm.addScoreType('score', 0, true);
     sm.setAscOrder(true);
 
@@ -153,13 +143,13 @@ describe('ScoreManager', () => {
   });
 
   it('can set score', () => {
-    let sm = new ScoreManager(comList);
+    let sm = new ScoreManager();
     sm.addScoreType('score', 0, true);
     sm.setAscOrder(false);
 
-    sm.addPlayer('id1');
-    sm.addPlayer('id2');
-    sm.addPlayer('id3');
+    sm.addPlayer('id1', 'player1');
+    sm.addPlayer('id2', 'player2');
+    sm.addPlayer('id3', 'player3');
 
     sm.setScore('score', 'id1', 3);
     sm.setScore('score', 'id2', 8);
@@ -175,14 +165,14 @@ describe('ScoreManager', () => {
   });
 
   it('can use multiple score types', () => {
-    let sm = new ScoreManager(comList);
+    let sm = new ScoreManager();
     sm.setAscOrder(false);
 
     sm.addScoreType('score1', 0);
     sm.addScoreType('score2', 0, true);
 
-    sm.addPlayer('id1');
-    sm.addPlayer('id2');
+    sm.addPlayer('id1', 'player1');
+    sm.addPlayer('id2', 'player2');
 
     sm.addScore('score1', 'id1', 2);
     sm.addScore('score1', 'id2', 1);
