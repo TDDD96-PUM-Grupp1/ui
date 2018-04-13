@@ -21,7 +21,7 @@ describe('ResourceServer', () => {
     const filenames = [];
 
     const errorName = 'hejsan';
-    const errorFilepath = 'NO_EXIST.txt';
+    const errorFilepath = '/NO_EXIST.txt';
 
     filenames.push({
       name: errorName,
