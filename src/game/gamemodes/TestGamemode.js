@@ -15,8 +15,8 @@ class TestGamemode extends Gamemode {
     super(game);
 
     const rect = new BasicRectangle(this.game.app, 640, 32, 10, 0x88ee11);
-    const rectc = new TestController(700, 500, 0, 0, 0.8, 1.1);
-    rect.setController(rectc);
+    // const rectc = new TestController(700, 500, 0, 0, 0.8, 1.1);
+    // rect.setController(rectc);
     rect.x = 700;
     rect.y = 500;
     rect.collisionGroup = 1;
