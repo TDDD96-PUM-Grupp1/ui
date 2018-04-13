@@ -17,7 +17,6 @@ class HighscoreList{
   }
 
   update() {
-    console.log('update HighscoreList');
     const list = this.scoreManager.getList();
 
     const textStyle = new PIXI.TextStyle({
@@ -63,12 +62,15 @@ class HighscoreList{
         this.rows[val.id] = newRow;
         this.container.addChild(rowCont);
       }
+    });
 
-      Object.keys(this.rows).forEach((key, index) => {
-        this.container.removeChild(this.rows[key].container);
+    Object.keys(this.rows).forEach((key, index) => {
+      console.log('Check if painted');
+      if(!this.rows[key].painted){
+        console.log('Remove');
+        this.container.removeChild(this.rows[key].row);
         delete this.rows[key];
-      });
-
+      }
     });
   }
 }

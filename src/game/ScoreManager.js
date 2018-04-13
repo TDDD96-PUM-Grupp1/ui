@@ -112,6 +112,8 @@ class ScoreManager {
     if(remId !== -1){
       this.highscoreList.splice(remId, 1);
     }
+
+    this.triggerUpdate();
   }
 
   /*
