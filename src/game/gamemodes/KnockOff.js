@@ -42,11 +42,14 @@ class KnockOff extends Gamemode {
     this.arenaGraphic = graphic;
 
     // TODO remove
-    /* this.onPlayerJoin(1);
-    let fakePlayer = this.players[1];
-    fakePlayer.setController(new LocalPlayerController(1));
-    fakePlayer.setColor(0xee6666);
-    fakePlayer.y = 300;
+    // this.onPlayerJoin(1, 1, () => {
+    //   const fakePlayer = this.players[1];
+    //   fakePlayer.setController(new LocalPlayerController(1));
+    //   fakePlayer.setColor(0xee6666);
+    //   fakePlayer.y = 300;
+    // });
+
+    /*
 
     this.onPlayerJoin(2);
     fakePlayer = this.players[2];
@@ -94,19 +97,23 @@ class KnockOff extends Gamemode {
   // Called after the game objects are updated.
   postUpdate(dt) {
     this.game.entityHandler.getEntities().forEach(entity => {
-      const dx = this.arenaCenterx - entity.x;
-      const dy = this.arenaCentery - entity.y;
-      const centerDist = Math.sqrt(dx * dx + dy * dy);
+      if (entity.isPlayer()) {
+        const dx = this.arenaCenterx - entity.x;
+        const dy = this.arenaCentery - entity.y;
+        const centerDist = Math.sqrt(dx * dx + dy * dy);
 
-      if (centerDist > this.arenaRadius) {
-        entity.die();
+        if (centerDist > this.arenaRadius - entity.radius) {
+          entity.die();
+        }
       }
     });
   }
 
   // Called when a new player connects
-  onPlayerJoin(idTag, iconID) {
+  onPlayerJoin(playerObject) {
     // console.log('Player join');
+
+    const { idTag, iconID } = playerObject;
 
     this.game.resourceServer
       .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
@@ -176,7 +183,7 @@ class KnockOff extends Gamemode {
     if (this.respawn[id]) {
       this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
     } else {
-      entity.destroy();
+      this.game.entityHandler.unregisterFully(entity);
     }
   }
 
