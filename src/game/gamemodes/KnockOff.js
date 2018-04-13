@@ -4,7 +4,7 @@ import Gamemode from './Gamemode';
 // import TestController from '../entities/controllers/TestController';
 import PlayerController from '../entities/controllers/PlayerController';
 // import LocalPlayerController from '../entities/controllers/LocalPlayerController';
-// import iconData from '../iconData';
+import iconData from '../iconData';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 3;
