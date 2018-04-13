@@ -88,38 +88,41 @@ class CollisionBase {
       let tx = vdx - cv * nx;
       let ty = vdy - cv * ny;
       const tl = Math.sqrt(tx * tx + ty * ty);
-      tx /= tl;
-      ty /= tl;
-      const tn1 = r1x * ty - r1y * tx;
-      const tn2 = r2x * ty - r2y * tx;
-      const tv = tx * vdx + ty * vdy;
-      const frictionInertiaSum = tn1 * tn1 / this.entity.I + tn2 * tn2 / other.entity.I;
-      let frictionSize = -(1 + restitution) * tv;
-      frictionSize /= massInverseSum + frictionInertiaSum;
+      // Don't do friction if there is no tangent!
+      if (tl != 0) {
+        tx /= tl;
+        ty /= tl;
+        const tn1 = r1x * ty - r1y * tx;
+        const tn2 = r2x * ty - r2y * tx;
+        const tv = tx * vdx + ty * vdy;
+        const frictionInertiaSum = tn1 * tn1 / this.entity.I + tn2 * tn2 / other.entity.I;
+        let frictionSize = -(1 + restitution) * tv;
+        frictionSize /= massInverseSum + frictionInertiaSum;
 
-      // Estimate collision friction by taking pythagorean average
-      // Prettier could not handle this inside the sqrt function
-      const fss =
-        this.entity.staticFriction * this.entity.staticFriction +
-        other.entity.staticFriction * other.entity.staticFriction;
-      const mu = Math.sqrt(fss);
+        // Estimate collision friction by taking pythagorean average
+        // Prettier could not handle this inside the sqrt function
+        const fss =
+          this.entity.staticFriction * this.entity.staticFriction +
+          other.entity.staticFriction * other.entity.staticFriction;
+        const mu = Math.sqrt(fss);
 
-      let fx;
-      let fy;
-      if (Math.abs(frictionSize) < impulseSize * mu) {
-        fx = frictionSize * tx;
-        fy = frictionSize * ty;
-      } else {
-        const fds =
-          this.entity.dynamicFriction * this.entity.dynamicFriction +
-          other.entity.dynamicFriction * other.entity.dynamicFriction;
-        const dmu = Math.sqrt(fds);
-        fx = -impulseSize * dmu * tx;
-        fy = -impulseSize * dmu * ty;
+        let fx;
+        let fy;
+        if (Math.abs(frictionSize) < impulseSize * mu) {
+          fx = frictionSize * tx;
+          fy = frictionSize * ty;
+        } else {
+          const fds =
+            this.entity.dynamicFriction * this.entity.dynamicFriction +
+            other.entity.dynamicFriction * other.entity.dynamicFriction;
+          const dmu = Math.sqrt(fds);
+          fx = -impulseSize * dmu * tx;
+          fy = -impulseSize * dmu * ty;
+        }
+
+        this.applyImpulse(r1x, r1y, -fx, -fy);
+        other.applyImpulse(r2x, r2y, fx, fy);
       }
-
-      this.applyImpulse(r1x, r1y, -fx, -fy);
-      other.applyImpulse(r2x, r2y, fx, fy);
     }
   }
 
