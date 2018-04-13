@@ -19,7 +19,7 @@ class PlayerCircle extends BasicCircle {
     // Center x,y
     this.sprite.anchor.set(0.5, 0.5);
 
-    app.stage.addChild(this.sprite);
+    this.graphic.addChild(this.sprite);
 
     // set collision group
     this.collisionGroup = 1;
@@ -31,19 +31,25 @@ class PlayerCircle extends BasicCircle {
   }
 
   // Update this entity's graphics
-  graphicUpdate(dt) {
-    super.graphicUpdate(dt);
+  // graphicUpdate(dt) {
+  //   super.graphicUpdate(dt);
 
-    this.sprite.x = this.x;
-    this.sprite.y = this.y;
-    this.sprite.rotation = this.rotation;
-  }
+  //   this.sprite.x = this.x;
+  //   this.sprite.y = this.y;
+  //   this.sprite.rotation = this.rotation;
+  // }
 
   // Destroy sprite when removed
   destroy() {
     super.destroy();
     this.sprite.destroy();
   }
+
+  /* eslint-disable */
+  isPlayer() {
+    return true;
+  }
+  /* eslint-enable */
 }
 
 export default PlayerCircle;

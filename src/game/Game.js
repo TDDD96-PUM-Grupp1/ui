@@ -49,8 +49,8 @@ class Game {
   }
 
   // Called when a new player joins.
-  onPlayerJoin(idTag, iconID) {
-    this.currentGamemode.onPlayerJoin(idTag, iconID);
+  onPlayerJoin(playerObject) {
+    this.currentGamemode.onPlayerJoin(playerObject);
   }
 
   // Called when a player leaves the game.

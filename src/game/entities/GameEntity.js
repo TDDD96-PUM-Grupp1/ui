@@ -116,6 +116,13 @@ class GameEntity {
   addEntityListener(listener) {
     this.listeners.push(listener);
   }
+
+  // Assume all entities aren't players and let the player objects override this.
+  /* eslint-disable */
+  isPlayer() {
+    return false;
+  }
+  /* eslint-enable */
 }
 
 export default GameEntity;

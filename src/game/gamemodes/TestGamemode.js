@@ -82,7 +82,9 @@ class TestGamemode extends Gamemode {
   postUpdate(dt) {}
 
   // Called when a new player connects
-  onPlayerJoin(idTag, iconID) {
+  onPlayerJoin(playerObject) {
+    const { idTag, iconID } = playerObject;
+
     this.game.resourceServer
       .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
       .then(resources => {
