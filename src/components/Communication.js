@@ -138,7 +138,7 @@ class Communication {
     // Remove the communication player. Stop keeping track of timeouts
     delete this.players[id];
     // Remove the player from the instance.
-    this.instance.removePlayer();
+    this.instance.removePlayer(id);
   }
 
   /*

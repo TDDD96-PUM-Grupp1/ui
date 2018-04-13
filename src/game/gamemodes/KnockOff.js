@@ -92,7 +92,7 @@ class KnockOff extends Gamemode {
   }
 
   // Called when a player disconnects
-  onPlayerLeave(idTag) {}
+  onPlayerLeave(idTag) { }
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
 
