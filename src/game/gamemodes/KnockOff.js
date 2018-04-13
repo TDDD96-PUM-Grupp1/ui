@@ -5,6 +5,7 @@ import Gamemode from './Gamemode';
 import PlayerController from '../entities/controllers/PlayerController';
 import LocalPlayerController from '../entities/controllers/LocalPlayerController';
 import RespawnHandler from './RespawnHandler';
+import HighscoreList from '../entities/HighscoreList'
 
 // Respawn time in seconds
 const RESPAWN_TIME = 3;
@@ -48,6 +49,8 @@ class KnockOff extends Gamemode {
     // Set up scores
     game.scoreManager.addScoreType('points', 0, true);
     game.scoreManager.setAscOrder(false);
+    const hsList = new HighscoreList(game.scoreManager);
+    game.app.stage.addChild(hsList);
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
