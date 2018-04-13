@@ -34,8 +34,13 @@ class PlayerController extends EntityController {
       const xacc = Math.sin(beta) * this.accelerationScale;
       const yacc = -Math.sin(gamma) * this.accelerationScale;
 
-      this.entity.vx = xacc;
-      this.entity.vy = yacc;
+      // P or PID regulator??
+      // Testing P
+      const pax = -this.entity.vx + xacc;
+      const pay = -this.entity.vy + yacc;
+
+      this.entity.ax = pax;
+      this.entity.ay = pay;
     }
   }
 }
