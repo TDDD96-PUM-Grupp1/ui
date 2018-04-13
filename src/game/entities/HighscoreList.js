@@ -55,15 +55,17 @@ class HighscoreList{
       } else {
         // New player
         let rowCont = new PIXI.Container();
+        rowCont.x = 0;
+        rowCont.y = 50*index;
 
         let bg = new PIXI.Graphics();
         bg.beginFill(BG_COLOR, 1);
-        bg.drawRoundedRect(0, 50*index, 300, 50, 10);
+        bg.drawRoundedRect(0, 0, 300, 50, 10);
         bg.endFill();
 
         let name = new PIXI.Text(val.name, textStyle);
         name.x = 0;
-        name.y = 50*index;
+        name.y = 0;
 
         rowCont.addChild(bg);
         rowCont.addChild(name);
@@ -76,7 +78,7 @@ class HighscoreList{
         scores.forEach((scoreName, scoreI) => {
           let text = new PIXI.Text(val[scoreName], textStyle);
           text.x = 200 + (scoreI*20);
-          text.y = 50*index;
+          text.y = 0;
 
           newRow[scoreName] = text;
           rowCont.addChild(text);
