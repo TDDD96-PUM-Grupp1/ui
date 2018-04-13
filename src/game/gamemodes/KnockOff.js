@@ -47,10 +47,9 @@ class KnockOff extends Gamemode {
     this.respawnHandler.registerRespawnListener(this);
 
     // Set up scores
-    game.scoreManager.addScoreType('points', 0, true);
-    game.scoreManager.setAscOrder(false);
-    const hsList = new HighscoreList(game.scoreManager);
-    game.app.stage.addChild(hsList);
+    game.scoreManager.addScoreType('deaths', 0, true);
+    game.scoreManager.setAscOrder(true);
+    new HighscoreList(game.scoreManager, game);
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
@@ -110,6 +109,9 @@ class KnockOff extends Gamemode {
   // Gets called when entity dies.
   onDeath(entity) {
     const deathTime = new Date();
+
+    const id = entity.controller.id;
+    this.game.scoreManager.addScore('deaths', id, 1);
 
     this.respawnHandler.registerDeath(entity, deathTime);
   }

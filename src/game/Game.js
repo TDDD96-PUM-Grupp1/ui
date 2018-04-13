@@ -47,10 +47,8 @@ class Game {
   }
 
   // Called when a new player joins.
-  onPlayerJoin(idTag) {
-    this.scoreManager.addPlayer(idTag);
-
-    const name = this.instance.getPlayers()[idTag].name;
+  onPlayerJoin(idTag, name) {
+    this.scoreManager.addPlayer(idTag, name);
     this.currentGamemode.onPlayerJoin(idTag, name);
   }
 
