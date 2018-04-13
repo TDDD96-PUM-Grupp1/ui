@@ -105,8 +105,10 @@ class KnockOff extends Gamemode {
   }
 
   // Called when a new player connects
-  onPlayerJoin(idTag, iconID) {
+  onPlayerJoin(playerObject) {
     // console.log('Player join');
+
+    const { idTag, iconID } = playerObject;
 
     this.game.resourceServer
       .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
