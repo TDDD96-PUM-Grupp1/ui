@@ -72,7 +72,6 @@ describe('GamemodeHandler', () => {
 
     for (let i = 0; i < gmList.length; i += 1) {
       gmHandler.selectGameMode(gmList[i]);
-
       GamemodeClass = gmHandler.getSelected();
       gamemode = new GamemodeClass(game);
     }
