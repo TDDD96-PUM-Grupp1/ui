@@ -31,12 +31,14 @@ class Instance {
    * @param String name Name of the player.
    * @return true if the player was added and false otherwise.
    */
-  addPlayer(id, name, iconID) {
+  addPlayer(playerObject) {
+    const { id, name } = playerObject;
+
     if (Object.keys(this.players).length >= this.maxPlayers) {
       return false;
     }
     if (this.instanceListener !== undefined) {
-      this.instanceListener.onPlayerJoin(id, iconID);
+      this.instanceListener.onPlayerJoin(playerObject);
     }
 
     this.players[id] = { name, sensor: { beta: 0, gamma: 0 } };
