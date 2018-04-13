@@ -50,7 +50,6 @@ class StartMenu extends Component {
           onStart={this.props.onGameStart}
           onBack={this.showFirst}
           communication={this.props.communication}
-          getRandomInstanceName={this.props.getRandomInstanceName}
         />
       ),
       // TODO add actual about page
@@ -74,7 +73,6 @@ class StartMenu extends Component {
 
 StartMenu.propTypes = {
   onGameStart: PropTypes.func.isRequired,
-  getRandomInstanceName: PropTypes.func.isRequired,
   /* eslint-disable */
   communication: PropTypes.object.isRequired,
   /* eslint-enable */

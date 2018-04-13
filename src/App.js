@@ -8,7 +8,6 @@ import GameComponent from './components/GameComponent';
 // TODO: Uncomment and use the components below:
 // import PlayerList from './components/PlayerList';
 import Communication from './components/Communication';
-import InstanceNameHandler from './components/InstanceNameHandler';
 import StartMenu from './components/StartMenu';
 import settings from './config';
 
@@ -29,8 +28,6 @@ class App extends Component {
     };
 
     this.setGameActive = this.setGameActive.bind(this);
-
-    this.instanceNameHandler = new InstanceNameHandler();
 
     // This is needed because of a weird TravisCI bug that caused the test
     // to get stuck when connecting.
@@ -58,11 +55,7 @@ class App extends Component {
         {this.state.gameActive ? (
           <GameComponent communication={this.com} />
         ) : (
-          <StartMenu
-            onGameStart={this.setGameActive}
-            getRandomInstanceName={this.instanceNameHandler.getRandomInstanceName}
-            communication={this.com}
-          />
+          <StartMenu onGameStart={this.setGameActive} communication={this.com} />
         )}
       </div>
     );
