@@ -44,6 +44,7 @@ class KnockOff extends Gamemode {
     this.arenaGraphic = graphic;
 
     // Set up scores
+    game.scoreManager.addScoreType('kills', 0);
     game.scoreManager.addScoreType('deaths', 0, true);
     game.scoreManager.setAscOrder(true);
     new HighscoreList(game.scoreManager, game);

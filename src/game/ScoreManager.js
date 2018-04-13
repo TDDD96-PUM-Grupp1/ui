@@ -13,6 +13,13 @@ class ScoreManager {
   }
 
   /*
+  Get a list of all the different scoretypes
+  */
+  getScores(){
+    return Object.keys(this.defaultScores);
+  }
+
+  /*
   Trigger listenrs to update
   */
   triggerUpdate(){
