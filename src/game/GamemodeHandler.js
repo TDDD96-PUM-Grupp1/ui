@@ -2,6 +2,7 @@ import TestGamemode from './gamemodes/TestGamemode';
 import KnockOff from './gamemodes/KnockOff';
 import settings from '../config';
 import KnockOffRandom from './gamemodes/KnockOffRandom';
+import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 
 /*
 Singleton class for handling gamemode storage and selection
@@ -12,7 +13,8 @@ class GMHandlerClass {
     this.gamemodes = {
       knockOff: KnockOff,
       knockOffRandom: KnockOffRandom,
-      testGamemode: TestGamemode,
+      knockOffDynamic: KnockOffDynamic,
+      testGamemode: TestGamemode
     };
 
     if (settings.skipmenu) {
