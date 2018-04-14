@@ -1,11 +1,4 @@
-/* eslint-disable prettier/prettier */
-import * as PIXI from 'pixi.js';
-import Gamemode from './Gamemode';
 import KnockOff from './KnockOff';
-
-// Respawn time in seconds
-
-// The max time between a collision and a player dying in order to count as a kill.
 
 // Constants for self-changing gameboard size
 const maxRadius = 500;
@@ -17,19 +10,22 @@ const largeInc = 1.1;
 const changeInterval = 60;
 
 /*
-  Knock off gamemode, get score by knocking other players off the arena.
+  Knock off gamemode with a randomly changing arena, get score by knocking other players off the it.
 */
 class KnockOffRandom extends KnockOff {
-  // constructor(game) {
-  //   super(game);
-  // }
+  constructor(game) {
+    super(game);
+    this.changeCounter = changeInterval;
 
-  /* eslint-disable no-unused-vars, class-methods-use-this */
+    // Sanity check since you set the radius and its bonds in different files
+    if (this.arenaRadius > maxRadius || this.arenaRadius < minRadius) {
+      throw Error('Contradicting radius and radius bonds');
+    }
+  }
+
   // Called before the game objects are updated.
   preUpdate(dt) {
     super.preUpdate(dt);
-    // TODO make this a new gamemode
-    // TODO make a gamemode where the circle shape changes non randomly
     if (this.changeCounter <= 0) {
       this.randomizeCircle();
       this.changeCounter = changeInterval;
@@ -75,8 +71,6 @@ class KnockOffRandom extends KnockOff {
       this.mainCircle.scale.y *= multiplier;
     }
   }
-
-  /* eslint-disable class-methods-use-this */
 }
 
 export default KnockOffRandom;
