@@ -53,13 +53,14 @@ class KnockOff extends Gamemode {
   preUpdate(dt) {
     // TODO make this a new gamemode
     // TODO make a gamemode where the circle shape changes non randomly
+    /*
     if (this.changeCounter <= 0) {
       this.randomizeCircle();
       this.changeCounter = changeInterval;
     } else {
       this.changeCounter -= 1;
     }
-
+*/
     // Update tags
     Object.keys(this.tags).forEach(id => {
       const list = this.tags[id];
