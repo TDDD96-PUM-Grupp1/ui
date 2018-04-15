@@ -36,6 +36,11 @@ class GameEntity {
     this.collisionGroup = 0;
 
     this.listeners = [];
+
+    // Phasing
+    this.phaseTimer = 2;
+    this.blinkSpeed = Math.PI * 7;
+    this.phasing = false;
   }
 
   die() {
@@ -86,6 +91,16 @@ class GameEntity {
     this.graphic.y = this.y;
 
     this.graphic.rotation = this.rotation;
+
+    if (this.phasing) {
+      this.phaseTimer -= dt;
+      this.graphic.alpha = 0.6 + 0.4 * Math.cos(this.phaseTimer * this.blinkSpeed);
+      if (this.phaseTimer < 0) {
+        this.alpha = 1;
+        this.phasing = false;
+        this.collisionGroup += 1;
+      }
+    }
   }
 
   // Return the predicted next position
@@ -115,6 +130,13 @@ class GameEntity {
 
   addEntityListener(listener) {
     this.listeners.push(listener);
+  }
+
+  // Activate phasing
+  phase(time) {
+    this.phasing = true;
+    this.phaseTimer = time;
+    this.collisionGroup -= 1;
   }
 
   // Assume all entities aren't players and let the player objects override this.
