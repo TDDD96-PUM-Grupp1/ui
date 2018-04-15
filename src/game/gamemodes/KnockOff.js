@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
 
@@ -29,7 +30,7 @@ class KnockOff extends Gamemode {
     // Set up arena graphic
     const graphic = new PIXI.Graphics();
     graphic.beginFill(0xfffffff);
-    graphic.drawCircle(0, 0, this.arenaRadius);
+    this.mainCircle = graphic.drawCircle(0, 0, this.arenaRadius);
     graphic.endFill();
     game.app.stage.addChildAt(graphic, 0); // Set arena to be first thing to render
     graphic.tint = 0x555555;
@@ -39,6 +40,7 @@ class KnockOff extends Gamemode {
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
+
   // Called before the game objects are updated.
   preUpdate(dt) {
     // Update tags
@@ -57,6 +59,7 @@ class KnockOff extends Gamemode {
       });
     });
   }
+
   /* eslint-enable no-unused-vars, class-methods-use-this */
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
