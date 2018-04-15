@@ -1,5 +1,8 @@
 // import * as PIXI from 'pixi.js';
 // import { BulgePinchFilter } from 'pixi-filters';
+// import { PixelateFilter } from 'pixi-filters';
+// import { ReflectionFilter } from 'pixi-filters';
+// import { ShockwaveFilter } from 'pixi-filters';
 import EntityHandler from './EntityHandler';
 import CollisionHandler from './CollisionHandler';
 import ResourceServer from './ResourceServer';
@@ -23,6 +26,9 @@ class Game {
 
     // Mind fuck:
     // app.stage.filters = [new BulgePinchFilter([0.5, 0.5], 370, 3)];
+    // app.stage.filters = [new PixelateFilter(3)];
+    // app.stage.filters = [new ReflectionFilter()];
+    // this.shockwaveTime = 0;
 
     // Create all handlers
     this.entityHandler = new EntityHandler();
@@ -41,6 +47,13 @@ class Game {
   loop(delta) {
     // Convert frame delta to time delta [second] (assuming 60fps)
     const dt = delta / 60;
+
+    // More mindfuck:
+    /* this.shockwaveTime += dt * 0.3;
+    if (this.shockwaveTime > 1) {
+      this.shockwaveTime -= 1.5;
+    }
+    this.app.stage.filters = [new ShockwaveFilter([351, 351], {}, this.shockwaveTime)]; */
 
     // Update handlers and gamemodes
     this.currentGamemode.preUpdate(dt);

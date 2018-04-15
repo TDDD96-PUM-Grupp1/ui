@@ -28,7 +28,8 @@ class BasicCircle extends GameEntity {
     graphic.filters = [
       new BevelFilter({
         rotation: 90,
-        lightAlpha: 0.2,
+        lightAlpha: 0.15,
+        thickness: 3,
       }),
     ];
 
