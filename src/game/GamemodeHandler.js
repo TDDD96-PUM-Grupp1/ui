@@ -1,6 +1,8 @@
 import TestGamemode from './gamemodes/TestGamemode';
 import KnockOff from './gamemodes/KnockOff';
 import settings from '../config';
+import KnockOffRandom from './gamemodes/KnockOffRandom';
+import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 
 /*
 Singleton class for handling gamemode storage and selection
@@ -10,7 +12,9 @@ class GMHandlerClass {
     // List of all available gamemodes
     this.gamemodes = {
       knockOff: KnockOff,
-      testGamemode: TestGamemode,
+      knockOffRandom: KnockOffRandom,
+      knockOffDynamic: KnockOffDynamic,
+      testGamemode: TestGamemode
     };
 
     if (settings.skipmenu) {
@@ -73,7 +77,7 @@ const GamemodeHandler = (() => {
       }
 
       return instance;
-    },
+    }
   };
 })();
 
