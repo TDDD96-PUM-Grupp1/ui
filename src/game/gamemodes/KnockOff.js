@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { GlowFilter } from 'pixi-filters';
 import Gamemode from './Gamemode';
 
 // Respawn time in seconds
@@ -27,14 +28,24 @@ class KnockOff extends Gamemode {
 
     // Set up arena graphic
     const graphic = new PIXI.Graphics();
-    graphic.beginFill(0xfffffff);
+    graphic.beginFill(0x444444);
     graphic.drawCircle(0, 0, this.arenaRadius);
     graphic.endFill();
     game.app.stage.addChildAt(graphic, 0); // Set arena to be first thing to render
-    graphic.tint = 0x555555;
+    graphic.tint = 0xffffff;
     graphic.x = this.arenaCenterx;
     graphic.y = this.arenaCentery;
     this.arenaGraphic = graphic;
+
+    const border = new PIXI.Graphics();
+    border.lineStyle(5, 0x220000);
+    border.drawCircle(0, 0, this.arenaRadius + 2);
+    border.endFill();
+    game.app.stage.addChildAt(border, 1);
+    border.x = this.arenaCenterx;
+    border.y = this.arenaCentery;
+    border.filterArea = new PIXI.Rectangle(100, 100, 800, 800);
+    border.filters = [new GlowFilter(10, 3, 3, 0xff0101, 0.3)];
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */

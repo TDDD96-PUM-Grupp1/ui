@@ -1,4 +1,5 @@
 // import * as PIXI from 'pixi.js';
+// import { BulgePinchFilter } from 'pixi-filters';
 import EntityHandler from './EntityHandler';
 import CollisionHandler from './CollisionHandler';
 import ResourceServer from './ResourceServer';
@@ -19,6 +20,9 @@ class Game {
     if (this.instance !== undefined) {
       this.instance.addInstanceListener(this);
     }
+
+    // Mind fuck:
+    // app.stage.filters = [new BulgePinchFilter([0.5, 0.5], 370, 3)];
 
     // Create all handlers
     this.entityHandler = new EntityHandler();

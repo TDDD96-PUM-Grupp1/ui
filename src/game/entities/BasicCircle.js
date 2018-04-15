@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { BevelFilter } from 'pixi-filters';
 import GameEntity from './GameEntity';
 import CollisionCircle from './collision/CollisionCircle';
 
@@ -23,6 +24,13 @@ class BasicCircle extends GameEntity {
     app.stage.addChild(graphic);
     graphic.tint = color;
     this.graphic = graphic;
+
+    graphic.filters = [
+      new BevelFilter({
+        rotation: 90,
+        lightAlpha: 0.2,
+      }),
+    ];
 
     // Create the collison circle
     this.collision = new CollisionCircle(radius);
