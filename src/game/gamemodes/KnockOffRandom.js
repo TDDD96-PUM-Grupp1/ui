@@ -7,7 +7,7 @@ const smallDec = 0.95;
 const largeDec = 0.9;
 const smallInc = 1.05;
 const largeInc = 1.1;
-const changeInterval = 60;
+const changeInterval = 25;
 
 /*
   Knock off gamemode with a randomly changing arena, get score by knocking other players off the it.

@@ -3,9 +3,8 @@ import KnockOff from './KnockOff';
 // Constants for self-changing gameboard size
 const maxRadius = 500;
 const minRadius = 200;
-const multInc = 1.1;
-const multDec = 0.9;
-const changeInterval = 60;
+const multInc = 1.01;
+const multDec = 0.99;
 
 /*
   Knock off gamemode with a randomly changing arena, get score by knocking other players off the it.
@@ -13,7 +12,6 @@ const changeInterval = 60;
 class KnockOffDynamic extends KnockOff {
   constructor(game) {
     super(game);
-    this.changeCounter = changeInterval;
     this.expanding = false;
 
     // Sanity check since you set the radius and its bonds in different files
@@ -25,12 +23,7 @@ class KnockOffDynamic extends KnockOff {
   // Called before the game objects are updated.
   preUpdate(dt) {
     super.preUpdate(dt);
-    if (this.changeCounter <= 0) {
-      this.modifyCircle();
-      this.changeCounter = changeInterval;
-    } else {
-      this.changeCounter -= 1;
-    }
+    this.modifyCircle();
   }
 
   /**
