@@ -12,6 +12,9 @@ class Gamemode {
   no-empty-function */
   constructor(game) {
     this.game = game;
+
+    this.onWindowResize = this.onWindowResize.bind(this);
+    window.onresize = this.onWindowResize;
   }
 
   init() {
@@ -69,6 +72,10 @@ class Gamemode {
         return;
       }
     }
+  }
+
+  onWindowResize() {
+    this.game.app.renderer.resize(window.innerWidth, window.innerHeight);
   }
 
   // Clean up after the gamemode is finished.

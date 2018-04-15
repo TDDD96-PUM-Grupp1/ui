@@ -75,6 +75,12 @@ class KnockOff extends Gamemode {
     });
   }
 
+  onWindowResize() {
+    super.onWindowResize();
+    this.arenaGraphic.x = Math.round(window.innerWidth / 2);
+    this.arenaGraphic.y = Math.round(window.innerHeight / 2);
+  }
+
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
     const { iconID } = playerObject;
