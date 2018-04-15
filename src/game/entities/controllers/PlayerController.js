@@ -1,6 +1,6 @@
 import EntityController from './EntityController';
 
-const MAX_ANGLE = 50;
+const MAX_ANGLE = 40;
 
 /*
 Player object controller, will handle taking input from player and modifying their objects.
@@ -11,7 +11,7 @@ class PlayerController extends EntityController {
     this.game = game;
     this.id = id;
 
-    this.accelerationScale = 150;
+    this.accelerationScale = 500;
   }
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
@@ -31,8 +31,11 @@ class PlayerController extends EntityController {
       gamma = Math.min(MAX_ANGLE, Math.max(gamma, -MAX_ANGLE));
       gamma = gamma / MAX_ANGLE * Math.PI * 0.5;
 
-      const xacc = Math.sin(beta) * this.accelerationScale;
-      const yacc = -Math.sin(gamma) * this.accelerationScale;
+      // const xacc = Math.sin(beta) * this.accelerationScale;
+      // const yacc = -Math.sin(gamma) * this.accelerationScale;
+
+      const xacc = beta * this.accelerationScale;
+      const yacc = -gamma * this.accelerationScale;
 
       // P or PID regulator??
       // Testing P
