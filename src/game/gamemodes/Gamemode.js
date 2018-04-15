@@ -1,3 +1,9 @@
+import settings from '../../config';
+import PlayerCircle from '../entities/PlayerCircle';
+import PlayerController from '../entities/controllers/PlayerController';
+import LocalPlayerController from '../entities/controllers/LocalPlayerController';
+import iconData from '../iconData';
+
 /*
 Gamemode base class.
 */
@@ -6,6 +12,16 @@ class Gamemode {
   no-empty-function */
   constructor(game) {
     this.game = game;
+  }
+
+  init() {
+    if (settings.game.localPlayer) {
+      this.onPlayerJoin({ iconID: 1, id: 'local' }, localPlayer => {
+        localPlayer.setController(new LocalPlayerController('local'));
+        localPlayer.setColor(0xee6666);
+        localPlayer.y = 300;
+      });
+    }
   }
   /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
   no-empty-function */
@@ -18,7 +34,26 @@ class Gamemode {
   postUpdate(dt) {}
 
   // Called when a new player connects
-  onPlayerJoin(playerObject) {}
+  onPlayerJoin(playerObject, callback) {
+    const { iconID } = playerObject;
+    const idTag = playerObject.id;
+
+    this.game.resourceServer
+      .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
+      .then(resources => {
+        const circle = new PlayerCircle(this.game.app, resources[iconData[iconID].name]);
+        const controller = new PlayerController(this.game, idTag);
+        circle.setController(controller);
+        this.onPlayerCreated(playerObject, circle);
+
+        if (callback) {
+          callback(circle);
+        }
+      });
+  }
+
+  // Called after a player has joined and their circle has been created.
+  onPlayerCreated(playerObject, circle) {}
 
   // Called when a player disconnects
   onPlayerLeave(idTag) {

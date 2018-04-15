@@ -1,10 +1,5 @@
 import * as PIXI from 'pixi.js';
-import PlayerCircle from '../entities/PlayerCircle';
 import Gamemode from './Gamemode';
-// import TestController from '../entities/controllers/TestController';
-import PlayerController from '../entities/controllers/PlayerController';
-// import LocalPlayerController from '../entities/controllers/LocalPlayerController';
-import iconData from '../iconData';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 3;
@@ -40,35 +35,6 @@ class KnockOff extends Gamemode {
     graphic.x = this.arenaCenterx;
     graphic.y = this.arenaCentery;
     this.arenaGraphic = graphic;
-
-    // TODO remove
-    // this.onPlayerJoin(1, 1, () => {
-    //   const fakePlayer = this.players[1];
-    //   fakePlayer.setController(new LocalPlayerController(1));
-    //   fakePlayer.setColor(0xee6666);
-    //   fakePlayer.y = 300;
-    // });
-
-    /*
-
-    this.onPlayerJoin(2);
-    fakePlayer = this.players[2];
-    fakePlayer.setColor(0xeeff66);
-    fakePlayer.x = 600;
-    fakePlayer.y = 300; */
-
-    /* this.game.resourceServer
-      .requestResources([{ name: iconData[5].name, path: iconData[5].img }])
-      .then(resources => {
-        const circle3 = new PlayerCircle(this.game.app, resources[iconData[5].name]);
-        const controller3 = new LocalPlayerController(1);
-        circle3.setController(controller3);
-        circle3.x = 500;
-        circle3.y = 500;
-        circle3.setColor(0xee6666);
-        circle3.setEntityListener(this);
-        this.game.entityHandler.register(circle3);
-      }); */
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
@@ -109,44 +75,35 @@ class KnockOff extends Gamemode {
     });
   }
 
-  // Called when a new player connects
-  onPlayerJoin(playerObject) {
-    // console.log('Player join');
-
+  // Called when a new player has been created
+  onPlayerCreated(playerObject, circle) {
     const { iconID } = playerObject;
     const idTag = playerObject.id;
 
-    this.game.resourceServer
-      .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
-      .then(resources => {
-        const circle = new PlayerCircle(this.game.app, resources[iconData[iconID].name]);
-        const controller = new PlayerController(this.game, idTag);
-        circle.setController(controller);
-        // Place them in the middle of the arena for now
-        circle.x = 500;
-        circle.y = 500;
-        circle.setColor(0xff3333);
-        this.game.entityHandler.register(circle);
+    // Place them in the middle of the arena for now
+    circle.x = this.arenaCenterx;
+    circle.y = this.arenaCentery;
+    circle.setColor(0xff3333);
+    this.game.entityHandler.register(circle);
 
-        this.players[idTag] = circle;
-        this.score[idTag] = 0;
-        this.tags[idTag] = [];
-        this.respawn[idTag] = true;
+    this.players[idTag] = circle;
+    this.score[idTag] = 0;
+    this.tags[idTag] = [];
+    this.respawn[idTag] = true;
 
-        circle.addEntityListener(this);
+    circle.addEntityListener(this);
 
-        circle.collision.addListener((player, victim) => {
-          // Check if victim is a player
-          if (victim.controller && victim.controller.id !== undefined) {
-            const vid = victim.controller.id;
-            const pid = player.controller.id;
-            this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
-            this.tags[vid].push({ id: pid, timer: TAG_TIME });
-            this.tags[pid] = this.tags[pid].filter(e => e.id !== vid);
-            this.tags[pid].push({ id: vid, timer: TAG_TIME });
-          }
-        });
-      });
+    circle.collision.addListener((player, victim) => {
+      // Check if victim is a player
+      if (victim.controller && victim.controller.id !== undefined) {
+        const vid = victim.controller.id;
+        const pid = player.controller.id;
+        this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
+        this.tags[vid].push({ id: pid, timer: TAG_TIME });
+        this.tags[pid] = this.tags[pid].filter(e => e.id !== vid);
+        this.tags[pid].push({ id: vid, timer: TAG_TIME });
+      }
+    });
   }
 
   // Called when a player disconnects

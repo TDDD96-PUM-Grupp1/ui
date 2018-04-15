@@ -6,6 +6,7 @@ const settings = {
   skipmenu: false,
   defaultGamemode: 'knockOff',
   game: {
+    localPlayer: true,
     forceCanvas: true,
     antialias: false,
   },
