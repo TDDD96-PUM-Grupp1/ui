@@ -14,7 +14,7 @@ class GMHandlerClass {
       knockOff: KnockOff,
       knockOffRandom: KnockOffRandom,
       knockOffDynamic: KnockOffDynamic,
-      testGamemode: TestGamemode
+      testGamemode: TestGamemode,
     };
 
     if (settings.skipmenu) {
@@ -77,7 +77,7 @@ const GamemodeHandler = (() => {
       }
 
       return instance;
-    }
+    },
   };
 })();
 

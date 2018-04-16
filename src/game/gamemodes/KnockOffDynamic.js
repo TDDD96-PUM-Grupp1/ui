@@ -43,6 +43,7 @@ class KnockOffDynamic extends KnockOff {
       }
     } else {
       // We can't shrink any more
+      // eslint-disable-next-line
       if (this.arenaRadius * multDec < minRadius) {
         this.expanding = true;
       } else {

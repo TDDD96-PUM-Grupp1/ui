@@ -20,6 +20,12 @@ class Game {
       this.instance.addInstanceListener(this);
     }
 
+    // Resize listener
+    this.notifyResizeListeners = this.notifyResizeListeners.bind(this);
+    this.resizeListeners = [];
+    this.registerResizeListener(this);
+    window.onresize = this.notifyResizeListeners;
+
     // Create all handlers
     this.entityHandler = new EntityHandler();
     this.collisionHandler = new CollisionHandler(this.entityHandler);
@@ -71,6 +77,20 @@ class Game {
 
   // eslint-disable-next-line
   onButtonPressed(id, button) {}
+
+  registerResizeListener(listener) {
+    this.resizeListeners.push(listener);
+  }
+
+  notifyResizeListeners() {
+    this.resizeListeners.forEach(listener => {
+      listener.onWindowResize();
+    });
+  }
+
+  onWindowResize() {
+    this.app.renderer.resize(window.innerWidth, window.innerHeight);
+  }
 }
 
 export default Game;
