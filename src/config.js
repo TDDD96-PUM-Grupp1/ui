@@ -3,7 +3,7 @@ Configuration file for different project parameters.
 */
 
 const settings = {
-  skipmenu: true,
+  skipmenu: false,
   defaultGamemode: 'knockOff',
   game: {
     localPlayer: true,

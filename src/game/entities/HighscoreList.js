@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 const BG_COLOR = '0x5C5C5C';
 const TEXT_COLOR = '#FFFFFF';
 
-const TEXT_PADDING = 5;
+const TEXT_PADDING = 7;
 const NAME_WIDTH = 200;
 
 const TEXT_STYLE = new PIXI.TextStyle({

@@ -18,7 +18,6 @@ class KnockOff extends Gamemode {
 
     this.players = {};
     this.respawn = {};
-    this.score = {};
     this.tags = {};
 
     this.game.respawnHandler.registerRespawnListener(this);
@@ -41,9 +40,9 @@ class KnockOff extends Gamemode {
     this.arenaGraphic = graphic;
 
     // Set up scores
-    game.scoreManager.addScoreType('kills', 0);
-    game.scoreManager.addScoreType('deaths', 0, true);
-    game.scoreManager.setAscOrder(true);
+    game.scoreManager.addScoreType('Kills', 0, true);
+    game.scoreManager.addScoreType('Deaths', 0);
+    game.scoreManager.setAscOrder(false);
     new HighscoreList(game.scoreManager, game);
   }
 
@@ -99,7 +98,6 @@ class KnockOff extends Gamemode {
     this.game.entityHandler.register(circle);
 
     this.players[idTag] = circle;
-    this.score[idTag] = 0;
     this.tags[idTag] = [];
     this.respawn[idTag] = true;
 
@@ -147,10 +145,10 @@ class KnockOff extends Gamemode {
     const { id } = entity.controller;
     this.tags[id].forEach(item => {
       // console.log("%s killed %s", item.id, id);
-      this.score[item.id] += 1;
+      this.game.scoreManager.addScore('Kills', item.id, 1);
     });
 
-    this.game.scoreManager.addScore('deaths', id, 1);
+    this.game.scoreManager.addScore('Deaths', id, 1);
 
     if (this.respawn[id]) {
       this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
