@@ -32,10 +32,17 @@ class GameEntity {
     // this.maxVelocity = 100; // Maybe do max kinetic energy?
 
     // Collision group
-    // The entity will only collide with entities with the same group number.
+    // The entity will not collide with entities in the same group.
     this.collisionGroup = 0;
+    this.colliding = true;
 
     this.listeners = [];
+
+    // Phasing
+    this.phaseTimer = 2;
+    this.blinkSpeed = Math.PI * 7;
+    this.phasing = false;
+    this.phaseGroup = 0;
   }
 
   die() {
@@ -86,6 +93,17 @@ class GameEntity {
     this.graphic.y = this.y;
 
     this.graphic.rotation = this.rotation;
+
+    if (this.phasing) {
+      this.phaseTimer -= dt;
+      this.graphic.alpha = 0.6 + 0.4 * Math.cos(this.phaseTimer * this.blinkSpeed);
+      if (this.phaseTimer < 0) {
+        this.alpha = 1;
+        this.phasing = false;
+        this.collisionGroup = this.phaseGroup;
+        this.colliding = true;
+      }
+    }
   }
 
   // Return the predicted next position
@@ -115,6 +133,15 @@ class GameEntity {
 
   addEntityListener(listener) {
     this.listeners.push(listener);
+  }
+
+  // Activate phasing
+  phase(time) {
+    this.phasing = true;
+    this.phaseTimer = time;
+    this.phaseGroup = this.collisionGroup;
+    this.collisionGroup = -1;
+    this.colliding = false;
   }
 
   // Assume all entities aren't players and let the player objects override this.
