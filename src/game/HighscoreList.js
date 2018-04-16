@@ -2,9 +2,14 @@ import * as PIXI from 'pixi.js';
 
 const BG_COLOR = '0x5C5C5C';
 const TEXT_COLOR = '#FFFFFF';
+const BORDER_COLOR = '0x000000';
+
+const BORDER_WIDTH = 2;
 
 const TEXT_PADDING = 7;
 const NAME_WIDTH = 200;
+
+const BOX_RADIUS = 10;
 
 const TEXT_STYLE = new PIXI.TextStyle({
   fill: TEXT_COLOR,
@@ -32,6 +37,9 @@ class HighscoreList {
     this.update();
   }
 
+  /*
+  Paint the heading with explanations to different score types
+  */
   paintHeading() {
     const scores = this.scoreManager.getScores();
 
@@ -49,8 +57,8 @@ class HighscoreList {
     // Draw background
     const bg = new PIXI.Graphics();
     bg.beginFill(BG_COLOR, 1);
-    bg.lineStyle(2, 0x000000, 1);
-    bg.drawRoundedRect(0, 0, this.rect_width, this.rect_height, 9);
+    bg.lineStyle(BORDER_WIDTH, BORDER_COLOR, 1);
+    bg.drawRoundedRect(0, 0, this.rect_width, this.rect_height, BOX_RADIUS);
     bg.endFill();
     this.container.addChild(bg);
 
@@ -64,6 +72,9 @@ class HighscoreList {
     }
   }
 
+  /*
+  Update the drawing of the ghighscorelist
+  */
   update() {
     const list = this.scoreManager.getList();
     const scores = this.scoreManager.getScores();
@@ -98,8 +109,8 @@ class HighscoreList {
 
         const bg = new PIXI.Graphics();
         bg.beginFill(BG_COLOR, 1);
-        bg.lineStyle(2, 0x000000, 1);
-        bg.drawRoundedRect(0, 0, this.rect_width, this.rect_height, 9);
+        bg.lineStyle(BORDER_WIDTH, BORDER_COLOR, 1);
+        bg.drawRoundedRect(0, 0, this.rect_width, this.rect_height, BOX_RADIUS);
         bg.endFill();
 
         const name = new PIXI.Text(val.name, TEXT_STYLE);
