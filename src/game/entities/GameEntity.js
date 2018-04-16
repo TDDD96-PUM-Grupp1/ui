@@ -100,7 +100,7 @@ class GameEntity {
       if (this.phaseTimer < 0) {
         this.alpha = 1;
         this.phasing = false;
-        this.collisionGroup = this.phaseGroup;
+        // this.collisionGroup = this.phaseGroup;
         this.colliding = true;
       }
     }
@@ -139,8 +139,8 @@ class GameEntity {
   phase(time) {
     this.phasing = true;
     this.phaseTimer = time;
-    this.phaseGroup = this.collisionGroup;
-    this.collisionGroup = -1;
+    // this.phaseGroup = this.collisionGroup;
+    // this.collisionGroup = -1;
     this.colliding = false;
   }
 
