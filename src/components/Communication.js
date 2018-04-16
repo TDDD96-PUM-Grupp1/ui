@@ -146,7 +146,7 @@ class Communication {
   * @param data the data sent from a controller.
   */
   readData(data) {
-    if (data === undefined || data.id === undefined) {
+    if (typeof data === 'undefined' || typeof data.id === 'undefined') {
       return;
     }
 
