@@ -12,6 +12,7 @@ class Gamemode {
   no-empty-function */
   constructor(game) {
     this.game = game;
+    this.game.registerResizeListener(this);
   }
 
   init() {
@@ -73,6 +74,10 @@ class Gamemode {
         return;
       }
     }
+  }
+
+  onWindowResize() {
+    // console.log('Please override me :)');
   }
 
   // Clean up after the gamemode is finished.
