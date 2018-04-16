@@ -3,6 +3,7 @@ import KnockOff from './gamemodes/KnockOff';
 import settings from '../config';
 import KnockOffRandom from './gamemodes/KnockOffRandom';
 import KnockOffDynamic from './gamemodes/KnockOffDynamic';
+import KnockOffWander from './gamemodes/KnockOffWander';
 
 /*
 Singleton class for handling gamemode storage and selection
@@ -14,6 +15,7 @@ class GMHandlerClass {
       knockOff: KnockOff,
       knockOffRandom: KnockOffRandom,
       knockOffDynamic: KnockOffDynamic,
+      knockOffWander: KnockOffWander,
       testGamemode: TestGamemode
     };
 
