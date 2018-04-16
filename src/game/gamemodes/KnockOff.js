@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
-import HighscoreList from '../entities/HighscoreList';
+import HighscoreList from '../HighscoreList';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 1;
