@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
 
