@@ -25,6 +25,11 @@ class PlayerCircle extends BasicCircle {
     this.collisionGroup = 1;
   }
 
+  setColor(backgroundColor, iconColor) {
+    this.graphic.tint = backgroundColor;
+    this.sprite.tint = iconColor
+  }
+
   // Update this object
   update(dt) {
     super.update(dt);
