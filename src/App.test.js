@@ -9,6 +9,7 @@ import App from './App';
 import ResourceServer from './game/ResourceServer';
 import GamemodeHandler from './game/GamemodeHandler';
 import Game from './game/Game';
+import ScoreManager from './game/ScoreManager';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
@@ -21,7 +22,7 @@ describe('ResourceServer', () => {
     const filenames = [];
 
     const errorName = 'hejsan';
-    const errorFilepath = '/NO_EXIST.txt';
+    const errorFilepath = 'NO_EXIST.txt';
 
     filenames.push({
       name: errorName,
@@ -72,8 +73,117 @@ describe('GamemodeHandler', () => {
 
     for (let i = 0; i < gmList.length; i += 1) {
       gmHandler.selectGameMode(gmList[i]);
+
       GamemodeClass = gmHandler.getSelected();
       gamemode = new GamemodeClass(game);
     }
+  });
+});
+
+describe('ScoreManager', () => {
+  it('can add score', () => {
+    const sm = new ScoreManager();
+    sm.addScoreType('score', 0, true);
+    sm.setAscOrder(false);
+
+    sm.addPlayer({ id: 'id1', name: 'player1' });
+    sm.addPlayer({ id: 'id2', name: 'player2' });
+
+    sm.addScore('score', 'id1', 2);
+    sm.addScore('score', 'id2', 1);
+    sm.addScore('score', 'id2', 2);
+
+    const list = sm.getList();
+    expect(list[0].name).toBe('player2');
+    expect(list[1].name).toBe('player1');
+    expect(list[0].score).toBe(3);
+    expect(list[1].score).toBe(2);
+  });
+
+  it('can remove score', () => {
+    const sm = new ScoreManager();
+    sm.addScoreType('score', 10, true);
+    sm.setAscOrder(true);
+
+    sm.addPlayer({ id: 'id1', name: 'player1' });
+    sm.addPlayer({ id: 'id2', name: 'player2' });
+    sm.addPlayer({ id: 'id3', name: 'player3' });
+
+    sm.removeScore('score', 'id1', 2);
+    sm.removeScore('score', 'id2', 4);
+    sm.removeScore('score', 'id3', 6);
+
+    const list = sm.getList();
+    expect(list[0].name).toBe('player3');
+    expect(list[1].name).toBe('player2');
+    expect(list[2].name).toBe('player1');
+    expect(list[0].score).toBe(4);
+    expect(list[1].score).toBe(6);
+    expect(list[2].score).toBe(8);
+  });
+
+  it('can reset score', () => {
+    const sm = new ScoreManager();
+    sm.addScoreType('score', 0, true);
+    sm.setAscOrder(true);
+
+    sm.addPlayer({ id: 'id1', name: 'player1' });
+    sm.addPlayer({ id: 'id2', name: 'player2' });
+
+    sm.addScore('score', 'id1', 3);
+    sm.addScore('score', 'id2', 3);
+
+    sm.resetScore('score');
+
+    const list = sm.getList();
+    expect(list[0].score).toBe(0);
+    expect(list[1].score).toBe(0);
+  });
+
+  it('can set score', () => {
+    const sm = new ScoreManager();
+    sm.addScoreType('score', 0, true);
+    sm.setAscOrder(false);
+
+    sm.addPlayer({ id: 'id1', name: 'player1' });
+    sm.addPlayer({ id: 'id2', name: 'player2' });
+    sm.addPlayer({ id: 'id3', name: 'player3' });
+
+    sm.setScore('score', 'id1', 3);
+    sm.setScore('score', 'id2', 8);
+    sm.setScore('score', 'id3', 5);
+
+    const list = sm.getList();
+    expect(list[0].name).toBe('player2');
+    expect(list[1].name).toBe('player3');
+    expect(list[2].name).toBe('player1');
+    expect(list[0].score).toBe(8);
+    expect(list[1].score).toBe(5);
+    expect(list[2].score).toBe(3);
+  });
+
+  it('can use multiple score types', () => {
+    const sm = new ScoreManager();
+    sm.setAscOrder(false);
+
+    sm.addScoreType('score1', 0);
+    sm.addScoreType('score2', 0, true);
+
+    sm.addPlayer({ id: 'id1', name: 'player1' });
+    sm.addPlayer({ id: 'id2', name: 'player2' });
+
+    sm.addScore('score1', 'id1', 2);
+    sm.addScore('score1', 'id2', 1);
+
+    sm.addScore('score2', 'id1', 4);
+    sm.addScore('score2', 'id2', 7);
+
+    const list = sm.getList();
+    expect(list[0].name).toBe('player2');
+    expect(list[1].name).toBe('player1');
+    expect(list[0].score1).toBe(1);
+    expect(list[1].score1).toBe(2);
+    expect(list[0].score2).toBe(7);
+    expect(list[1].score2).toBe(4);
   });
 });

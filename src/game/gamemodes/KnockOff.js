@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
+import HighscoreList from '../HighscoreList';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 1;
@@ -16,7 +17,6 @@ class KnockOff extends Gamemode {
 
     this.players = {};
     this.respawn = {};
-    this.score = {};
     this.tags = {};
 
     this.game.respawnHandler.registerRespawnListener(this);
@@ -38,6 +38,12 @@ class KnockOff extends Gamemode {
     graphic.x = this.arenaCenterx;
     graphic.y = this.arenaCentery;
     this.arenaGraphic = graphic;
+
+    // Set up scores
+    game.scoreManager.addScoreType('Kills', 0, true);
+    game.scoreManager.addScoreType('Deaths', 0);
+    game.scoreManager.setAscOrder(false);
+    this.hs_list = new HighscoreList(game.scoreManager, game);
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
@@ -96,7 +102,6 @@ class KnockOff extends Gamemode {
     circle.phase(3);
 
     this.players[idTag] = circle;
-    this.score[idTag] = 0;
     this.tags[idTag] = [];
     this.respawn[idTag] = true;
 
@@ -146,8 +151,10 @@ class KnockOff extends Gamemode {
     const { id } = entity.controller;
     this.tags[id].forEach(item => {
       // console.log("%s killed %s", item.id, id);
-      this.score[item.id] += 1;
+      this.game.scoreManager.addScore('Kills', item.id, 1);
     });
+
+    this.game.scoreManager.addScore('Deaths', id, 1);
 
     if (this.respawn[id]) {
       this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);

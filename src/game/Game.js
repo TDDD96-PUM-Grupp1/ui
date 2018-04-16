@@ -3,6 +3,7 @@ import EntityHandler from './EntityHandler';
 import CollisionHandler from './CollisionHandler';
 import ResourceServer from './ResourceServer';
 import GamemodeHandler from './GamemodeHandler';
+import ScoreManager from './ScoreManager';
 import RespawnHandler from './RespawnHandler';
 
 /*
@@ -31,6 +32,7 @@ class Game {
     this.collisionHandler = new CollisionHandler(this.entityHandler);
     this.respawnHandler = new RespawnHandler(this.entityHandler);
     this.resourceServer = new ResourceServer();
+    this.scoreManager = new ScoreManager();
 
     // Create gamemode
     const gamemodeHandler = GamemodeHandler.getInstance();
@@ -57,11 +59,13 @@ class Game {
 
   // Called when a new player joins.
   onPlayerJoin(playerObject) {
+    this.scoreManager.addPlayer(playerObject);
     this.currentGamemode.onPlayerJoin(playerObject);
   }
 
   // Called when a player leaves the game.
   onPlayerLeave(idTag) {
+    this.scoreManager.removePlayer(idTag);
     this.currentGamemode.onPlayerLeave(idTag);
   }
   // eslint-disable-next-line

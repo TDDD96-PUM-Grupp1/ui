@@ -42,8 +42,6 @@ class StartMenu extends Component {
   }
 
   render() {
-    // eslint-disable-next-line
-    console.log(this.state.menu);
     const menus = {
       first: <FirstMenu showCreate={this.showCreate} showAbout={this.showAbout} />,
 
