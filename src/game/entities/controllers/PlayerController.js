@@ -1,8 +1,8 @@
 import EntityController from './EntityController';
 
-const MAX_ANGLE = 30;
-const MAX_ACC = 400;
-const MIN_SENSOR_THRESHOLD = 2;
+const MAX_ANGLE = 40;
+const MAX_ACC = 500;
+const MIN_SENSOR_THRESHOLD = 5;
 
 /*
 Player object controller, will handle taking input from player and modifying their objects.
@@ -13,7 +13,7 @@ class PlayerController extends EntityController {
     this.game = game;
     this.id = id;
 
-    this.accelerationScale = 500;
+    this.accelerationScale = 1000;
   }
 
   /* eslint-disable class-methods-use-this, no-unused-vars */

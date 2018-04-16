@@ -22,7 +22,7 @@ class KnockOff extends Gamemode {
 
     this.game.respawnHandler.registerRespawnListener(this);
 
-    this.arenaRadius = 350;
+    this.arenaRadius = 500;
     this.respawnArea = 50;
 
     // Center arena
@@ -121,6 +121,12 @@ class KnockOff extends Gamemode {
     // When a player leaves, just leave their entity on the map.
     // But stop them from respawning.
     this.respawn[idTag] = false;
+  }
+
+  onButtonPressed(id, button) {
+    const playerEntity = this.players[id];
+
+    playerEntity.mass *= 3;
   }
 
   /* eslint-enable class-methods-use-this, no-unused-vars */

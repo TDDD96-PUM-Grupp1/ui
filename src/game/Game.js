@@ -69,10 +69,7 @@ class Game {
 
   // eslint-disable-next-line
   onButtonsPressed(id, button) {
-    // eslint-disable-next-line
-    console.log('Button pressed');
-    // eslint-disable-next-line
-    console.log(button);
+    this.currentGamemode.onButtonPressed(id, button);
   }
 
   // eslint-disable-next-line

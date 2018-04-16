@@ -13,6 +13,7 @@ class Gamemode {
   constructor(game) {
     this.game = game;
     this.game.registerResizeListener(this);
+    this.onButtonPressed = this.onButtonPressed.bind(this);
   }
 
   init() {
@@ -76,8 +77,10 @@ class Gamemode {
     }
   }
 
+  onButtonPressed(id, button) {}
+
   onWindowResize() {
-    // console.log('Please override me :)');
+    throw new Error('Override onWindowResize');
   }
 
   // Clean up after the gamemode is finished.
