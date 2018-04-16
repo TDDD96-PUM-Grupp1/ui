@@ -112,7 +112,11 @@ class KnockOff extends Gamemode {
     // Place them in the middle of the arena for now
     circle.x = this.arenaCenterx;
     circle.y = this.arenaCentery;
-    circle.setColor(0xff3333);
+
+    const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
+    const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
+
+    circle.setColor(backgroundCol, iconCol);
     this.game.entityHandler.register(circle);
 
     circle.collisionGroup = idTag;

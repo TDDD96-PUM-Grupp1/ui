@@ -18,15 +18,31 @@ class Gamemode {
 
   init() {
     if (settings.game.localPlayer) {
-      this.onPlayerJoin({ iconID: 1, id: 'local' }, localPlayer => {
-        localPlayer.setController(new LocalPlayerController('local'));
-        localPlayer.setColor(0xee6666);
-        localPlayer.y = 300;
-      });
-      this.onPlayerJoin({ iconID: 2, id: 'local2' }, localPlayer => {
-        localPlayer.setColor(0xeeff66);
-        localPlayer.y = 350;
-      });
+      this.onPlayerJoin(
+        {
+          iconID: 1,
+          id: 'local',
+          backgroundColor: '#00FFFFF',
+          iconColor: '#ff0000',
+        },
+        localPlayer => {
+          localPlayer.setController(new LocalPlayerController('local'));
+          localPlayer.setColor(0xee6666);
+          localPlayer.y = 300;
+        },
+      );
+      this.onPlayerJoin(
+        {
+          iconID: 2,
+          id: 'local2',
+          backgroundColor: '#00FFFFF',
+          iconColor: '#ff0000',
+        },
+        localPlayer => {
+          localPlayer.setColor(0xeeff66);
+          localPlayer.y = 350;
+        },
+      );
     }
   }
   /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
