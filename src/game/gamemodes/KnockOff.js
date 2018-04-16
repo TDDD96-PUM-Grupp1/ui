@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
 
 // Respawn time in seconds
-const RESPAWN_TIME = 3;
+const RESPAWN_TIME = 1;
 
 // The max time between a collision and a player dying in order to count as a kill.
 const TAG_TIME = 4;
@@ -23,6 +23,7 @@ class KnockOff extends Gamemode {
     this.game.respawnHandler.registerRespawnListener(this);
 
     this.arenaRadius = 350;
+    this.respawnArea = 50;
 
     // Center arena
     this.arenaCenterx = Math.round(window.innerWidth / 2);
@@ -91,6 +92,10 @@ class KnockOff extends Gamemode {
     circle.setColor(0xff3333);
     this.game.entityHandler.register(circle);
 
+    circle.collisionGroup = idTag;
+
+    circle.phase(3);
+
     this.players[idTag] = circle;
     this.score[idTag] = 0;
     this.tags[idTag] = [];
@@ -129,10 +134,12 @@ class KnockOff extends Gamemode {
 
   // Called when an entity is respawned.
   onRespawn(entity) {
-    // Move the entity to the center
-    entity.x = this.arenaCenterx;
-    entity.y = this.arenaCentery;
-    // TODO: randomize a bit
+    // Move the entity close to the center
+    entity.x = this.arenaCenterx + Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
+    entity.y = this.arenaCentery + Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
+
+    // Phase the entity for a bit
+    entity.phase(2);
   }
 
   // Called when an entity dies.
