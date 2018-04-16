@@ -16,7 +16,7 @@ class GMHandlerClass {
       knockOffRandom: KnockOffRandom,
       knockOffDynamic: KnockOffDynamic,
       knockOffWander: KnockOffWander,
-      testGamemode: TestGamemode
+      testGamemode: TestGamemode,
     };
 
     if (settings.skipmenu) {
