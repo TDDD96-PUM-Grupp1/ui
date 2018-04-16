@@ -79,7 +79,7 @@ const GamemodeHandler = (() => {
       }
 
       return instance;
-    }
+    },
   };
 })();
 

@@ -12,6 +12,7 @@ class Gamemode {
   no-empty-function */
   constructor(game) {
     this.game = game;
+    this.game.registerResizeListener(this);
   }
 
   init() {
@@ -20,6 +21,10 @@ class Gamemode {
         localPlayer.setController(new LocalPlayerController('local'));
         localPlayer.setColor(0xee6666);
         localPlayer.y = 300;
+      });
+      this.onPlayerJoin({ iconID: 2, id: 'local2' }, localPlayer => {
+        localPlayer.setColor(0xeeff66);
+        localPlayer.y = 350;
       });
     }
   }
@@ -69,6 +74,10 @@ class Gamemode {
         return;
       }
     }
+  }
+
+  onWindowResize() {
+    // console.log('Please override me :)');
   }
 
   // Clean up after the gamemode is finished.
