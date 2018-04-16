@@ -8,6 +8,10 @@ const RESPAWN_TIME = 1;
 // The max time between a collision and a player dying in order to count as a kill.
 const TAG_TIME = 4;
 
+// Ability times
+const ABILITY_COOLDOWN = 10;
+const ABILITY_DURATION = 3;
+
 /*
   Knock off gamemode, get score by knocking other players off the arena.
 */
@@ -19,6 +23,7 @@ class KnockOff extends Gamemode {
     this.respawn = {};
     this.score = {};
     this.tags = {};
+    this.abilityTimer = {};
 
     this.game.respawnHandler.registerRespawnListener(this);
 
@@ -59,7 +64,20 @@ class KnockOff extends Gamemode {
       list.forEach(item => {
         item.timer -= dt;
       });
-    });
+    }, this);
+
+    Object.keys(this.abilityTimer).forEach(id => {
+      this.abilityTimer[id].time -= dt;
+      if (
+        this.abilityTimer[id].active &&
+        this.abilityTimer[id].time <= ABILITY_COOLDOWN - ABILITY_DURATION
+      ) {
+        this.players[id].mass = 1;
+        // eslint-disable-next-line
+        this.players[id].setColor(0xffffff ^ this.players[id].graphic.tint);
+        this.abilityTimer[id].active = false;
+      }
+    }, this);
   }
 
   /* eslint-enable no-unused-vars, class-methods-use-this */
@@ -100,6 +118,7 @@ class KnockOff extends Gamemode {
     this.score[idTag] = 0;
     this.tags[idTag] = [];
     this.respawn[idTag] = true;
+    this.abilityTimer[idTag] = { active: false, time: 0 };
 
     circle.addEntityListener(this);
 
@@ -125,8 +144,12 @@ class KnockOff extends Gamemode {
 
   onButtonPressed(id, button) {
     const playerEntity = this.players[id];
-
-    playerEntity.mass *= 3;
+    if (this.abilityTimer[id].time <= 0) {
+      playerEntity.mass *= 50;
+      /* eslint-disable-next-line */
+      this.abilityTimer[id].time = ABILITY_COOLDOWN;
+      this.abilityTimer[id].active = true;
+    }
   }
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
