@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
 import HighscoreList from '../entities/HighscoreList'
@@ -23,13 +24,15 @@ class KnockOff extends Gamemode {
     this.game.respawnHandler.registerRespawnListener(this);
 
     this.arenaRadius = 350;
-    this.arenaCenterx = 500;
-    this.arenaCentery = 500;
+
+    // Center arena
+    this.arenaCenterx = Math.round(window.innerWidth / 2);
+    this.arenaCentery = Math.round(window.innerHeight / 2);
 
     // Set up arena graphic
     const graphic = new PIXI.Graphics();
     graphic.beginFill(0xfffffff);
-    graphic.drawCircle(0, 0, this.arenaRadius);
+    this.mainCircle = graphic.drawCircle(0, 0, this.arenaRadius);
     graphic.endFill();
     game.app.stage.addChildAt(graphic, 0); // Set arena to be first thing to render
     graphic.tint = 0x555555;
@@ -45,6 +48,7 @@ class KnockOff extends Gamemode {
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
+
   // Called before the game objects are updated.
   preUpdate(dt) {
     // Update tags
@@ -63,6 +67,7 @@ class KnockOff extends Gamemode {
       });
     });
   }
+
   /* eslint-enable no-unused-vars, class-methods-use-this */
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
@@ -71,8 +76,8 @@ class KnockOff extends Gamemode {
   postUpdate(dt) {
     this.game.entityHandler.getEntities().forEach(entity => {
       if (entity.isPlayer()) {
-        const dx = this.arenaCenterx - entity.x;
-        const dy = this.arenaCentery - entity.y;
+        const dx = this.arenaGraphic.x - entity.x;
+        const dy = this.arenaGraphic.y - entity.y;
         const centerDist = Math.sqrt(dx * dx + dy * dy);
 
         if (centerDist > this.arenaRadius - entity.radius) {
@@ -152,6 +157,23 @@ class KnockOff extends Gamemode {
     } else {
       this.game.entityHandler.unregisterFully(entity);
     }
+  }
+
+  onWindowResize() {
+    const newCenterX = Math.round(window.innerWidth / 2);
+    const newCenterY = Math.round(window.innerHeight / 2);
+
+    // Calculate diff in x and y before moving everything
+    const dx = this.arenaGraphic.x - newCenterX;
+    const dy = this.arenaGraphic.y - newCenterY;
+
+    this.arenaGraphic.x = newCenterX;
+    this.arenaGraphic.y = newCenterY;
+
+    this.game.entityHandler.getEntities().forEach(entity => {
+      entity.x -= dx;
+      entity.y -= dy;
+    });
   }
 
   /* eslint-disable class-methods-use-this */

@@ -12,7 +12,7 @@ class StartMenu extends Component {
     super(props);
 
     this.state = {
-      menu: 'first'
+      menu: 'first',
     };
 
     this.showCreate = this.showCreate.bind(this);
