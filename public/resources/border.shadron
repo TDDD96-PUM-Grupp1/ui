@@ -1,0 +1,32 @@
+image Input = file();
+
+parameter float thickness = 0.05;
+parameter vec4 outlineColor;
+// parameter vec4 filterClamp;
+
+const vec4 filterClamp = vec4(0,0,1,1);
+
+const float DOUBLE_PI = 3.14159265358979323846264 * 2.;
+const float ANGLE_STEP = DOUBLE_PI * 0.02;
+
+glsl vec4 whiteToAlpha(vec2 pos) {
+
+	vec4 ownColor = texture(Input, pos);
+    vec4 curColor;
+    float maxAlpha = 0.;
+    vec2 displaced;
+    for (float angle = 0.; angle <= DOUBLE_PI; angle += ANGLE_STEP) {
+        displaced.x = pos.x + thickness * cos(angle);
+        displaced.y = pos.y + thickness * sin(angle);
+        curColor = texture(Input, clamp(displaced, filterClamp.xy, filterClamp.zw));
+		// curColor = texture(Input, displaced);
+        maxAlpha = max(maxAlpha, curColor.a);
+    }
+    float resultAlpha = max(maxAlpha, ownColor.a);
+    return vec4((ownColor.rgb + outlineColor.rgb * (1. - ownColor.a)) * resultAlpha, resultAlpha);
+}
+
+image Output = glsl(whiteToAlpha, 512, 512);
+
+export png_foreach(Output, "jcons/?.png") : Input("icons/?.png");
+
