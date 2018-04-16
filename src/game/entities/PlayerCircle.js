@@ -27,7 +27,7 @@ class PlayerCircle extends BasicCircle {
 
   setColor(backgroundColor, iconColor) {
     this.graphic.tint = backgroundColor;
-    this.sprite.tint = iconColor
+    this.sprite.tint = iconColor;
   }
 
   // Update this object
