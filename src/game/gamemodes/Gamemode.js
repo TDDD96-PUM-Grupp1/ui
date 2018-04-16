@@ -73,7 +73,7 @@ class Gamemode {
   }
 
   onWindowResize() {
-    console.log('Please override me :)');
+    // console.log('Please override me :)');
   }
 
   // Clean up after the gamemode is finished.
