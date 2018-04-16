@@ -21,6 +21,7 @@ class PlayerCircle extends BasicCircle {
 
     this.graphic.addChild(this.sprite);
 
+    this.restitution = 1;
     // set collision group
     this.collisionGroup = 1;
   }

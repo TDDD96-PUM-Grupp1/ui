@@ -1,6 +1,8 @@
 import EntityController from './EntityController';
 
-const MAX_ANGLE = 40;
+const MAX_ANGLE = 30;
+const MAX_ACC = 400;
+const MIN_SENSOR_THRESHOLD = 2;
 
 /*
 Player object controller, will handle taking input from player and modifying their objects.
@@ -26,10 +28,24 @@ class PlayerController extends EntityController {
     if (playerData !== undefined) {
       let { beta, gamma } = playerData.sensor;
 
+      if (Math.abs(beta) < MIN_SENSOR_THRESHOLD) {
+        beta = 0;
+      }
+
+      if (Math.abs(gamma) < MIN_SENSOR_THRESHOLD) {
+        gamma = 0;
+      }
+
       beta = Math.min(MAX_ANGLE, Math.max(beta, -MAX_ANGLE));
       beta = beta / MAX_ANGLE * Math.PI * 0.5;
       gamma = Math.min(MAX_ANGLE, Math.max(gamma, -MAX_ANGLE));
       gamma = gamma / MAX_ANGLE * Math.PI * 0.5;
+
+      const length = Math.sqrt(beta * beta + gamma * gamma);
+      if (length > 1) {
+        beta /= length;
+        gamma /= length;
+      }
 
       // const xacc = Math.sin(beta) * this.accelerationScale;
       // const yacc = -Math.sin(gamma) * this.accelerationScale;
@@ -39,8 +55,12 @@ class PlayerController extends EntityController {
 
       // P or PID regulator??
       // Testing P
-      const pax = -this.entity.vx + xacc;
-      const pay = -this.entity.vy + yacc;
+
+      let pax = -this.entity.vx + xacc;
+      let pay = -this.entity.vy + yacc;
+
+      pax = Math.min(MAX_ACC, Math.max(pax, -MAX_ACC));
+      pay = Math.min(MAX_ACC, Math.max(pay, -MAX_ACC));
 
       this.entity.ax = pax;
       this.entity.ay = pay;
