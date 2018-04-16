@@ -21,6 +21,10 @@ class Gamemode {
         localPlayer.setColor(0xee6666);
         localPlayer.y = 300;
       });
+      this.onPlayerJoin({ iconID: 2, id: 'local2' }, localPlayer => {
+        localPlayer.setColor(0xeeff66);
+        localPlayer.y = 350;
+      });
     }
   }
   /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,

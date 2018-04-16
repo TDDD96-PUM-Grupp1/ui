@@ -90,6 +90,8 @@ class KnockOff extends Gamemode {
     circle.setColor(0xff3333);
     this.game.entityHandler.register(circle);
 
+    circle.collisionGroup = idTag;
+
     circle.phase(3);
 
     this.players[idTag] = circle;

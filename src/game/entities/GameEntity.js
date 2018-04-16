@@ -32,8 +32,9 @@ class GameEntity {
     // this.maxVelocity = 100; // Maybe do max kinetic energy?
 
     // Collision group
-    // The entity will only collide with entities with the same group number.
+    // The entity will not collide with entities in the same group.
     this.collisionGroup = 0;
+    this.colliding = true;
 
     this.listeners = [];
 
@@ -41,6 +42,7 @@ class GameEntity {
     this.phaseTimer = 2;
     this.blinkSpeed = Math.PI * 7;
     this.phasing = false;
+    this.phaseGroup = 0;
   }
 
   die() {
@@ -98,7 +100,8 @@ class GameEntity {
       if (this.phaseTimer < 0) {
         this.alpha = 1;
         this.phasing = false;
-        this.collisionGroup += 1;
+        this.collisionGroup = this.phaseGroup;
+        this.colliding = true;
       }
     }
   }
@@ -136,7 +139,9 @@ class GameEntity {
   phase(time) {
     this.phasing = true;
     this.phaseTimer = time;
-    this.collisionGroup -= 1;
+    this.phaseGroup = this.collisionGroup;
+    this.collisionGroup = -1;
+    this.colliding = false;
   }
 
   // Assume all entities aren't players and let the player objects override this.
