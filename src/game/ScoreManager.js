@@ -67,7 +67,7 @@ class ScoreManager {
       return;
     }
 
-    const { primaryScore } = this.primaryScore;
+    const { primaryScore } = this;
     this.highscoreList.sort((a, b) => this.orderPolicy(a[primaryScore], b[primaryScore]));
     this.triggerUpdate();
   }
