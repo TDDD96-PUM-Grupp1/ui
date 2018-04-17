@@ -6,7 +6,7 @@ import CollisionCircle from './collision/CollisionCircle';
 Game object with a basic circle graphic and collision
 */
 class BasicCircle extends GameEntity {
-  constructor(game, radius, mass, color) {
+  constructor(game, radius, mass, color, outline) {
     super(game);
 
     this.radius = radius;
@@ -16,7 +16,8 @@ class BasicCircle extends GameEntity {
     this.I = 0.5 * mass * radius * radius;
 
     // Create a graphical circle
-    const graphic = new PIXI.Sprite(game.basicResources.circle);
+    const img = outline ? game.basicResources.circle_outline : game.basicResources.circle;
+    const graphic = new PIXI.Sprite(img);
     graphic.width = radius * 2;
     graphic.height = radius * 2;
     graphic.anchor.set(0.5, 0.5);
