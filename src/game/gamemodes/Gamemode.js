@@ -26,7 +26,7 @@ class Gamemode {
           iconColor: '#00ffff',
         },
         localPlayer => {
-          localPlayer.setController(new LocalPlayerController('local'));
+          localPlayer.setController(new LocalPlayerController(this.game, 'local'));
           localPlayer.y = 300;
         },
       );

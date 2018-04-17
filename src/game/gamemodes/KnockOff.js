@@ -94,7 +94,7 @@ class KnockOff extends Gamemode {
       ) {
         this.players[id].mass = 1;
         // eslint-disable-next-line
-        // this.players[id].setColor(0xffffff ^ this.players[id].graphic.tint);
+        this.players[id].setColor(0xffffff ^ this.players[id].graphic.tint);
         this.abilityTimer[id].active = false;
       }
     }, this);
@@ -166,6 +166,7 @@ class KnockOff extends Gamemode {
     if (this.abilityTimer[id].time <= 0) {
       playerEntity.mass *= 50;
       /* eslint-disable-next-line */
+      this.players[id].setColor(0xffffff ^ this.players[id].graphic.tint);
       this.abilityTimer[id].time = ABILITY_COOLDOWN;
       this.abilityTimer[id].active = true;
     }
