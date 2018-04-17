@@ -74,7 +74,8 @@ describe('GamemodeHandler', () => {
       gmHandler.selectGameMode(gmList[i]);
 
       const { SelectedMode, requestedResources } = gmHandler.getSelected();
-      // If this tests breaks in the future, the problem is probably that the resources aren't loaded
+      // If this tests breaks in the future
+      // the problem is probably that the resources aren't loaded
       gamemode = new SelectedMode(game, requestedResources);
     }
   });
