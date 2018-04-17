@@ -37,7 +37,7 @@ class Game {
     // Load in basic resources
     this.basicResources = {};
     this.resourceServer
-      .requestResources([{ name: 'circle', path: 'circle_antialias.png' }])
+      .requestResources([{ name: 'circle', path: 'circle_outline.png' }])
       .then(resources => {
         this.basicResources = resources;
       });
