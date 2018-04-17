@@ -4,14 +4,14 @@ import BasicCircle from './BasicCircle';
 const RADIUS = 32;
 const MASS = 1;
 const SQUAREROOTOF2 = 1.4142135623730951;
-const ICONSIZE = Math.floor(RADIUS * SQUAREROOTOF2);
+const ICONSIZE = Math.floor(256 * SQUAREROOTOF2);
 
 /*
 Game object representing a player
 */
 class PlayerCircle extends BasicCircle {
-  constructor(app, resource) {
-    super(app, RADIUS, MASS, 0xff6600);
+  constructor(game, resource) {
+    super(game, RADIUS, MASS, 0xffffff, true);
 
     this.sprite = new PIXI.Sprite(resource);
     this.sprite.width = ICONSIZE;
@@ -22,13 +22,16 @@ class PlayerCircle extends BasicCircle {
     this.graphic.addChild(this.sprite);
 
     this.restitution = 1;
-    // set collision group
-    this.collisionGroup = 1;
+
+    // default player collision group is random so they will be able to collide
+    this.collisionGroup = Math.random();
   }
 
   setColor(backgroundColor, iconColor) {
     this.graphic.tint = backgroundColor;
-    this.sprite.tint = iconColor;
+    if (iconColor !== undefined) {
+      this.sprite.tint = iconColor;
+    }
   }
 
   // Update this object

@@ -22,7 +22,7 @@ describe('ResourceServer', () => {
     const filenames = [];
 
     const errorName = 'hejsan';
-    const errorFilepath = 'NO_EXIST.txt';
+    const errorFilepath = '/NO_EXIST.txt';
 
     filenames.push({
       name: errorName,
@@ -62,7 +62,6 @@ describe('GamemodeHandler', () => {
   it('loads all gamemodes', () => {
     const gmHandler = GamemodeHandler.getInstance();
     const gmList = gmHandler.getGamemodes();
-    let GamemodeClass;
     // eslint-disable-next-line no-unused-vars
     let gamemode;
 
@@ -74,8 +73,10 @@ describe('GamemodeHandler', () => {
     for (let i = 0; i < gmList.length; i += 1) {
       gmHandler.selectGameMode(gmList[i]);
 
-      GamemodeClass = gmHandler.getSelected();
-      gamemode = new GamemodeClass(game);
+      const { SelectedMode, requestedResources } = gmHandler.getSelected();
+      // If this tests breaks in the future
+      // the problem is probably that the resources aren't loaded
+      gamemode = new SelectedMode(game, requestedResources);
     }
   });
 });
