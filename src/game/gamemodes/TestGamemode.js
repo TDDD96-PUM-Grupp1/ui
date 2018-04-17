@@ -10,8 +10,8 @@ import iconData from '../iconData';
 Test gamemode.
 */
 class TestGamemode extends Gamemode {
-  constructor(game) {
-    super(game);
+  constructor(game, resources) {
+    super(game, resources);
 
     const rect = new BasicRectangle(this.game, 640, 32, 10, 0x88ee11);
     // const rectc = new TestController(700, 500, 0, 0, 0.8, 1.1);

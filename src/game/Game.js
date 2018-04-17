@@ -46,10 +46,14 @@ class Game {
       });
 
     // Create gamemode
+    this.gamemodeLoaded = false;
     const gamemodeHandler = GamemodeHandler.getInstance();
-    const SelectedMode = gamemodeHandler.getSelected();
-    this.currentGamemode = new SelectedMode(this);
-    this.currentGamemode.init();
+    const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
+    this.resourceServer.requestResources(requestedResources).then(resources => {
+      this.currentGamemode = new SelectedMode(this, resources);
+      this.currentGamemode.init();
+      this.gamemodeLoaded = true;
+    });
   }
 
   // Main game loop
@@ -58,12 +62,14 @@ class Game {
     const dt = delta / 60;
 
     // Update handlers and gamemodes
-    this.currentGamemode.preUpdate(dt);
-    this.entityHandler.update(dt);
-    this.collisionHandler.handleCollisions(dt);
-    this.currentGamemode.postUpdate(dt);
-    this.respawnHandler.checkRespawns();
-    this.entityHandler.updateGraphics(dt);
+    if (this.gamemodeLoaded) {
+      this.currentGamemode.preUpdate(dt);
+      this.entityHandler.update(dt);
+      this.collisionHandler.handleCollisions(dt);
+      this.currentGamemode.postUpdate(dt);
+      this.respawnHandler.checkRespawns();
+      this.entityHandler.updateGraphics(dt);
+    }
 
     this.communication.update(dt);
   }

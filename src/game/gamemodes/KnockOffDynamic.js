@@ -10,8 +10,8 @@ const multDec = 0.99;
   Knock off gamemode with a randomly changing arena, get score by knocking other players off the it.
 */
 class KnockOffDynamic extends KnockOff {
-  constructor(game) {
-    super(game);
+  constructor(game, resources) {
+    super(game, resources);
     this.expanding = false;
 
     // Sanity check since you set the radius and its bonds in different files

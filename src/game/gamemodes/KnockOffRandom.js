@@ -13,8 +13,8 @@ const changeInterval = 25;
   Knock off gamemode with a randomly changing arena, get score by knocking other players off the it.
 */
 class KnockOffRandom extends KnockOff {
-  constructor(game) {
-    super(game);
+  constructor(game, resources) {
+    super(game, resources);
     this.changeCounter = changeInterval;
 
     // Sanity check since you set the radius and its bonds in different files

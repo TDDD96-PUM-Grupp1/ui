@@ -10,7 +10,7 @@ Gamemode base class.
 class Gamemode {
   /* eslint-disable class-methods-use-this, no-unused-vars, no-useless-constructor,
   no-empty-function */
-  constructor(game) {
+  constructor(game, resources) {
     this.game = game;
     this.game.registerResizeListener(this);
     this.onButtonPressed = this.onButtonPressed.bind(this);

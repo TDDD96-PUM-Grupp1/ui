@@ -16,8 +16,8 @@ const ABILITY_DURATION = 3;
   Knock off gamemode, get score by knocking other players off the arena.
 */
 class KnockOff extends Gamemode {
-  constructor(game) {
-    super(game);
+  constructor(game, resources) {
+    super(game, resources);
 
     this.players = {};
     this.respawn = {};
@@ -43,25 +43,21 @@ class KnockOff extends Gamemode {
     graphic.x = this.arenaCenterx;
     graphic.y = this.arenaCentery;
     this.arenaGraphic = graphic; */
-    this.game.resourceServer
-      .requestResources([{ name: 'arena', path: 'knockoff/arena.png' }])
-      .then(resources => {
-        const graphic = new PIXI.Sprite(resources.arena);
-        game.app.stage.addChildAt(graphic, 0);
-        this.arenaGraphic = graphic;
+    const graphic = new PIXI.Sprite(resources.arena);
+    game.app.stage.addChildAt(graphic, 0);
+    this.arenaGraphic = graphic;
 
-        const border = new PIXI.Graphics();
-        border.lineStyle(5, 0xff0101);
-        border.drawCircle(0, 0, graphic.width * 0.5 + 2);
-        border.endFill();
-        graphic.addChild(border);
+    const border = new PIXI.Graphics();
+    border.lineStyle(5, 0xff0101);
+    border.drawCircle(0, 0, graphic.width * 0.5 + 2);
+    border.endFill();
+    graphic.addChild(border);
 
-        graphic.width = this.arenaRadius * 2;
-        graphic.height = this.arenaRadius * 2;
-        graphic.anchor.set(0.5, 0.5);
-        graphic.x = this.arenaCenterx;
-        graphic.y = this.arenaCentery;
-      });
+    graphic.width = this.arenaRadius * 2;
+    graphic.height = this.arenaRadius * 2;
+    graphic.anchor.set(0.5, 0.5);
+    graphic.x = this.arenaCenterx;
+    graphic.y = this.arenaCentery;
 
     // Set up scores
     game.scoreManager.addScoreType('Kills', 0, true);
