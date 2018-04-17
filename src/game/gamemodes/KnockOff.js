@@ -209,6 +209,9 @@ class KnockOff extends Gamemode {
     this.arenaGraphic.x = newCenterX;
     this.arenaGraphic.y = newCenterY;
 
+    this.arenaCenterx = newCenterX;
+    this.arenaCentery = newCenterY;
+
     this.game.entityHandler.getEntities().forEach(entity => {
       entity.x -= dx;
       entity.y -= dy;
