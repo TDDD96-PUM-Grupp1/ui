@@ -6,8 +6,8 @@ import CollisionRectangle from './collision/CollisionRectangle';
 Game object with a basic rectangle graphic and collision
 */
 class BasicRectangle extends GameEntity {
-  constructor(app, width, height, mass, color) {
-    super(app);
+  constructor(game, width, height, mass, color) {
+    super(game);
 
     this.width = width;
     this.height = height;
@@ -21,7 +21,7 @@ class BasicRectangle extends GameEntity {
     graphic.beginFill(0xfffffff);
     graphic.drawRect(-width * 0.5, -height * 0.5, width, height);
     graphic.endFill();
-    app.stage.addChild(graphic);
+    game.app.stage.addChild(graphic);
     graphic.tint = color;
     this.graphic = graphic;
 

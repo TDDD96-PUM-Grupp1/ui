@@ -22,12 +22,11 @@ class Gamemode {
         {
           iconID: 1,
           id: 'local',
-          backgroundColor: '#00FFFFF',
-          iconColor: '#ff0000',
+          backgroundColor: '#EE6666',
+          iconColor: '#00ffff',
         },
         localPlayer => {
           localPlayer.setController(new LocalPlayerController('local'));
-          localPlayer.setColor(0xee6666);
           localPlayer.y = 300;
         },
       );
@@ -35,11 +34,10 @@ class Gamemode {
         {
           iconID: 2,
           id: 'local2',
-          backgroundColor: '#00FFFFF',
-          iconColor: '#ff0000',
+          backgroundColor: '#EEFFF66',
+          iconColor: '#4422ff',
         },
         localPlayer => {
-          localPlayer.setColor(0xeeff66);
           localPlayer.y = 350;
         },
       );
@@ -63,9 +61,13 @@ class Gamemode {
     this.game.resourceServer
       .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
       .then(resources => {
-        const circle = new PlayerCircle(this.game.app, resources[iconData[iconID].name]);
+        const circle = new PlayerCircle(this.game, resources[iconData[iconID].name]);
         const controller = new PlayerController(this.game, idTag);
         circle.setController(controller);
+        const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
+        const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
+
+        circle.setColor(backgroundCol, iconCol);
         this.onPlayerCreated(playerObject, circle);
 
         if (callback) {

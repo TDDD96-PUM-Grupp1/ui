@@ -44,6 +44,12 @@ class KnockOff extends Gamemode {
     graphic.y = this.arenaCentery;
     this.arenaGraphic = graphic;
 
+    const border = new PIXI.Graphics();
+    border.lineStyle(5, 0xff0101);
+    border.drawCircle(0, 0, this.arenaRadius + 2);
+    border.endFill();
+    this.mainCircle.addChild(border);
+
     // Set up scores
     game.scoreManager.addScoreType('Kills', 0, true);
     game.scoreManager.addScoreType('Deaths', 0);
@@ -79,7 +85,7 @@ class KnockOff extends Gamemode {
       ) {
         this.players[id].mass = 1;
         // eslint-disable-next-line
-        this.players[id].setColor(0xffffff ^ this.players[id].graphic.tint);
+        // this.players[id].setColor(0xffffff ^ this.players[id].graphic.tint);
         this.abilityTimer[id].active = false;
       }
     }, this);
@@ -113,10 +119,6 @@ class KnockOff extends Gamemode {
     circle.x = this.arenaCenterx;
     circle.y = this.arenaCentery;
 
-    const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
-    const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
-
-    circle.setColor(backgroundCol, iconCol);
     this.game.entityHandler.register(circle);
 
     circle.collisionGroup = idTag;

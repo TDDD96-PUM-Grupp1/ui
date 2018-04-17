@@ -3,12 +3,13 @@ Configuration file for different project parameters.
 */
 
 const settings = {
-  skipmenu: false,
+  skipmenu: true,
   defaultGamemode: 'knockOff',
   game: {
-    localPlayer: false,
+    localPlayer: true,
     forceCanvas: true,
-    antialias: false,
+    antialias: true,
+    fxaa: true,
   },
   communication: {
     host_ip: 'ds.tddd96.i4demo.com:80',

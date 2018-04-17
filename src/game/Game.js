@@ -34,6 +34,14 @@ class Game {
     this.resourceServer = new ResourceServer();
     this.scoreManager = new ScoreManager();
 
+    // Load in basic resources
+    this.basicResources = {};
+    this.resourceServer
+      .requestResources([{ name: 'circle', path: 'circle_antialias.png' }])
+      .then(resources => {
+        this.basicResources = resources;
+      });
+
     // Create gamemode
     const gamemodeHandler = GamemodeHandler.getInstance();
     const SelectedMode = gamemodeHandler.getSelected();
