@@ -34,15 +34,6 @@ class KnockOff extends Gamemode {
     this.arenaCentery = Math.round(window.innerHeight / 2);
 
     // Set up arena graphic
-    /* const graphic = new PIXI.Graphics();
-    graphic.beginFill(0xfffffff);
-    this.mainCircle = graphic.drawCircle(0, 0, this.arenaRadius);
-    graphic.endFill();
-    game.app.stage.addChildAt(graphic, 0); // Set arena to be first thing to render
-    graphic.tint = 0x555555;
-    graphic.x = this.arenaCenterx;
-    graphic.y = this.arenaCentery;
-    this.arenaGraphic = graphic; */
     const graphic = new PIXI.Sprite(resources.arena);
     game.app.stage.addChildAt(graphic, 0);
     this.arenaGraphic = graphic;
@@ -143,13 +134,16 @@ class KnockOff extends Gamemode {
 
     circle.collision.addListener((player, victim) => {
       // Check if victim is a player
-      if (victim.controller && victim.controller.id !== undefined) {
+      if (victim.isPlayer()) {
         const vid = victim.controller.id;
         const pid = player.controller.id;
         this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
         this.tags[vid].push({ id: pid, timer: TAG_TIME });
-        this.tags[pid] = this.tags[pid].filter(e => e.id !== vid);
-        this.tags[pid].push({ id: vid, timer: TAG_TIME });
+        // Since this function is activated for both players
+        // we should only need to update tags on the victim
+        // and the "player" should be tagged by the twin call.
+        // this.tags[pid] = this.tags[pid].filter(e => e.id !== vid);
+        // this.tags[pid].push({ id: vid, timer: TAG_TIME });
       }
     });
   }
