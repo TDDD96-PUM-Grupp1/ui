@@ -36,9 +36,10 @@ function keyboard(keyCode) {
 Local player object controller, takes input from WASD
 */
 class LocalPlayerController extends EntityController {
-  constructor(id) {
+  constructor(game, id) {
     super();
     this.id = id;
+    this.game = game;
 
     this.time = 0;
 
@@ -50,6 +51,14 @@ class LocalPlayerController extends EntityController {
     this.keya = keyboard(65);
     this.keys = keyboard(83);
     this.keyd = keyboard(68);
+    this.keyq = keyboard(81);
+    this.keyq.press = () => {
+      this.game.onButtonsPressed(this.id, 0);
+    };
+    this.keyr = keyboard(82);
+    this.keyr.press = () => {
+      this.game.onButtonsPressed(this.id, 1);
+    };
   }
 
   // Update

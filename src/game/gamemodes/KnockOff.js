@@ -1,74 +1,73 @@
 import * as PIXI from 'pixi.js';
-import PlayerCircle from '../entities/PlayerCircle';
 import Gamemode from './Gamemode';
-// import TestController from '../entities/controllers/TestController';
-import PlayerController from '../entities/controllers/PlayerController';
-// import LocalPlayerController from '../entities/controllers/LocalPlayerController';
-import iconData from '../iconData';
+import HighscoreList from '../HighscoreList';
 
 // Respawn time in seconds
-const RESPAWN_TIME = 3;
+const RESPAWN_TIME = 1;
 
 // The max time between a collision and a player dying in order to count as a kill.
 const TAG_TIME = 4;
+
+// Ability times
+const ABILITY_COOLDOWN = 10;
+const ABILITY_DURATION = 3;
 
 /*
   Knock off gamemode, get score by knocking other players off the arena.
 */
 class KnockOff extends Gamemode {
-  constructor(game) {
-    super(game);
+  constructor(game, resources) {
+    super(game, resources);
 
     this.players = {};
     this.respawn = {};
-    this.score = {};
     this.tags = {};
+    this.abilityTimer = {};
 
     this.game.respawnHandler.registerRespawnListener(this);
 
-    this.arenaRadius = 350;
-    this.arenaCenterx = 500;
-    this.arenaCentery = 500;
+    this.arenaRadius = 490;
+    this.respawnArea = 100;
+
+    // Center arena
+    this.arenaCenterx = Math.round(window.innerWidth / 2);
+    this.arenaCentery = Math.round(window.innerHeight / 2);
 
     // Set up arena graphic
-    const graphic = new PIXI.Graphics();
+    /* const graphic = new PIXI.Graphics();
     graphic.beginFill(0xfffffff);
-    graphic.drawCircle(0, 0, this.arenaRadius);
+    this.mainCircle = graphic.drawCircle(0, 0, this.arenaRadius);
     graphic.endFill();
     game.app.stage.addChildAt(graphic, 0); // Set arena to be first thing to render
     graphic.tint = 0x555555;
     graphic.x = this.arenaCenterx;
     graphic.y = this.arenaCentery;
+    this.arenaGraphic = graphic; */
+    const graphic = new PIXI.Sprite(resources.arena);
+    game.app.stage.addChildAt(graphic, 0);
     this.arenaGraphic = graphic;
 
-    // TODO remove
-    /* this.onPlayerJoin(1);
-    let fakePlayer = this.players[1];
-    fakePlayer.setController(new LocalPlayerController(1));
-    fakePlayer.setColor(0xee6666);
-    fakePlayer.y = 300;
+    const border = new PIXI.Graphics();
+    border.lineStyle(5, 0xff0101);
+    border.drawCircle(0, 0, graphic.width * 0.5 + 2);
+    border.endFill();
+    graphic.addChild(border);
 
-    this.onPlayerJoin(2);
-    fakePlayer = this.players[2];
-    fakePlayer.setColor(0xeeff66);
-    fakePlayer.x = 600;
-    fakePlayer.y = 300; */
+    graphic.width = this.arenaRadius * 2;
+    graphic.height = this.arenaRadius * 2;
+    graphic.anchor.set(0.5, 0.5);
+    graphic.x = this.arenaCenterx;
+    graphic.y = this.arenaCentery;
 
-    /* this.game.resourceServer
-      .requestResources([{ name: iconData[5].name, path: iconData[5].img }])
-      .then(resources => {
-        const circle3 = new PlayerCircle(this.game.app, resources[iconData[5].name]);
-        const controller3 = new LocalPlayerController(1);
-        circle3.setController(controller3);
-        circle3.x = 500;
-        circle3.y = 500;
-        circle3.setColor(0xee6666);
-        circle3.setEntityListener(this);
-        this.game.entityHandler.register(circle3);
-      }); */
+    // Set up scores
+    game.scoreManager.addScoreType('Kills', 0, true);
+    game.scoreManager.addScoreType('Deaths', 0);
+    game.scoreManager.setAscOrder(false);
+    this.hs_list = new HighscoreList(game.scoreManager, game);
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
+
   // Called before the game objects are updated.
   preUpdate(dt) {
     // Update tags
@@ -85,8 +84,22 @@ class KnockOff extends Gamemode {
       list.forEach(item => {
         item.timer -= dt;
       });
-    });
+    }, this);
+
+    Object.keys(this.abilityTimer).forEach(id => {
+      this.abilityTimer[id].time -= dt;
+      if (
+        this.abilityTimer[id].active &&
+        this.abilityTimer[id].time <= ABILITY_COOLDOWN - ABILITY_DURATION
+      ) {
+        this.players[id].mass = 1;
+        // eslint-disable-next-line
+        this.players[id].setColor(0xffffff ^ this.players[id].graphic.tint);
+        this.abilityTimer[id].active = false;
+      }
+    }, this);
   }
+
   /* eslint-enable no-unused-vars, class-methods-use-this */
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
@@ -94,51 +107,51 @@ class KnockOff extends Gamemode {
   // Called after the game objects are updated.
   postUpdate(dt) {
     this.game.entityHandler.getEntities().forEach(entity => {
-      const dx = this.arenaCenterx - entity.x;
-      const dy = this.arenaCentery - entity.y;
-      const centerDist = Math.sqrt(dx * dx + dy * dy);
+      if (entity.isPlayer()) {
+        const dx = this.arenaGraphic.x - entity.x;
+        const dy = this.arenaGraphic.y - entity.y;
+        const centerDist = Math.sqrt(dx * dx + dy * dy);
 
-      if (centerDist > this.arenaRadius) {
-        entity.die();
+        if (centerDist > this.arenaRadius - entity.radius) {
+          entity.die();
+        }
       }
     });
   }
 
-  // Called when a new player connects
-  onPlayerJoin(idTag, iconID) {
-    // console.log('Player join');
+  // Called when a new player has been created
+  onPlayerCreated(playerObject, circle) {
+    const { iconID } = playerObject;
+    const idTag = playerObject.id;
 
-    this.game.resourceServer
-      .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
-      .then(resources => {
-        const circle = new PlayerCircle(this.game.app, resources[iconData[iconID].name]);
-        const controller = new PlayerController(this.game, idTag);
-        circle.setController(controller);
-        // Place them in the middle of the arena for now
-        circle.x = 500;
-        circle.y = 500;
-        circle.setColor(0xff3333);
-        this.game.entityHandler.register(circle);
+    // Place them in the middle of the arena for now
+    circle.x = this.arenaCenterx;
+    circle.y = this.arenaCentery;
 
-        this.players[idTag] = circle;
-        this.score[idTag] = 0;
-        this.tags[idTag] = [];
-        this.respawn[idTag] = true;
+    this.game.entityHandler.register(circle);
 
-        circle.addEntityListener(this);
+    circle.collisionGroup = idTag;
 
-        circle.collision.addListener((player, victim) => {
-          // Check if victim is a player
-          if (victim.controller && victim.controller.id !== undefined) {
-            const vid = victim.controller.id;
-            const pid = player.controller.id;
-            this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
-            this.tags[vid].push({ id: pid, timer: TAG_TIME });
-            this.tags[pid] = this.tags[pid].filter(e => e.id !== vid);
-            this.tags[pid].push({ id: vid, timer: TAG_TIME });
-          }
-        });
-      });
+    circle.phase(3);
+
+    this.players[idTag] = circle;
+    this.tags[idTag] = [];
+    this.respawn[idTag] = true;
+    this.abilityTimer[idTag] = { active: false, time: 0 };
+
+    circle.addEntityListener(this);
+
+    circle.collision.addListener((player, victim) => {
+      // Check if victim is a player
+      if (victim.controller && victim.controller.id !== undefined) {
+        const vid = victim.controller.id;
+        const pid = player.controller.id;
+        this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
+        this.tags[vid].push({ id: pid, timer: TAG_TIME });
+        this.tags[pid] = this.tags[pid].filter(e => e.id !== vid);
+        this.tags[pid].push({ id: vid, timer: TAG_TIME });
+      }
+    });
   }
 
   // Called when a player disconnects
@@ -146,6 +159,17 @@ class KnockOff extends Gamemode {
     // When a player leaves, just leave their entity on the map.
     // But stop them from respawning.
     this.respawn[idTag] = false;
+  }
+
+  onButtonPressed(id, button) {
+    const playerEntity = this.players[id];
+    if (this.abilityTimer[id].time <= 0) {
+      playerEntity.mass *= 50;
+      /* eslint-disable-next-line */
+      this.players[id].setColor(0xffffff ^ this.players[id].graphic.tint);
+      this.abilityTimer[id].time = ABILITY_COOLDOWN;
+      this.abilityTimer[id].active = true;
+    }
   }
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
@@ -159,10 +183,12 @@ class KnockOff extends Gamemode {
 
   // Called when an entity is respawned.
   onRespawn(entity) {
-    // Move the entity to the center
-    entity.x = this.arenaCenterx;
-    entity.y = this.arenaCentery;
-    // TODO: randomize a bit
+    // Move the entity close to the center
+    entity.x = this.arenaCenterx + Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
+    entity.y = this.arenaCentery + Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
+
+    // Phase the entity for a bit
+    entity.phase(2);
   }
 
   // Called when an entity dies.
@@ -170,14 +196,36 @@ class KnockOff extends Gamemode {
     const { id } = entity.controller;
     this.tags[id].forEach(item => {
       // console.log("%s killed %s", item.id, id);
-      this.score[item.id] += 1;
+      this.game.scoreManager.addScore('Kills', item.id, 1);
     });
+
+    this.game.scoreManager.addScore('Deaths', id, 1);
 
     if (this.respawn[id]) {
       this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
     } else {
-      entity.destroy();
+      this.game.entityHandler.unregisterFully(entity);
     }
+  }
+
+  onWindowResize() {
+    const newCenterX = Math.round(window.innerWidth / 2);
+    const newCenterY = Math.round(window.innerHeight / 2);
+
+    // Calculate diff in x and y before moving everything
+    const dx = this.arenaGraphic.x - newCenterX;
+    const dy = this.arenaGraphic.y - newCenterY;
+
+    this.arenaGraphic.x = newCenterX;
+    this.arenaGraphic.y = newCenterY;
+
+    this.arenaCenterx = newCenterX;
+    this.arenaCentery = newCenterY;
+
+    this.game.entityHandler.getEntities().forEach(entity => {
+      entity.x -= dx;
+      entity.y -= dy;
+    });
   }
 
   /* eslint-disable class-methods-use-this */

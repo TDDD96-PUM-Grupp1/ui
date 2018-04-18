@@ -2,7 +2,6 @@ import PlayerCircle from '../entities/PlayerCircle';
 import Gamemode from './Gamemode';
 // import TestController from '../entities/controllers/TestController';
 import PlayerController from '../entities/controllers/PlayerController';
-import LocalPlayerController from '../entities/controllers/LocalPlayerController';
 import BasicRectangle from '../entities/BasicRectangle';
 import BasicLine from '../entities/BasicLine';
 import iconData from '../iconData';
@@ -11,10 +10,10 @@ import iconData from '../iconData';
 Test gamemode.
 */
 class TestGamemode extends Gamemode {
-  constructor(game) {
-    super(game);
+  constructor(game, resources) {
+    super(game, resources);
 
-    const rect = new BasicRectangle(this.game.app, 640, 32, 10, 0x88ee11);
+    const rect = new BasicRectangle(this.game, 640, 32, 10, 0x88ee11);
     // const rectc = new TestController(700, 500, 0, 0, 0.8, 1.1);
     // rect.setController(rectc);
     rect.x = 700;
@@ -26,18 +25,6 @@ class TestGamemode extends Gamemode {
     rect.mass = Infinity;
     rect.floorFriction = 0;
     this.game.entityHandler.register(rect);
-
-    this.game.resourceServer
-      .requestResources([{ name: iconData[5].name, path: iconData[5].img }])
-      .then(resources => {
-        const circle3 = new PlayerCircle(this.game.app, resources[iconData[5].name]);
-        const controller3 = new LocalPlayerController(1);
-        circle3.setController(controller3);
-        circle3.x = 50;
-        circle3.y = 50;
-        circle3.setColor(0xee6666);
-        this.game.entityHandler.register(circle3);
-      });
 
     this.addLine(0, 0, this.game.app.screen.width, 0);
     this.addLine(
@@ -56,7 +43,7 @@ class TestGamemode extends Gamemode {
   }
 
   addLine(x, y, ex, ey) {
-    const line = new BasicLine(this.game.app, x, y, ex, ey, 0x6633ff);
+    const line = new BasicLine(this.game, x, y, ex, ey, 0x6633ff);
     line.staticFriction = 0;
     line.dynamicFriction = 0;
     line.restitution = 1;
@@ -82,7 +69,9 @@ class TestGamemode extends Gamemode {
   postUpdate(dt) {}
 
   // Called when a new player connects
-  onPlayerJoin(idTag, iconID) {
+  onPlayerJoin(playerObject) {
+    const { idTag, iconID } = playerObject;
+
     this.game.resourceServer
       .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
       .then(resources => {

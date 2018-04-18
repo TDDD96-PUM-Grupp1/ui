@@ -95,28 +95,28 @@ class Communication {
   * @param data the data send from the controller. Should contain name, id and sensor data.
   * @param response the response from the RPC
   */
-  addPlayer(data, response) {
-    if (data.id === undefined || data.name === undefined) {
+  addPlayer(playerObject, response) {
+    if (playerObject.id === undefined || playerObject.name === undefined) {
       response.error('Invalid data format');
       return;
     }
 
     // If false this usually means the instance is full.
-    if (!this.instance.addPlayer(data.id, data.name, data.iconID)) {
+    if (!this.instance.addPlayer(playerObject)) {
       response.error('cannot add player.');
       return;
     }
 
     // Initialize the communication players, keeping count of the timeout.
-    this.players[data.id] = { ping: this.timeoutCount };
+    this.players[playerObject.id] = { ping: this.timeoutCount };
 
     // Tell the service that another player has joined this instance.
     this.client.event.emit(`${this.serviceName}/playerAdded`, {
       instanceName: this.instance.getName(),
-      playerName: data.name,
+      playerName: playerObject.name,
     });
 
-    response.send(data.id);
+    response.send(playerObject.id);
   }
 
   /*

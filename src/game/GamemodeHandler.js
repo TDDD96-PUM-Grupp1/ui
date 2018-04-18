@@ -1,6 +1,9 @@
 import TestGamemode from './gamemodes/TestGamemode';
 import KnockOff from './gamemodes/KnockOff';
 import settings from '../config';
+import KnockOffRandom from './gamemodes/KnockOffRandom';
+import KnockOffDynamic from './gamemodes/KnockOffDynamic';
+import KnockOffWander from './gamemodes/KnockOffWander';
 
 /*
 Singleton class for handling gamemode storage and selection
@@ -10,7 +13,18 @@ class GMHandlerClass {
     // List of all available gamemodes
     this.gamemodes = {
       knockOff: KnockOff,
+      knockOffRandom: KnockOffRandom,
+      knockOffDynamic: KnockOffDynamic,
+      knockOffWander: KnockOffWander,
       testGamemode: TestGamemode,
+    };
+
+    this.gamemodeResources = {
+      knockOff: [{ name: 'arena', path: 'knockoff/arena.png' }],
+      knockOffRandom: [{ name: 'arena', path: 'knockoff/arena.png' }],
+      knockOffDynamic: [{ name: 'arena', path: 'knockoff/arena.png' }],
+      knockOffWander: [{ name: 'arena', path: 'knockoff/arena.png' }],
+      testGamemode: [],
     };
 
     if (settings.skipmenu) {
@@ -46,7 +60,10 @@ class GMHandlerClass {
       throw new Error('Gamemode has not been selected');
     }
 
-    return this.gamemodes[this.selected];
+    return {
+      SelectedMode: this.gamemodes[this.selected],
+      requestedResources: this.gamemodeResources[this.selected],
+    };
   }
 
   /*

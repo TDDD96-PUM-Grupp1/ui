@@ -1,11 +1,47 @@
+import settings from '../../config';
+import PlayerCircle from '../entities/PlayerCircle';
+import PlayerController from '../entities/controllers/PlayerController';
+import LocalPlayerController from '../entities/controllers/LocalPlayerController';
+import iconData from '../iconData';
+
 /*
 Gamemode base class.
 */
 class Gamemode {
   /* eslint-disable class-methods-use-this, no-unused-vars, no-useless-constructor,
   no-empty-function */
-  constructor(game) {
+  constructor(game, resources) {
     this.game = game;
+    this.game.registerResizeListener(this);
+    this.onButtonPressed = this.onButtonPressed.bind(this);
+  }
+
+  init() {
+    if (settings.game.localPlayer) {
+      this.onPlayerJoin(
+        {
+          iconID: 1,
+          id: 'local',
+          backgroundColor: '#EE6666',
+          iconColor: '#00ffff',
+        },
+        localPlayer => {
+          localPlayer.setController(new LocalPlayerController(this.game, 'local'));
+          localPlayer.y = 300;
+        },
+      );
+      this.onPlayerJoin(
+        {
+          iconID: 2,
+          id: 'local2',
+          backgroundColor: '#EEFFF66',
+          iconColor: '#4422ff',
+        },
+        localPlayer => {
+          localPlayer.y = 350;
+        },
+      );
+    }
   }
   /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
   no-empty-function */
@@ -18,7 +54,30 @@ class Gamemode {
   postUpdate(dt) {}
 
   // Called when a new player connects
-  onPlayerJoin(idTag) {}
+  onPlayerJoin(playerObject, callback) {
+    const { iconID } = playerObject;
+    const idTag = playerObject.id;
+
+    this.game.resourceServer
+      .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
+      .then(resources => {
+        const circle = new PlayerCircle(this.game, resources[iconData[iconID].name]);
+        const controller = new PlayerController(this.game, idTag);
+        circle.setController(controller);
+        const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
+        const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
+
+        circle.setColor(backgroundCol, iconCol);
+        this.onPlayerCreated(playerObject, circle);
+
+        if (callback) {
+          callback(circle);
+        }
+      });
+  }
+
+  // Called after a player has joined and their circle has been created.
+  onPlayerCreated(playerObject, circle) {}
 
   // Called when a player disconnects
   onPlayerLeave(idTag) {
@@ -34,6 +93,12 @@ class Gamemode {
         return;
       }
     }
+  }
+
+  onButtonPressed(id, button) {}
+
+  onWindowResize() {
+    throw new Error('Override onWindowResize');
   }
 
   // Clean up after the gamemode is finished.

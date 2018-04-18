@@ -4,14 +4,14 @@ import BasicCircle from './BasicCircle';
 const RADIUS = 32;
 const MASS = 1;
 const SQUAREROOTOF2 = 1.4142135623730951;
-const ICONSIZE = Math.floor(RADIUS * SQUAREROOTOF2);
+const ICONSIZE = Math.floor(256 * SQUAREROOTOF2);
 
 /*
 Game object representing a player
 */
 class PlayerCircle extends BasicCircle {
-  constructor(app, resource) {
-    super(app, RADIUS, MASS, 0xff6600);
+  constructor(game, resource) {
+    super(game, RADIUS, MASS, 0xffffff, true);
 
     this.sprite = new PIXI.Sprite(resource);
     this.sprite.width = ICONSIZE;
@@ -19,10 +19,19 @@ class PlayerCircle extends BasicCircle {
     // Center x,y
     this.sprite.anchor.set(0.5, 0.5);
 
-    app.stage.addChild(this.sprite);
+    this.graphic.addChild(this.sprite);
 
-    // set collision group
-    this.collisionGroup = 1;
+    this.restitution = 1;
+
+    // default player collision group is random so they will be able to collide
+    this.collisionGroup = Math.random();
+  }
+
+  setColor(backgroundColor, iconColor) {
+    this.graphic.tint = backgroundColor;
+    if (iconColor !== undefined) {
+      this.sprite.tint = iconColor;
+    }
   }
 
   // Update this object
@@ -31,19 +40,25 @@ class PlayerCircle extends BasicCircle {
   }
 
   // Update this entity's graphics
-  graphicUpdate(dt) {
-    super.graphicUpdate(dt);
+  // graphicUpdate(dt) {
+  //   super.graphicUpdate(dt);
 
-    this.sprite.x = this.x;
-    this.sprite.y = this.y;
-    this.sprite.rotation = this.rotation;
-  }
+  //   this.sprite.x = this.x;
+  //   this.sprite.y = this.y;
+  //   this.sprite.rotation = this.rotation;
+  // }
 
   // Destroy sprite when removed
   destroy() {
     super.destroy();
     this.sprite.destroy();
   }
+
+  /* eslint-disable */
+  isPlayer() {
+    return true;
+  }
+  /* eslint-enable */
 }
 
 export default PlayerCircle;
