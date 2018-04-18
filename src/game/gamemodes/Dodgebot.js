@@ -2,9 +2,14 @@
 import Gamemode from './Gamemode';
 import Dangerbot from '../entities/Dangerbot';
 import DangerbotController from '../entities/controllers/DangerbotController';
+import BasicRectangle from '../entities/BasicRectangle';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 1;
+
+// How many walls the arena should have.
+const WALLS = 4;
+
 /*
   Knock off gamemode, get score by knocking other players off the arena.
 */
@@ -16,6 +21,8 @@ class Dodgebot extends Gamemode {
     this.players = {};
     this.respawn = {};
 
+    this.time = 0;
+
     // Create the dangerbot
     const dangerbot = new Dangerbot(game, 25, Infinity);
     dangerbot.x = 500;
@@ -23,12 +30,54 @@ class Dodgebot extends Gamemode {
     dangerbot.setColor(0xff0101);
     dangerbot.setController(new DangerbotController(game));
     game.entityHandler.register(dangerbot);
+
+    // Create the arena
+    this.arenaSize = 700;
+    this.arenaWidth = 30;
+    this.wallLength = this.arenaSize + this.arenaWidth;
+    this.centerx = 500;
+    this.centery = 500;
+    // rads / sec
+    this.rv = 0.1;
+
+    this.walls = [];
+    this.wallAngles = [];
+    for (let i = 0; i < WALLS; i += 1) {
+      const wall = new BasicRectangle(game, this.arenaWidth, this.wallLength, Infinity, 0x44ff66);
+      const angle = Math.PI * 2 * i / WALLS;
+      this.walls.push(wall);
+      this.wallAngles.push(angle);
+      wall.rotation = angle;
+      wall.floorFriction = 0;
+      wall.restitution = 0;
+      wall.rv = this.rv;
+      game.entityHandler.register(wall);
+      wall.x = this.centerx + Math.cos(angle) * this.arenaSize * 0.5;
+      wall.y = this.centery + Math.sin(angle) * this.arenaSize * 0.5;
+      // wall.vx = this.centerx + Math.cos(angle + Math.PI * 0.5) * this.arenaSize * 0.5;
+      // wall.vy = this.centery + Math.sin(angle + Math.PI * 0.5) * this.arenaSize * 0.5;
+      // wall.ax = this.centerx + Math.cos(angle + Math.PI) * this.arenaSize * 0.5;
+      // wall.ay = this.centery + Math.sin(angle + Math.PI) * this.arenaSize * 0.5;
+    }
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
 
   // Called before the game objects are updated.
-  preUpdate(dt) {}
+  preUpdate(dt) {
+    this.time += dt;
+    for (let i = 0; i < WALLS; i += 1) {
+      const wall = this.walls[i];
+      const angle = this.wallAngles[i];
+
+      // wall.rotation = angle + this.time * 0.5;
+      wall.x = this.centerx + Math.cos(angle + this.time * this.rv) * this.arenaSize * 0.5;
+      wall.y = this.centery + Math.sin(angle + this.time * this.rv) * this.arenaSize * 0.5;
+      // const ca = Math.atan2(wall.y - this.centery, wall.x - this.centerx);
+      // wall.ax = this.centerx + Math.cos(ca) * this.arenaSize * 0.5;
+      // wall.ay = this.centery + Math.sin(ca) * this.arenaSize * 0.5;
+    }
+  }
 
   /* eslint-enable no-unused-vars, class-methods-use-this */
 
@@ -50,6 +99,7 @@ class Dodgebot extends Gamemode {
 
     circle.collisionGroup = idTag;
 
+    circle.moveWhilePhased = false;
     circle.phase(3);
 
     this.players[idTag] = circle;
