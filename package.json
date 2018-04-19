@@ -10,7 +10,6 @@
     "react-dom": "^16.2.0",
     "react-scripts": "1.1.1",
     "react-spinners": "^0.2.6",
-    "react-test-renderer": "^16.3.2",
     "webfontloader": "^1.6.28"
   },
   "scripts": {
@@ -37,6 +36,7 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-react": "^7.6.1",
     "eslint-plugin-standard": "^3.0.1",
+    "react-test-renderer": "^16.3.2",
     "prettier": "^1.10.2"
   }
 }
