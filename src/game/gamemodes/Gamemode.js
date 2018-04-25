@@ -58,22 +58,22 @@ class Gamemode {
     const { iconID } = playerObject;
     const idTag = playerObject.id;
 
-    this.game.resourceServer
-      .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
-      .then(resources => {
-        const circle = new PlayerCircle(this.game, resources[iconData[iconID].name]);
-        const controller = new PlayerController(this.game, idTag);
-        circle.setController(controller);
-        const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
-        const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
+    return new Promise((resolve, reject) => {
+      this.game.resourceServer
+        .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
+        .then(resources => {
+          const circle = new PlayerCircle(this.game, resources[iconData[iconID].name]);
+          const controller = new PlayerController(this.game, idTag);
+          circle.setController(controller);
+          const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
+          const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
 
-        circle.setColor(backgroundCol, iconCol);
-        this.onPlayerCreated(playerObject, circle);
+          circle.setColor(backgroundCol, iconCol);
+          this.onPlayerCreated(playerObject, circle);
 
-        if (callback) {
-          callback(circle);
-        }
-      });
+          resolve();
+        });
+    });
   }
 
   // Called after a player has joined and their circle has been created.
