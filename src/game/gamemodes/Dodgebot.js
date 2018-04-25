@@ -3,6 +3,7 @@ import Gamemode from './Gamemode';
 import Dangerbot from '../entities/Dangerbot';
 import DangerbotController from '../entities/controllers/DangerbotController';
 import BasicRectangle from '../entities/BasicRectangle';
+import HighscoreList from '../HighscoreList';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 1;
@@ -17,6 +18,11 @@ class Dodgebot extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
     this.game.respawnHandler.registerRespawnListener(this);
+
+    game.scoreManager.addScoreType('Time Alive', 0, true);
+    game.scoreManager.addScoreType('Deaths', 0);
+    game.scoreManager.setAscOrder(false);
+    this.hs_list = new HighscoreList(game.scoreManager, game);
 
     this.players = {};
     this.respawn = {};
@@ -51,10 +57,6 @@ class Dodgebot extends Gamemode {
       game.entityHandler.register(wall);
       wall.x = this.centerx + Math.cos(angle) * this.arenaSize * 0.5;
       wall.y = this.centery + Math.sin(angle) * this.arenaSize * 0.5;
-      // wall.vx = this.centerx + Math.cos(angle + Math.PI * 0.5) * this.arenaSize * 0.5;
-      // wall.vy = this.centery + Math.sin(angle + Math.PI * 0.5) * this.arenaSize * 0.5;
-      // wall.ax = this.centerx + Math.cos(angle + Math.PI) * this.arenaSize * 0.5;
-      // wall.ay = this.centery + Math.sin(angle + Math.PI) * this.arenaSize * 0.5;
     }
   }
 
@@ -83,8 +85,6 @@ class Dodgebot extends Gamemode {
       const wall = this.walls[i];
       const angle = this.wallAngles[i];
 
-      // wall.rotation = angle + this.time * 0.5;
-
       const oldx = wall.x;
       const oldy = wall.y;
       const newx = this.centerx + Math.cos(angle + this.rotation) * this.arenaSize * rvo * 0.5;
@@ -92,9 +92,6 @@ class Dodgebot extends Gamemode {
       wall.vx = (newx - oldx) / dt;
       wall.vy = (newy - oldy) / dt;
       wall.rv = this.rv;
-      // const ca = Math.atan2(wall.y - this.centery, wall.x - this.centerx);
-      // wall.ax = this.centerx + Math.cos(ca) * this.arenaSize * 0.5;
-      // wall.ay = this.centery + Math.sin(ca) * this.arenaSize * 0.5;
     }
   }
 
@@ -103,7 +100,17 @@ class Dodgebot extends Gamemode {
   /* eslint-disable class-methods-use-this, no-unused-vars */
 
   // Called after the game objects are updated.
-  postUpdate(dt) {}
+  postUpdate(dt) {
+    Object.keys(this.players).forEach(id => {
+      const entity = this.players[id];
+
+      // Increase score if player is alive
+      // TODO: Better way to determine this
+      if (!entity.phasing) {
+        this.game.scoreManager.addScore('Time Alive', id, dt);
+      }
+    });
+  }
 
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
@@ -158,6 +165,9 @@ class Dodgebot extends Gamemode {
   // Called when an entity dies.
   onDeath(entity) {
     const { id } = entity.controller;
+
+    this.game.scoreManager.setScore('Time Alive', id, 0);
+    this.game.scoreManager.addScore('Deaths', id, 1);
 
     if (this.respawn[id]) {
       this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
