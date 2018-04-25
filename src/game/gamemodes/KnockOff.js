@@ -170,8 +170,7 @@ class KnockOff extends Gamemode {
   // Clean up after the gamemode is finished.
   cleanUp() {
     this.game.entityHandler.clear();
-    // TODO: Clear respawns
-    // this.game.respawnHandler.clear();
+    this.game.respawnHandler.clean();
   }
 
   // Called when an entity is respawned.

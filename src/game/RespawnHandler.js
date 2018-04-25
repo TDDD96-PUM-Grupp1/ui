@@ -136,6 +136,15 @@ class RespawnHandler {
   registerRespawnListener(listener) {
     this.respawnListeners.push(listener);
   }
+
+  // Destroy entities waiting on respawn and disconnect listeners.
+  clean() {
+    this.respawnList.forEach(entity => {
+      entity.destroy();
+    });
+    this.respawnList = [];
+    this.respawnListeners = [];
+  }
 }
 
 export default RespawnHandler;
