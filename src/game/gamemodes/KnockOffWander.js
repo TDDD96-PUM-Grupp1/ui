@@ -50,7 +50,7 @@ class KnockOffWander extends KnockOff {
       this.moveHelperX = false;
     } else {
       this.arenaCenterx += dt;
-      this.mainCircle.x += dt;
+      this.arenaGraphic.x += dt;
     }
   }
 
@@ -60,7 +60,7 @@ class KnockOffWander extends KnockOff {
       this.moveHelperY = true;
     } else {
       this.arenaCentery += dt;
-      this.mainCircle.y += dt;
+      this.arenaGraphic.y += dt;
     }
   }
 
@@ -70,7 +70,7 @@ class KnockOffWander extends KnockOff {
       this.moveHelperX = true;
     } else {
       this.arenaCenterx -= dt;
-      this.mainCircle.x -= dt;
+      this.arenaGraphic.x -= dt;
     }
   }
 
@@ -80,7 +80,7 @@ class KnockOffWander extends KnockOff {
       this.moveHelperY = false;
     } else {
       this.arenaCentery -= dt;
-      this.mainCircle.y -= dt;
+      this.arenaGraphic.y -= dt;
     }
   }
 }
