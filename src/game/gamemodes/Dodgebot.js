@@ -118,8 +118,8 @@ class Dodgebot extends Gamemode {
     const idTag = playerObject.id;
 
     // Place them in the middle of the arena for now
-    circle.x = 300;
-    circle.y = 300;
+    circle.x = this.centerx;
+    circle.y = this.centery;
 
     this.game.entityHandler.register(circle);
 

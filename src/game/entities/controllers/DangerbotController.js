@@ -33,8 +33,14 @@ class DangerbotController extends EntityController {
         break;
       case 'pick': {
         const players = this.game.entityHandler.getPlayers();
-        if (players.length > 0) {
-          const player = players[Math.floor(Math.random() * players.length)];
+        const eligible = [];
+        players.forEach(player => {
+          if (!player.phasing && !player.dead) {
+            eligible.push(player);
+          }
+        });
+        if (eligible.length > 0) {
+          const player = eligible[Math.floor(Math.random() * eligible.length)];
           const angle = Math.atan2(player.y - this.entity.y, player.x - this.entity.x);
 
           this.destx = player.x + Math.cos(angle) * this.overshoot;
