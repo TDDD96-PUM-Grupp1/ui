@@ -26,7 +26,7 @@ class GMHandlerClass {
       knockOffRandom: [{ name: 'arena', path: 'knockoff/arena.png' }],
       knockOffDynamic: [{ name: 'arena', path: 'knockoff/arena.png' }],
       knockOffWander: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      dodgebot: [],
+      dodgebot: [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }],
       testGamemode: [],
     };
 

@@ -1,7 +1,7 @@
 import EntityController from './EntityController';
 
 /*
-Player object controller, will handle taking input from player and modifying their objects.
+Dangerbot controller, will target a player and rush towards them.
 */
 class DangerbotController extends EntityController {
   constructor(game) {
@@ -12,12 +12,13 @@ class DangerbotController extends EntityController {
     this.maxacc = 500;
     this.stopDist = 50;
     this.stopScale = 3;
-    this.stopAccuracy = 2;
+    this.stopSpeed = 20;
 
     this.destx = 0;
     this.desty = 0;
 
-    this.idleTime = 0.1;
+    this.idleTime = 0.05;
+    this.stareTime = 0.5;
     this.timer = this.idleTime;
     this.state = 'idle';
   }
@@ -41,15 +42,30 @@ class DangerbotController extends EntityController {
         });
         if (eligible.length > 0) {
           const player = eligible[Math.floor(Math.random() * eligible.length)];
-          const angle = Math.atan2(player.y - this.entity.y, player.x - this.entity.x);
-
-          this.destx = player.x + Math.cos(angle) * this.overshoot;
-          this.desty = player.y + Math.sin(angle) * this.overshoot;
-
-          this.state = 'moving';
+          this.target = player;
+          this.state = 'stare';
+          this.timer = this.stareTime;
         } else {
           this.state = 'idle';
           this.timer = this.idleTime;
+        }
+        break;
+      }
+      case 'stare': {
+        if (this.target.dead) {
+          this.state = 'idle';
+          this.timer = this.idleTime;
+          break;
+        }
+        this.timer -= dt;
+        const angle = Math.atan2(this.target.y - this.entity.y, this.target.x - this.entity.x);
+        const angleDiff = angle - this.entity.rotation;
+        this.entity.rotation +=
+          (this.stareTime - this.timer) * Math.atan2(Math.sin(angleDiff), Math.cos(angleDiff));
+        if (this.timer <= 0) {
+          this.destx = this.target.x + Math.cos(angle) * this.overshoot;
+          this.desty = this.target.y + Math.sin(angle) * this.overshoot;
+          this.state = 'moving';
         }
         break;
       }
@@ -70,7 +86,7 @@ class DangerbotController extends EntityController {
       }
       case 'stopping': {
         const { vx, vy } = this.entity;
-        if (vx * vx + vy * vy <= this.stopAccuracy * this.stopAccuracy) {
+        if (vx * vx + vy * vy <= this.stopSpeed * this.stopSpeed) {
           // Stopped
           this.entity.ax = 0;
           this.entity.ay = 0;

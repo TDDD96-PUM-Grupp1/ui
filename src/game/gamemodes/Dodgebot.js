@@ -63,7 +63,7 @@ class Dodgebot extends Gamemode {
   /* eslint-disable no-unused-vars, class-methods-use-this */
 
   createDangerbot(x, y) {
-    const dangerbot = new Dangerbot(this.game, 25, Infinity);
+    const dangerbot = new Dangerbot(this.game, 25, Infinity, this.resources);
     dangerbot.x = x;
     dangerbot.y = y;
     dangerbot.setColor(0xff0101);
