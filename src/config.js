@@ -3,13 +3,12 @@ Configuration file for different project parameters.
 */
 
 const settings = {
-  skipmenu: true,
+  skipmenu: false,
   defaultGamemode: 'dodgebot',
   game: {
-    localPlayer: true,
+    localPlayer: false,
     forceCanvas: true,
     antialias: false,
-    fxaa: false,
   },
   communication: {
     host_ip: 'ds.tddd96.i4demo.com:80',
