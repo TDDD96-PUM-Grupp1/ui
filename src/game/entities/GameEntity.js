@@ -3,7 +3,7 @@ Game entity base class
 */
 class GameEntity {
   /* eslint-disable no-unused-vars */
-  constructor(app) {
+  constructor(game) {
     // Position
     this.x = 0;
     this.y = 0;

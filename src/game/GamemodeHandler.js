@@ -19,6 +19,14 @@ class GMHandlerClass {
       testGamemode: TestGamemode,
     };
 
+    this.gamemodeResources = {
+      knockOff: [{ name: 'arena', path: 'knockoff/arena.png' }],
+      knockOffRandom: [{ name: 'arena', path: 'knockoff/arena.png' }],
+      knockOffDynamic: [{ name: 'arena', path: 'knockoff/arena.png' }],
+      knockOffWander: [{ name: 'arena', path: 'knockoff/arena.png' }],
+      testGamemode: [],
+    };
+
     if (settings.skipmenu) {
       this.selected = settings.defaultGamemode;
     } else {
@@ -52,7 +60,10 @@ class GMHandlerClass {
       throw new Error('Gamemode has not been selected');
     }
 
-    return this.gamemodes[this.selected];
+    return {
+      SelectedMode: this.gamemodes[this.selected],
+      requestedResources: this.gamemodeResources[this.selected],
+    };
   }
 
   /*

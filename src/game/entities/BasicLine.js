@@ -6,8 +6,8 @@ import CollisionLine from './collision/CollisionLine';
 Game object with a basic line graphic and collision
 */
 class BasicLine extends GameEntity {
-  constructor(app, x, y, ex, ey, color) {
-    super(app);
+  constructor(game, x, y, ex, ey, color) {
+    super(game);
 
     this.x = x;
     this.y = y;
@@ -24,7 +24,7 @@ class BasicLine extends GameEntity {
     graphic.moveTo(0, 0);
     graphic.lineTo(ex - x, ey - y);
     // graphic.endFill();
-    app.stage.addChild(graphic);
+    game.app.stage.addChild(graphic);
     graphic.tint = color;
     this.graphic = graphic;
 
