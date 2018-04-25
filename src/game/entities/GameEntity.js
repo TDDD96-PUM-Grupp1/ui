@@ -38,6 +38,9 @@ class GameEntity {
 
     this.listeners = [];
 
+    // Death
+    this.dead = false;
+
     // Phasing
     this.phaseTimer = 2;
     this.blinkSpeed = Math.PI * 7;
@@ -46,6 +49,7 @@ class GameEntity {
   }
 
   die() {
+    this.dead = true;
     this.listeners.forEach(listener => {
       listener.onDeath(this);
     });
@@ -71,6 +75,9 @@ class GameEntity {
 
   // Update this entity
   update(dt) {
+    if (this.dead) {
+      return;
+    }
     if (this.controller != null) {
       this.controller.update(dt);
     }
@@ -90,6 +97,9 @@ class GameEntity {
 
   // Update this entity's graphics
   graphicUpdate(dt) {
+    if (this.dead) {
+      return;
+    }
     this.x += this.vx * dt;
     this.y += this.vy * dt;
 

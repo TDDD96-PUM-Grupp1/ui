@@ -106,7 +106,7 @@ class Dodgebot extends Gamemode {
 
       // Increase score if player is alive
       // TODO: Better way to determine this
-      if (!entity.phasing) {
+      if (!entity.phasing && !entity.dead) {
         this.game.scoreManager.addScore('Time Alive', id, dt);
       }
     });
@@ -150,6 +150,7 @@ class Dodgebot extends Gamemode {
     entity.y = this.centery;
 
     // Phase the entity for a bit
+    entity.dead = false;
     entity.phase(1.5);
   }
 
