@@ -22,6 +22,7 @@ const SPRITE_SIZE = Math.floor(256 * SQUAREROOTOF2);
 const TEXT_STYLE = new PIXI.TextStyle({
   fill: TEXT_COLOR,
   fontSize: 26,
+  fontFamily: 'sans-serif',
 });
 
 class HighscoreList {
@@ -141,15 +142,16 @@ class HighscoreList {
         icon.tint = bgColor;
 
         const iconPath = iconData[styles[val.id].iconID].img;
+        const iconName = iconData[styles[val.id].iconID].name;
         this.game.resourceServer
           .requestResources([
             {
-              name: 'icon',
+              name: iconName,
               path: iconPath,
             },
           ])
           .then(res => {
-            const sprite = new PIXI.Sprite(res.icon);
+            const sprite = new PIXI.Sprite(res[iconName]);
             const iconColor = Number.parseInt(styles[val.id].iconColor.substr(1), 16);
             sprite.tint = iconColor;
             sprite.anchor.set(0.5, 0.5);
