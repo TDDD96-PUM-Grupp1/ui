@@ -13,6 +13,7 @@ class Gamemode {
   constructor(game) {
     this.game = game;
     this.game.registerResizeListener(this);
+    this.buttonUsed = [];
     this.onButtonPressed = this.onButtonPressed.bind(this);
   }
 
