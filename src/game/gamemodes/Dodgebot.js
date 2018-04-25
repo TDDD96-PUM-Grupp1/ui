@@ -23,13 +23,9 @@ class Dodgebot extends Gamemode {
 
     this.time = 0;
 
-    // Create the dangerbot
-    const dangerbot = new Dangerbot(game, 25, Infinity);
-    dangerbot.x = 500;
-    dangerbot.y = 500;
-    dangerbot.setColor(0xff0101);
-    dangerbot.setController(new DangerbotController(game));
-    game.entityHandler.register(dangerbot);
+    // Create the dangerbots
+    this.createDangerbot(500, 500);
+    this.createDangerbot(0, 0);
 
     // Create the arena
     this.arenaSize = 700;
@@ -39,6 +35,7 @@ class Dodgebot extends Gamemode {
     this.centery = 500;
     // rads / sec
     this.rv = 0.1;
+    this.rotation = 0;
 
     this.walls = [];
     this.wallAngles = [];
@@ -63,16 +60,38 @@ class Dodgebot extends Gamemode {
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
 
+  createDangerbot(x, y) {
+    const dangerbot = new Dangerbot(this.game, 25, Infinity);
+    dangerbot.x = x;
+    dangerbot.y = y;
+    dangerbot.setColor(0xff0101);
+    dangerbot.setController(new DangerbotController(this.game));
+    this.game.entityHandler.register(dangerbot);
+  }
+
   // Called before the game objects are updated.
   preUpdate(dt) {
     this.time += dt;
+
+    const rvo = 0.75 + 0.25 * Math.cos(this.time);
+    this.rv = 0.3 * rvo * Math.sin(this.time * 0.1);
+    this.rotation += this.rv * dt;
+
+    this.centerx += 15 * Math.sin(this.time * 0.05) * dt;
+
     for (let i = 0; i < WALLS; i += 1) {
       const wall = this.walls[i];
       const angle = this.wallAngles[i];
 
       // wall.rotation = angle + this.time * 0.5;
-      wall.x = this.centerx + Math.cos(angle + this.time * this.rv) * this.arenaSize * 0.5;
-      wall.y = this.centery + Math.sin(angle + this.time * this.rv) * this.arenaSize * 0.5;
+
+      const oldx = wall.x;
+      const oldy = wall.y;
+      const newx = this.centerx + Math.cos(angle + this.rotation) * this.arenaSize * rvo * 0.5;
+      const newy = this.centery + Math.sin(angle + this.rotation) * this.arenaSize * rvo * 0.5;
+      wall.vx = (newx - oldx) / dt;
+      wall.vy = (newy - oldy) / dt;
+      wall.rv = this.rv;
       // const ca = Math.atan2(wall.y - this.centery, wall.x - this.centerx);
       // wall.ax = this.centerx + Math.cos(ca) * this.arenaSize * 0.5;
       // wall.ay = this.centery + Math.sin(ca) * this.arenaSize * 0.5;
@@ -120,11 +139,11 @@ class Dodgebot extends Gamemode {
   // Called when an entity is respawned.
   onRespawn(entity) {
     // Move the entity close to the center
-    entity.x = 400;
-    entity.y = 400;
+    entity.x = this.centerx;
+    entity.y = this.centery;
 
     // Phase the entity for a bit
-    entity.phase(2);
+    entity.phase(1.5);
   }
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
