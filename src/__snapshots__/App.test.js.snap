@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FirstMenu matches the snapshot 1`] = `
+<div>
+  <button
+    className="menu-button"
+    onClick={[Function]}
+  >
+    Create Game
+  </button>
+  <button
+    className="menu-button"
+    onClick={[Function]}
+  >
+    About
+  </button>
+</div>
+`;
