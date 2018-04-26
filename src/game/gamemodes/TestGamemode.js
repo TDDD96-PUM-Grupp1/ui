@@ -31,14 +31,14 @@ class TestGamemode extends Gamemode {
       this.game.app.screen.width,
       0,
       this.game.app.screen.width,
-      this.game.app.screen.height,
+      this.game.app.screen.height
     );
     this.addLine(0, 0, 0, this.game.app.screen.height);
     this.addLine(
       0,
       this.game.app.screen.height,
       this.game.app.screen.width,
-      this.game.app.screen.height,
+      this.game.app.screen.height
     );
   }
 
@@ -51,8 +51,8 @@ class TestGamemode extends Gamemode {
     this.game.entityHandler.register(line);
   }
 
-  /* eslint-disable class-methods-use-this, no-unused-vars */
   // Called before the game objects are updated.
+  // eslint-disable-next-line
   preUpdate(dt) {
     // Simple bounce when ball leaves boundary
     /* this.game.entityHandler.getEntities().forEach(entity => {
@@ -66,12 +66,13 @@ class TestGamemode extends Gamemode {
   }
 
   // Called after the game objects are updated.
+  // eslint-disable-next-line
   postUpdate(dt) {}
 
   // Called when a new player connects
   onPlayerJoin(playerObject) {
     const { idTag, iconID } = playerObject;
-
+    // eslint-disable-next-line
     return new Promise((resolve, reject) => {
       this.game.resourceServer
         .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
@@ -90,6 +91,7 @@ class TestGamemode extends Gamemode {
   }
 
   // Called when a player disconnects
+  // eslint-disable-next-line
   onPlayerLeave(idTag) {}
 
   /* eslint-enable class-methods-use-this, no-unused-vars */

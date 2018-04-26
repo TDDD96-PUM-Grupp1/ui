@@ -1,5 +1,6 @@
-# Vim swp
+# Vim lock files 
 *.swp
+*.swo
 # Logs
 logs
 *.log
