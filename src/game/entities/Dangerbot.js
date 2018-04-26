@@ -32,10 +32,6 @@ class Dangerbot extends GameEntity {
       }
     });
   }
-
-  /* eslint-disable class-methods-use-this */
-
-  /* eslint-enable class-methods-use-this */
 }
 
 export default Dangerbot;
