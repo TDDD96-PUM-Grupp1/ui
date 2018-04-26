@@ -99,12 +99,14 @@ class KnockOff extends Gamemode {
   postUpdate(dt) {
     Object.keys(this.players).forEach(id => {
       const entity = this.players[id];
-      const dx = this.arenaGraphic.x - entity.x;
-      const dy = this.arenaGraphic.y - entity.y;
-      const centerDist = Math.sqrt(dx * dx + dy * dy);
+      if (!entity.dead) {
+        const dx = this.arenaGraphic.x - entity.x;
+        const dy = this.arenaGraphic.y - entity.y;
+        const centerDist = Math.sqrt(dx * dx + dy * dy);
 
-      if (centerDist > this.arenaRadius - entity.radius) {
-        entity.die();
+        if (centerDist > this.arenaRadius - entity.radius) {
+          entity.die();
+        }
       }
     });
   }
