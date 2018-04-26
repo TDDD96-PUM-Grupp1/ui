@@ -69,20 +69,20 @@ class Communication {
         // Provide an RPC that will let players join.
         this.client.rpc.provide(
           `${this.serviceName}/addPlayer/${this.instance.getName()}`,
-          this.addPlayer,
+          this.addPlayer
         );
 
         // Provide an RPC to let controllers test the ping to the UI.
         this.client.rpc.provide(
           `${this.serviceName}/pingTime/${this.instance.getName()}`,
-          this.onPingTime,
+          this.onPingTime
         );
 
         // Subsribe to the data channel of the players.
         // The sensor data and button data will be sent here.
         this.client.event.subscribe(
           `${this.serviceName}/data/${this.instance.getName()}`,
-          this.readData,
+          this.readData
         );
       }
       callback(err, data);
@@ -92,11 +92,17 @@ class Communication {
   /*
   * This is an RPC that adds player to the list of players. Starts to listen to the events
   * published by that player.
-  * @param data the data send from the controller. Should contain name, id and sensor data.
+  * @param data the data send from the controller. Should contain name, id,
+  * backgroundColor, iconColor, iconID and sensor data.
   * @param response the response from the RPC
   */
   addPlayer(playerObject, response) {
-    if (playerObject.id === undefined || playerObject.name === undefined) {
+    if (
+      playerObject.id === undefined ||
+      playerObject.backgroundColor === undefined ||
+      playerObject.iconColor === undefined ||
+      playerObject.iconID === undefined
+    ) {
       response.error('Invalid data format');
       return;
     }
