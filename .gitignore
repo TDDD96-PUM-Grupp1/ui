@@ -1,3 +1,6 @@
+# Vim lock files
+*.swp
+*.swo
 # Logs
 logs
 *.log
@@ -57,4 +60,8 @@ typings/
 # dotenv environment variables file
 .env
 
-build/*
+# Build folder
+build/
+
+# VSCODE
+launch.json

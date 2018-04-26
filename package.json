@@ -4,22 +4,27 @@
   "private": true,
   "dependencies": {
     "deepstream.io-client-js": "^2.3.0",
+    "pixi.js": "^4.7.0",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-scripts": "1.1.1",
+    "react-spinners": "^0.2.6",
     "webfontloader": "^1.6.28"
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-pc": "set PORT=3001&& react-scripts start",
+    "start-local": "REACT_APP_LOCAL=1 react-scripts start",
+    "start-pc": "set PORT=3001 && react-scripts start",
+    "start-pc-local": "set PORT=3001 && set REACT_APP_LOCAL=1 && react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test --forceExit --env=jsdom && npm run lint",
     "eject": "react-scripts eject",
     "lint": "eslint src/",
     "lintfix": "eslint src/ --fix"
   },
   "devDependencies": {
+    "canvas-prebuilt": "^1.6.5-prerelease.1",
     "eslint": "^4.17.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-prettier": "^2.9.0",
@@ -31,6 +36,7 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-react": "^7.6.1",
     "eslint-plugin-standard": "^3.0.1",
+    "react-test-renderer": "^16.3.2",
     "prettier": "^1.10.2"
   }
 }
