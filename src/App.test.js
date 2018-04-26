@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as PIXI from 'pixi.js';
+import renderer from 'react-test-renderer';
 
 import settings from './config';
 import Communication from './components/Communication';
@@ -10,7 +11,6 @@ import ResourceServer from './game/ResourceServer';
 import GamemodeHandler from './game/GamemodeHandler';
 import Game from './game/Game';
 import ScoreManager from './game/ScoreManager';
-import renderer from 'react-test-renderer';
 import FirstMenu from './components/FirstMenu';
 
 it('renders without crashing', () => {
@@ -35,7 +35,7 @@ describe('ResourceServer', () => {
     const rs = new ResourceServer();
     /* eslint-disable function-paren-newline */
     await expect(rs.requestResources(filenames)).rejects.toEqual(
-      new Error(`Failed to load resource ${errorName} from path resources${errorFilepath}`),
+      new Error(`Failed to load resource ${errorName} from path resources${errorFilepath}`)
     );
     /* eslint-enable function-paren-newline */
   });
@@ -193,10 +193,11 @@ describe('ScoreManager', () => {
 
 describe('FirstMenu', () => {
   it('matches the snapshot', () => {
-    var showAbout = jest.fn();
-    var showCreate = jest.fn();
-    const tree = renderer.create(<FirstMenu showCreate={showCreate} showAbout={showAbout} />).toJSON();
+    const showAbout = jest.fn();
+    const showCreate = jest.fn();
+    const tree = renderer
+      .create(<FirstMenu showCreate={showCreate} showAbout={showAbout} />)
+      .toJSON();
     expect(tree).toMatchSnapshot();
-
   });
 });
