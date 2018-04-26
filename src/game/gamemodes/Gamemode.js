@@ -91,6 +91,7 @@ class Gamemode {
 
   onButtonPressed(id, button) {}
 
+  // Force all gamemmodes to implement this
   onWindowResize() {
     throw new Error('Override onWindowResize');
   }
