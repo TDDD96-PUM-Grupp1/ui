@@ -1,6 +1,4 @@
-
-+    // Calculate inertia
-+    this.I = 0.5 * mass * radius * radius; import EntityController from './EntityController';
+import EntityController from './EntityController';
 
 /*
 Dangerbot controller, will target a player and rush towards them.
@@ -17,8 +15,6 @@ class DangerbotController extends EntityController {
     this.stopSpeed = 20;
 
     this.destx = 0;
-+    // Calculate inertia
-+    this.I = 0.5 * mass * radius * radius; 
     this.desty = 0;
 
     this.idleTime = 0.05;
