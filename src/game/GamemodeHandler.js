@@ -4,34 +4,39 @@ import settings from '../config';
 import KnockOffRandom from './gamemodes/KnockOffRandom';
 import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 import KnockOffWander from './gamemodes/KnockOffWander';
+import GamemodeConfig from './GamemodeConfig';
 
 /*
 Singleton class for handling gamemode storage and selection
 */
 class GMHandlerClass {
   constructor() {
-    // List of all available gamemodes
-    this.gamemodes = {
-      knockOff: KnockOff,
-      knockOffRandom: KnockOffRandom,
-      knockOffDynamic: KnockOffDynamic,
-      knockOffWander: KnockOffWander,
-      testGamemode: TestGamemode,
-    };
+    // Map of all available gamemodes
+    this.gamemodes = {};
+    // Map of the gamemodes configs
+    this.configs = {};
 
-    this.gamemodeResources = {
-      knockOff: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      knockOffRandom: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      knockOffDynamic: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      knockOffWander: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      testGamemode: [],
-    };
+    this.addGamemode(KnockOff, {}, [{ name: 'arena', path: 'knockoff/arena.png' }]);
+    this.addGamemode(KnockOffRandom, {}, [], KnockOff);
+    this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
+    this.addGamemode(KnockOffWander, {}, [], KnockOff);
+    this.addGamemode(TestGamemode);
 
     if (settings.skipmenu) {
       this.selected = settings.defaultGamemode;
     } else {
       this.selected = '';
     }
+  }
+
+  addGamemode(GameMode, options = {}, resources = [], extending = []) {
+    let extendingArray = extending;
+    if (extending.constructor !== Array) {
+      extendingArray = [extending];
+    }
+    const { name } = GameMode.constructor;
+    this.gamemodes[name] = GameMode;
+    this.configs[name] = new GamemodeConfig(name, resources, options, extendingArray);
   }
 
   /*
