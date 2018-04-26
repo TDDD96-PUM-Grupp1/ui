@@ -138,7 +138,7 @@ class HighscoreList {
             },
           ])
           .then(res => {
-            let playerModel = new PlayerCircle(this.game, res[iconName]);
+            let playerModel = new PlayerCircle(this.game, res[iconName], false);
 
             const iconColor = Number.parseInt(styles[val.id].iconColor.substr(1), 16);
             const backgroundColor = Number.parseInt(styles[val.id].backgroundColor.substr(1), 16);
