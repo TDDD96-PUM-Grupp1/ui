@@ -1,10 +1,10 @@
+import settings from '../config';
+import GamemodeConfig from './GamemodeConfig';
 import TestGamemode from './gamemodes/TestGamemode';
 import KnockOff from './gamemodes/KnockOff';
-import settings from '../config';
 import KnockOffRandom from './gamemodes/KnockOffRandom';
 import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 import KnockOffWander from './gamemodes/KnockOffWander';
-import GamemodeConfig from './GamemodeConfig';
 
 /*
 Singleton class for handling gamemode storage and selection
@@ -24,7 +24,16 @@ class GMHandlerClass {
   }
 
   loadConfig() {
-    this.addGamemode(KnockOff, {}, [{ name: 'arena', path: 'knockoff/arena.png' }]);
+    this.addGamemode(
+      KnockOff,
+      {
+        respawn: {
+          time: 1,
+          phase: 2,
+        },
+      },
+      [{ name: 'arena', path: 'knockoff/arena.png' }]
+    );
     this.addGamemode(KnockOffRandom, {}, [], KnockOff);
     this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
     this.addGamemode(KnockOffWander, {}, [], KnockOff);
