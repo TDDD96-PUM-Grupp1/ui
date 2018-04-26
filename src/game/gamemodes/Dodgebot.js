@@ -53,7 +53,7 @@ class Dodgebot extends Gamemode {
       wall.floorFriction = 0;
       wall.restitution = 0;
       wall.rv = this.rv;
-      game.entityHandler.register(wall);
+      game.register(wall);
       wall.x = this.centerx + Math.cos(angle) * this.arenaSize * 0.5;
       wall.y = this.centery + Math.sin(angle) * this.arenaSize * 0.5;
     }
@@ -67,7 +67,7 @@ class Dodgebot extends Gamemode {
     dangerbot.y = y;
     dangerbot.setColor(0xff0101);
     dangerbot.setController(new DangerbotController(this.game));
-    this.game.entityHandler.register(dangerbot);
+    this.game.register(dangerbot);
   }
 
   // Called before the game objects are updated.
@@ -120,7 +120,7 @@ class Dodgebot extends Gamemode {
     circle.x = this.centerx;
     circle.y = this.centery;
 
-    this.game.entityHandler.register(circle);
+    this.game.register(circle);
 
     circle.collisionGroup = idTag;
 

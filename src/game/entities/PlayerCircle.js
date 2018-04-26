@@ -10,8 +10,8 @@ const ICONSIZE = Math.floor(256 * SQUAREROOTOF2);
 Game object representing a player
 */
 class PlayerCircle extends BasicCircle {
-  constructor(game, resource, spawn = true) {
-    super(game, RADIUS, MASS, 0xffffff, true, spawn);
+  constructor(game, resource) {
+    super(game, RADIUS, MASS, 0xffffff, true);
 
     this.sprite = new PIXI.Sprite(resource);
     this.sprite.width = ICONSIZE;

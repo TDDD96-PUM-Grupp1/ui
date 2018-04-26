@@ -73,6 +73,12 @@ class Game {
     this.communication.update(dt);
   }
 
+  // Register an entity with the entityhandler
+  register(entity) {
+    this.app.stage.addChild(entity);
+    this.entityHandler.register(entity);
+  }
+
   // Called when a new player joins.
   onPlayerJoin(playerObject) {
     this.currentGamemode.onPlayerJoin(playerObject).then(() => {

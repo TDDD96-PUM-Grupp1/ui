@@ -6,7 +6,7 @@ import CollisionCircle from './collision/CollisionCircle';
 Game object with a basic circle graphic and collision
 */
 class BasicCircle extends GameEntity {
-  constructor(game, radius, mass, color, outline, spawn = true) {
+  constructor(game, radius, mass, color, outline) {
     super(game);
 
     this.radius = radius;
@@ -21,13 +21,6 @@ class BasicCircle extends GameEntity {
     graphic.width = radius * 2;
     graphic.height = radius * 2;
     graphic.anchor.set(0.5, 0.5);
-
-    // This is also used for graphic creation,
-    // in that case we do not want to spawn graphic to game
-    if (spawn) {
-      game.app.stage.addChild(graphic);
-    }
-
     graphic.tint = color;
     this.graphic = graphic;
 

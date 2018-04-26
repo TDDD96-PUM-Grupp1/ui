@@ -118,7 +118,7 @@ class KnockOff extends Gamemode {
     circle.x = this.arenaCenterx;
     circle.y = this.arenaCentery;
 
-    this.game.entityHandler.register(circle);
+    this.game.register(circle);
     circle.collisionGroup = idTag;
 
     circle.phase(3);
