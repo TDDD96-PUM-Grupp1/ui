@@ -31,14 +31,14 @@ class TestGamemode extends Gamemode {
       this.game.app.screen.width,
       0,
       this.game.app.screen.width,
-      this.game.app.screen.height,
+      this.game.app.screen.height
     );
     this.addLine(0, 0, 0, this.game.app.screen.height);
     this.addLine(
       0,
       this.game.app.screen.height,
       this.game.app.screen.width,
-      this.game.app.screen.height,
+      this.game.app.screen.height
     );
   }
 
