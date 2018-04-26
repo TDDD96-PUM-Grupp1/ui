@@ -47,12 +47,13 @@ class CreateMenu extends Component {
       // Set game mode
       this.state.gamemodeHandler.selectGameMode(this.state.gamemode);
 
+      console.log(GamemodeHandler.getInstance().getButtons());
+
       const gameInfo = {
         name: this.state.instanceName,
         maxPlayers: this.state.maxPlayers,
         gamemode: GamemodeHandler.getInstance().getSelectedId(),
-        buttons: ['GamemodeHandler.getInstance().buttonUsed'],
-
+        buttons: GamemodeHandler.getInstance().getButtons(),
       };
       // Try to create an instance (as the service if the instance name is unique).
       this.props.communication.createInstance(gameInfo, (err, data) => {

@@ -3,6 +3,7 @@ import PlayerCircle from '../entities/PlayerCircle';
 import PlayerController from '../entities/controllers/PlayerController';
 import LocalPlayerController from '../entities/controllers/LocalPlayerController';
 import iconData from '../iconData';
+import buttonsUsed from '../ButtonsUsed';
 
 /*
 Gamemode base class.
@@ -13,8 +14,11 @@ class Gamemode {
   constructor(game, resources) {
     this.game = game;
     this.game.registerResizeListener(this);
-    this.buttonUsed = [];
     this.onButtonPressed = this.onButtonPressed.bind(this);
+
+    // The array containing the names of the buttons the game-mode uses
+    // To modify this array change the file ButtonsUsed
+    this.buttonsUsed = buttonsUsed[this.constructor.name];
   }
 
   init() {
@@ -24,23 +28,23 @@ class Gamemode {
           iconID: 1,
           id: 'local',
           backgroundColor: '#EE6666',
-          iconColor: '#00ffff',
+          iconColor: '#00ffff'
         },
         localPlayer => {
           localPlayer.setController(new LocalPlayerController(this.game, 'local'));
           localPlayer.y = 300;
-        },
+        }
       );
       this.onPlayerJoin(
         {
           iconID: 2,
           id: 'local2',
           backgroundColor: '#EEFFF66',
-          iconColor: '#4422ff',
+          iconColor: '#4422ff'
         },
         localPlayer => {
           localPlayer.y = 350;
-        },
+        }
       );
     }
   }
@@ -105,6 +109,10 @@ class Gamemode {
   // Clean up after the gamemode is finished.
   cleanUp() {}
   /* eslint-enable class-methods-use-this, no-unused-vars */
+
+  getButtons() {
+    return ['A debugging button string'];
+  }
 }
 
 export default Gamemode;
