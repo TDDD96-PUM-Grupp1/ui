@@ -9,8 +9,8 @@ class GamemodeConfig {
     this.resources = resources;
     this.options = options;
     this.extending = extending;
-    extending.array.forEach(gamemode => {
-      this.extend(GamemodeHandler.getConfig(gamemode));
+    extending.forEach(gamemode => {
+      this.extend(GamemodeHandler.getInstance().getConfig(gamemode));
     });
   }
 

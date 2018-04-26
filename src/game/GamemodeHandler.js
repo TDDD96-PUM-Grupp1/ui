@@ -16,12 +16,6 @@ class GMHandlerClass {
     // Map of the gamemodes configs
     this.configs = {};
 
-    this.addGamemode(KnockOff, {}, [{ name: 'arena', path: 'knockoff/arena.png' }]);
-    this.addGamemode(KnockOffRandom, {}, [], KnockOff);
-    this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
-    this.addGamemode(KnockOffWander, {}, [], KnockOff);
-    this.addGamemode(TestGamemode);
-
     if (settings.skipmenu) {
       this.selected = settings.defaultGamemode;
     } else {
@@ -29,14 +23,26 @@ class GMHandlerClass {
     }
   }
 
-  addGamemode(GameMode, options = {}, resources = [], extending = []) {
+  loadConfig() {
+    this.addGamemode(KnockOff, {}, [{ name: 'arena', path: 'knockoff/arena.png' }]);
+    this.addGamemode(KnockOffRandom, {}, [], KnockOff);
+    this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
+    this.addGamemode(KnockOffWander, {}, [], KnockOff);
+    this.addGamemode(TestGamemode);
+  }
+
+  addGamemode(Gamemode, options = {}, resources = [], extending = []) {
     let extendingArray = extending;
     if (extending.constructor !== Array) {
       extendingArray = [extending];
     }
-    const { name } = GameMode.constructor;
-    this.gamemodes[name] = GameMode;
+    const { name } = Gamemode.constructor;
+    this.gamemodes[name] = Gamemode;
     this.configs[name] = new GamemodeConfig(name, resources, options, extendingArray);
+  }
+
+  getConfig(Gamemode) {
+    return this.configs[Gamemode.constructor.name];
   }
 
   /*
@@ -67,7 +73,8 @@ class GMHandlerClass {
 
     return {
       SelectedMode: this.gamemodes[this.selected],
-      requestedResources: this.gamemodeResources[this.selected],
+      requestedResources: this.configs[this.selected].resources,
+      options: this.configs[this.selected].options,
     };
   }
 
@@ -92,6 +99,7 @@ const GamemodeHandler = (() => {
     getInstance: () => {
       if (!instance) {
         instance = createInstance();
+        instance.loadConfig();
       }
 
       return instance;
