@@ -13,8 +13,6 @@ const WALLS = 4;
 /*
   Dodgebot gamemode, get points by surviving for as long as possible.
 */
-+    // Calculate inertia
-+    this.I = 0.5 * mass * radius * radius; 
 class Dodgebot extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
@@ -96,8 +94,6 @@ class Dodgebot extends Gamemode {
     }
   }
 
-+    // Calculate inertia
-+    this.I = 0.5 * mass * radius * radius; 
   /* eslint-enable no-unused-vars, class-methods-use-this */
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
