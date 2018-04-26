@@ -51,6 +51,7 @@ class CreateMenu extends Component {
         name: this.state.instanceName,
         maxPlayers: this.state.maxPlayers,
         gamemode: GamemodeHandler.getInstance().getSelectedId(),
+        buttons: GamemodeHandler.getInstance().getButtons(),
       };
       // Try to create an instance (as the service if the instance name is unique).
       this.props.communication.createInstance(gameInfo, (err, data) => {
@@ -174,7 +175,7 @@ CreateMenu.propTypes = {
   onBack: PropTypes.func.isRequired,
   onStart: PropTypes.func.isRequired,
   /* eslint-disable */
-  communication: PropTypes.object.isRequired,
+  communication: PropTypes.object.isRequired
   /* eslint-enable */
 };
 

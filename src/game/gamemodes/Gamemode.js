@@ -3,6 +3,7 @@ import PlayerCircle from '../entities/PlayerCircle';
 import PlayerController from '../entities/controllers/PlayerController';
 import LocalPlayerController from '../entities/controllers/LocalPlayerController';
 import iconData from '../iconData';
+import buttonsUsed from '../ButtonsUsed';
 
 /*
 Gamemode base class.
@@ -14,6 +15,10 @@ class Gamemode {
     this.game = game;
     this.game.registerResizeListener(this);
     this.onButtonPressed = this.onButtonPressed.bind(this);
+
+    // The array containing the names of the buttons the current game-mode uses
+    // To modify this array change the file ButtonsUsed.
+    this.buttonsUsed = buttonsUsed[this.constructor.name];
   }
 
   init() {
