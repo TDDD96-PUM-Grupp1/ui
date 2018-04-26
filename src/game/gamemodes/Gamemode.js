@@ -27,7 +27,7 @@ class Gamemode {
         iconID: 1,
         id: 'local',
         backgroundColor: '#EE6666',
-        iconColor: '#00ffff'
+        iconColor: '#00ffff',
       }).then(localPlayer => {
         localPlayer.setController(new LocalPlayerController(this.game, 'local'));
         localPlayer.y = 300;
@@ -36,7 +36,7 @@ class Gamemode {
         iconID: 2,
         id: 'local2',
         backgroundColor: '#EEFFF66',
-        iconColor: '#4422ff'
+        iconColor: '#4422ff',
       }).then(localPlayer => {
         localPlayer.y = 350;
       });
@@ -103,10 +103,6 @@ class Gamemode {
   // Clean up after the gamemode is finished.
   cleanUp() {}
   /* eslint-enable class-methods-use-this, no-unused-vars */
-
-  getButtons() {
-    return ['A debugging button string'];
-  }
 }
 
 export default Gamemode;

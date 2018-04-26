@@ -17,7 +17,7 @@ class GMHandlerClass {
       knockOffRandom: KnockOffRandom,
       knockOffDynamic: KnockOffDynamic,
       knockOffWander: KnockOffWander,
-      testGamemode: TestGamemode
+      testGamemode: TestGamemode,
     };
 
     this.gamemodeResources = {
@@ -25,7 +25,7 @@ class GMHandlerClass {
       knockOffRandom: [{ name: 'arena', path: 'knockoff/arena.png' }],
       knockOffDynamic: [{ name: 'arena', path: 'knockoff/arena.png' }],
       knockOffWander: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      testGamemode: []
+      testGamemode: [],
     };
 
     if (settings.skipmenu) {
@@ -63,7 +63,7 @@ class GMHandlerClass {
 
     return {
       SelectedMode: this.gamemodes[this.selected],
-      requestedResources: this.gamemodeResources[this.selected]
+      requestedResources: this.gamemodeResources[this.selected],
     };
   }
 
@@ -97,7 +97,7 @@ const GamemodeHandler = (() => {
       }
 
       return instance;
-    }
+    },
   };
 })();
 

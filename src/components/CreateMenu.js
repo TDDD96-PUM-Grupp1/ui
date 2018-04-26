@@ -47,8 +47,6 @@ class CreateMenu extends Component {
       // Set game mode
       this.state.gamemodeHandler.selectGameMode(this.state.gamemode);
 
-      console.log(GamemodeHandler.getInstance().getButtons());
-
       const gameInfo = {
         name: this.state.instanceName,
         maxPlayers: this.state.maxPlayers,
@@ -177,7 +175,7 @@ CreateMenu.propTypes = {
   onBack: PropTypes.func.isRequired,
   onStart: PropTypes.func.isRequired,
   /* eslint-disable */
-  communication: PropTypes.object.isRequired,
+  communication: PropTypes.object.isRequired
   /* eslint-enable */
 };
 
