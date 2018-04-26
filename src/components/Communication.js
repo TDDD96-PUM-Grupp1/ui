@@ -92,11 +92,17 @@ class Communication {
   /*
   * This is an RPC that adds player to the list of players. Starts to listen to the events
   * published by that player.
-  * @param data the data send from the controller. Should contain name, id and sensor data.
+  * @param data the data send from the controller. Should contain name, id,
+  * backgroundColor, iconColor, iconID and sensor data.
   * @param response the response from the RPC
   */
   addPlayer(playerObject, response) {
-    if (playerObject.id === undefined || playerObject.name === undefined) {
+    if (
+      playerObject.id === undefined ||
+      playerObject.backgroundColor === undefined ||
+      playerObject.iconColor === undefined ||
+      playerObject.iconID === undefined
+    ) {
       response.error('Invalid data format');
       return;
     }

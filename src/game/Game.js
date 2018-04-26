@@ -76,8 +76,9 @@ class Game {
 
   // Called when a new player joins.
   onPlayerJoin(playerObject) {
-    this.scoreManager.addPlayer(playerObject);
-    this.currentGamemode.onPlayerJoin(playerObject);
+    this.currentGamemode.onPlayerJoin(playerObject).then(() => {
+      this.scoreManager.addPlayer(playerObject);
+    });
   }
 
   // Called when a player leaves the game.
