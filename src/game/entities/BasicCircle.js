@@ -23,8 +23,8 @@ class BasicCircle extends GameEntity {
     graphic.anchor.set(0.5, 0.5);
 
     // This is also used for graphic creation,
-    //in that case we do not want to spawn graphic to game
-    if(spawn){
+    // in that case we do not want to spawn graphic to game
+    if (spawn) {
       game.app.stage.addChild(graphic);
     }
 

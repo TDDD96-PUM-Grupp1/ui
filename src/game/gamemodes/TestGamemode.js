@@ -74,18 +74,18 @@ class TestGamemode extends Gamemode {
 
     return new Promise((resolve, reject) => {
       this.game.resourceServer
-      .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
-      .then(resources => {
-        const circle = new PlayerCircle(this.game, resources[iconData[iconID].name]);
-        const controller = new PlayerController(this.game, idTag);
-        circle.setController(controller);
-        circle.x = 400;
-        circle.y = 400;
-        circle.setColor(0xff3333);
-        this.game.entityHandler.register(circle);
+        .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
+        .then(resources => {
+          const circle = new PlayerCircle(this.game, resources[iconData[iconID].name]);
+          const controller = new PlayerController(this.game, idTag);
+          circle.setController(controller);
+          circle.x = 400;
+          circle.y = 400;
+          circle.setColor(0xff3333);
+          this.game.entityHandler.register(circle);
 
-        resolve(circle);
-      });
+          resolve(circle);
+        });
     });
   }
 

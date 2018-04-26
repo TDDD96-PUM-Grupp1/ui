@@ -138,13 +138,13 @@ class HighscoreList {
             },
           ])
           .then(res => {
-            let playerModel = new PlayerCircle(this.game, res[iconName], false);
+            const playerModel = new PlayerCircle(this.game, res[iconName], false);
 
             const iconColor = Number.parseInt(styles[val.id].iconColor.substr(1), 16);
             const backgroundColor = Number.parseInt(styles[val.id].backgroundColor.substr(1), 16);
             playerModel.setColor(backgroundColor, iconColor);
 
-            let icon = playerModel.graphic;
+            const icon = playerModel.graphic;
             icon.height = ICON_SIZE;
             icon.width = ICON_SIZE;
             icon.x = this.rect_height / 2;
