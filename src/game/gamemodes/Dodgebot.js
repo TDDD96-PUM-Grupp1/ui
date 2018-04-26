@@ -1,4 +1,3 @@
-// import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
 import Dangerbot from '../entities/Dangerbot';
 import DangerbotController from '../entities/controllers/DangerbotController';
@@ -12,8 +11,10 @@ const RESPAWN_TIME = 1;
 const WALLS = 4;
 
 /*
-  Knock off gamemode, get score by knocking other players off the arena.
+  Dodgebot gamemode, get points by surviving for as long as possible.
 */
++    // Calculate inertia
++    this.I = 0.5 * mass * radius * radius; 
 class Dodgebot extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
@@ -95,6 +96,8 @@ class Dodgebot extends Gamemode {
     }
   }
 
++    // Calculate inertia
++    this.I = 0.5 * mass * radius * radius; 
   /* eslint-enable no-unused-vars, class-methods-use-this */
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
