@@ -19,7 +19,7 @@ class CreateMenu extends Component {
     const gamemodeList = gamemodeHandler.getGamemodes();
 
     this.state = {
-      instanceName: '',
+      instanceName: getRandomInstanceName(),
       errors: [],
       serviceError: false,
       maxPlayers: DEFAULT_MAX_PLAYERS,
