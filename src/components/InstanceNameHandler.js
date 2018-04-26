@@ -194,7 +194,7 @@ function getRandomFromList(list) {
 }
 // eslint-disable-next-line
 function getRandomInstanceName() {
-  return getRandomFromList(adjectives) + ' ' + getRandomFromList(nouns);
+  return `${getRandomFromList(adjectives)} ${getRandomFromList(nouns)}`;
 }
 
 export default getRandomInstanceName;
