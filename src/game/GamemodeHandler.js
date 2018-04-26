@@ -36,13 +36,13 @@ class GMHandlerClass {
     if (extending.constructor !== Array) {
       extendingArray = [extending];
     }
-    const { name } = Gamemode.constructor;
+    const { name } = Gamemode;
     this.gamemodes[name] = Gamemode;
     this.configs[name] = new GamemodeConfig(name, resources, options, extendingArray);
   }
 
   getConfig(Gamemode) {
-    return this.configs[Gamemode.constructor.name];
+    return this.configs[Gamemode.name];
   }
 
   /*
