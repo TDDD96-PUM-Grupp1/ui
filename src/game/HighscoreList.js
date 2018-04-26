@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import iconData from './iconData';
+import PlayerCircle from './entities/PlayerCircle';
 
 const BG_COLOR = '0x878787';
 const TEXT_COLOR = '#FFFFFF';
@@ -15,9 +16,6 @@ const BOX_RADIUS = 0;
 const BOX_SPACING = 3;
 
 const ICON_SIZE = 28;
-
-const SQUAREROOTOF2 = 1.4142135;
-const SPRITE_SIZE = Math.floor(256 * SQUAREROOTOF2);
 
 const TEXT_STYLE = new PIXI.TextStyle({
   fill: TEXT_COLOR,
@@ -130,17 +128,6 @@ class HighscoreList {
         name.y = TEXT_PADDING;
 
         // Circle icon
-        const img = this.game.basicResources.circle;
-        const icon = new PIXI.Sprite(img);
-        icon.height = ICON_SIZE;
-        icon.width = ICON_SIZE;
-        icon.x = this.rect_height / 2;
-        icon.y = this.rect_height / 2;
-
-        icon.anchor.set(0.5, 0.5);
-        const bgColor = Number.parseInt(styles[val.id].backgroundColor.substr(1), 16);
-        icon.tint = bgColor;
-
         const iconPath = iconData[styles[val.id].iconID].img;
         const iconName = iconData[styles[val.id].iconID].name;
         this.game.resourceServer
@@ -151,20 +138,22 @@ class HighscoreList {
             },
           ])
           .then(res => {
-            const sprite = new PIXI.Sprite(res[iconName]);
+            let playerModel = new PlayerCircle(this.game, res[iconName]);
+
             const iconColor = Number.parseInt(styles[val.id].iconColor.substr(1), 16);
-            sprite.tint = iconColor;
-            sprite.anchor.set(0.5, 0.5);
+            const backgroundColor = Number.parseInt(styles[val.id].backgroundColor.substr(1), 16);
+            playerModel.setColor(backgroundColor, iconColor);
 
-            sprite.height = SPRITE_SIZE;
-            sprite.width = SPRITE_SIZE;
-
-            icon.addChild(sprite);
+            let icon = playerModel.graphic;
+            icon.height = ICON_SIZE;
+            icon.width = ICON_SIZE;
+            icon.x = this.rect_height / 2;
+            icon.y = this.rect_height / 2;
+            rowCont.addChild(icon);
           });
 
         rowCont.addChild(bg);
         rowCont.addChild(name);
-        rowCont.addChild(icon);
 
         const newRow = {
           painted: true,
