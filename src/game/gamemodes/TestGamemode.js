@@ -100,6 +100,10 @@ class TestGamemode extends Gamemode {
   cleanUp() {
     this.game.entityHandler.clear();
   }
+
+  // Has to be overridden
+  // eslint-disable-next-line class-methods-use-this
+  onWindowResize() {}
 }
 
 export default TestGamemode;
