@@ -10,6 +10,8 @@ import ResourceServer from './game/ResourceServer';
 import GamemodeHandler from './game/GamemodeHandler';
 import Game from './game/Game';
 import ScoreManager from './game/ScoreManager';
+import renderer from 'react-test-renderer';
+import FirstMenu from './components/FirstMenu';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
@@ -22,7 +24,7 @@ describe('ResourceServer', () => {
     const filenames = [];
 
     const errorName = 'hejsan';
-    const errorFilepath = 'NO_EXIST.txt';
+    const errorFilepath = '/NO_EXIST.txt';
 
     filenames.push({
       name: errorName,
@@ -62,7 +64,6 @@ describe('GamemodeHandler', () => {
   it('loads all gamemodes', () => {
     const gmHandler = GamemodeHandler.getInstance();
     const gmList = gmHandler.getGamemodes();
-    let GamemodeClass;
     // eslint-disable-next-line no-unused-vars
     let gamemode;
 
@@ -74,8 +75,10 @@ describe('GamemodeHandler', () => {
     for (let i = 0; i < gmList.length; i += 1) {
       gmHandler.selectGameMode(gmList[i]);
 
-      GamemodeClass = gmHandler.getSelected();
-      gamemode = new GamemodeClass(game);
+      const { SelectedMode, requestedResources } = gmHandler.getSelected();
+      // If this tests breaks in the future
+      // the problem is probably that the resources aren't loaded
+      gamemode = new SelectedMode(game, requestedResources);
     }
   });
 });
@@ -185,5 +188,15 @@ describe('ScoreManager', () => {
     expect(list[1].score1).toBe(2);
     expect(list[0].score2).toBe(7);
     expect(list[1].score2).toBe(4);
+  });
+});
+
+describe('FirstMenu', () => {
+  it('matches the snapshot', () => {
+    var showAbout = jest.fn();
+    var showCreate = jest.fn();
+    const tree = renderer.create(<FirstMenu showCreate={showCreate} showAbout={showAbout} />).toJSON();
+    expect(tree).toMatchSnapshot();
+
   });
 });

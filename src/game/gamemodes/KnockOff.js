@@ -16,8 +16,8 @@ const ABILITY_DURATION = 3;
   Knock off gamemode, get score by knocking other players off the arena.
 */
 class KnockOff extends Gamemode {
-  constructor(game) {
-    super(game);
+  constructor(game, resources) {
+    super(game, resources);
 
     this.players = {};
     this.respawn = {};
@@ -26,15 +26,15 @@ class KnockOff extends Gamemode {
 
     this.game.respawnHandler.registerRespawnListener(this);
 
-    this.arenaRadius = 500;
-    this.respawnArea = 50;
+    this.arenaRadius = 490;
+    this.respawnArea = 100;
 
     // Center arena
     this.arenaCenterx = Math.round(window.innerWidth / 2);
     this.arenaCentery = Math.round(window.innerHeight / 2);
 
     // Set up arena graphic
-    const graphic = new PIXI.Graphics();
+    /* const graphic = new PIXI.Graphics();
     graphic.beginFill(0xfffffff);
     this.mainCircle = graphic.drawCircle(0, 0, this.arenaRadius);
     graphic.endFill();
@@ -42,7 +42,22 @@ class KnockOff extends Gamemode {
     graphic.tint = 0x555555;
     graphic.x = this.arenaCenterx;
     graphic.y = this.arenaCentery;
+    this.arenaGraphic = graphic; */
+    const graphic = new PIXI.Sprite(resources.arena);
+    game.app.stage.addChildAt(graphic, 0);
     this.arenaGraphic = graphic;
+
+    const border = new PIXI.Graphics();
+    border.lineStyle(5, 0xff0101);
+    border.drawCircle(0, 0, graphic.width * 0.5 + 2);
+    border.endFill();
+    graphic.addChild(border);
+
+    graphic.width = this.arenaRadius * 2;
+    graphic.height = this.arenaRadius * 2;
+    graphic.anchor.set(0.5, 0.5);
+    graphic.x = this.arenaCenterx;
+    graphic.y = this.arenaCentery;
 
     // Set up scores
     game.scoreManager.addScoreType('Kills', 0, true);
@@ -113,10 +128,6 @@ class KnockOff extends Gamemode {
     circle.x = this.arenaCenterx;
     circle.y = this.arenaCentery;
 
-    const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
-    const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
-
-    circle.setColor(backgroundCol, iconCol);
     this.game.entityHandler.register(circle);
 
     circle.collisionGroup = idTag;
@@ -155,6 +166,7 @@ class KnockOff extends Gamemode {
     if (this.abilityTimer[id].time <= 0) {
       playerEntity.mass *= 50;
       /* eslint-disable-next-line */
+      this.players[id].setColor(0xffffff ^ this.players[id].graphic.tint);
       this.abilityTimer[id].time = ABILITY_COOLDOWN;
       this.abilityTimer[id].active = true;
     }
@@ -206,6 +218,9 @@ class KnockOff extends Gamemode {
 
     this.arenaGraphic.x = newCenterX;
     this.arenaGraphic.y = newCenterY;
+
+    this.arenaCenterx = newCenterX;
+    this.arenaCentery = newCenterY;
 
     this.game.entityHandler.getEntities().forEach(entity => {
       entity.x -= dx;

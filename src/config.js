@@ -9,6 +9,7 @@ const settings = {
     localPlayer: false,
     forceCanvas: true,
     antialias: false,
+    fxaa: false,
   },
   communication: {
     host_ip: 'ds.tddd96.i4demo.com:80',

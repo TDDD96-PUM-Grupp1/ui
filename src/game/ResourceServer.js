@@ -32,7 +32,12 @@ class ResourceServer {
     // Add resources to be loaded to loader
     for (let i = 0; i < resourceList.length; i += 1) {
       const resource = resourceList[i];
-      const path = this.resourceDir + resource.path;
+      let path;
+      if (resource.path[0] !== '/') {
+        path = `${this.resourceDir}/${resource.path}`;
+      } else {
+        path = this.resourceDir + resource.path;
+      }
 
       // Check if already cached
       if (path in this.cache) {

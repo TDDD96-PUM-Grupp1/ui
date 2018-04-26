@@ -7,8 +7,8 @@ const moveSpeed = 100;
   Knock off gamemode with a randomly changing arena, get score by knocking other players off the it.
 */
 class KnockOffWander extends KnockOff {
-  constructor(game) {
-    super(game);
+  constructor(game, resources) {
+    super(game, resources);
     // Move everything to the up right corner
     this.arenaCentery = this.arenaRadius;
     this.arenaCenterx = this.arenaRadius;
@@ -50,7 +50,7 @@ class KnockOffWander extends KnockOff {
       this.moveHelperX = false;
     } else {
       this.arenaCenterx += dt;
-      this.mainCircle.x += dt;
+      this.arenaGraphic.x += dt;
     }
   }
 
@@ -60,7 +60,7 @@ class KnockOffWander extends KnockOff {
       this.moveHelperY = true;
     } else {
       this.arenaCentery += dt;
-      this.mainCircle.y += dt;
+      this.arenaGraphic.y += dt;
     }
   }
 
@@ -70,7 +70,7 @@ class KnockOffWander extends KnockOff {
       this.moveHelperX = true;
     } else {
       this.arenaCenterx -= dt;
-      this.mainCircle.x -= dt;
+      this.arenaGraphic.x -= dt;
     }
   }
 
@@ -80,7 +80,7 @@ class KnockOffWander extends KnockOff {
       this.moveHelperY = false;
     } else {
       this.arenaCentery -= dt;
-      this.mainCircle.y -= dt;
+      this.arenaGraphic.y -= dt;
     }
   }
 }
