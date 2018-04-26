@@ -38,8 +38,8 @@ class KnockOffDynamic extends KnockOff {
       } else {
         // Expand
         this.arenaRadius *= multInc;
-        this.mainCircle.scale.x *= multInc;
-        this.mainCircle.scale.y *= multInc;
+        this.arenaGraphic.scale.x *= multInc;
+        this.arenaGraphic.scale.y *= multInc;
       }
     } else {
       // We can't shrink any more
@@ -49,8 +49,8 @@ class KnockOffDynamic extends KnockOff {
       } else {
         // Shrink the circle
         this.arenaRadius *= multDec;
-        this.mainCircle.scale.x *= multDec;
-        this.mainCircle.scale.y *= multDec;
+        this.arenaGraphic.scale.x *= multDec;
+        this.arenaGraphic.scale.y *= multDec;
       }
     }
   }

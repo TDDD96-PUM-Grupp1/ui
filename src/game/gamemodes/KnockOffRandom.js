@@ -67,8 +67,8 @@ class KnockOffRandom extends KnockOff {
       // this.arenaRadius = minRadius;
     } else {
       this.arenaRadius *= multiplier;
-      this.mainCircle.scale.x *= multiplier;
-      this.mainCircle.scale.y *= multiplier;
+      this.arenaGraphic.scale.x *= multiplier;
+      this.arenaGraphic.scale.y *= multiplier;
     }
   }
 }
