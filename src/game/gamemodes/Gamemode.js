@@ -24,23 +24,19 @@ class Gamemode {
           id: 'local',
           backgroundColor: '#EE6666',
           iconColor: '#00ffff',
-        },
-        localPlayer => {
+        }).then( localPlayer => {
           localPlayer.setController(new LocalPlayerController(this.game, 'local'));
           localPlayer.y = 300;
-        },
-      );
+        });
       this.onPlayerJoin(
         {
           iconID: 2,
           id: 'local2',
           backgroundColor: '#EEFFF66',
           iconColor: '#4422ff',
-        },
-        localPlayer => {
+        }).then(localPlayer => {
           localPlayer.y = 350;
-        },
-      );
+        });
     }
   }
   /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
@@ -54,7 +50,7 @@ class Gamemode {
   postUpdate(dt) {}
 
   // Called when a new player connects
-  onPlayerJoin(playerObject, callback) {
+  onPlayerJoin(playerObject) {
     const { iconID } = playerObject;
     const idTag = playerObject.id;
 
@@ -71,7 +67,7 @@ class Gamemode {
           circle.setColor(backgroundCol, iconCol);
           this.onPlayerCreated(playerObject, circle);
 
-          resolve();
+          resolve(circle);
         });
     });
   }
