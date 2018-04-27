@@ -1,9 +1,9 @@
 import TestGamemode from './gamemodes/TestGamemode';
 import KnockOff from './gamemodes/KnockOff';
 import settings from '../config';
-import KnockOffRandom from './gamemodes/KnockOffRandom';
-import KnockOffDynamic from './gamemodes/KnockOffDynamic';
-import KnockOffWander from './gamemodes/KnockOffWander';
+import KORandom from './gamemodes/KORandom';
+import KODynamic from './gamemodes/KODynamic';
+import KOWander from './gamemodes/KOWander';
 import Dodgebot from './gamemodes/Dodgebot';
 
 /*
@@ -14,18 +14,18 @@ class GMHandlerClass {
     // List of all available gamemodes
     this.gamemodes = {
       knockOff: KnockOff,
-      knockOffRandom: KnockOffRandom,
-      knockOffDynamic: KnockOffDynamic,
-      knockOffWander: KnockOffWander,
+      KORandom: KORandom,
+      KODynamic: KODynamic,
+      KOWander: KOWander,
       dodgebot: Dodgebot,
       testGamemode: TestGamemode,
     };
 
     this.gamemodeResources = {
       knockOff: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      knockOffRandom: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      knockOffDynamic: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      knockOffWander: [{ name: 'arena', path: 'knockoff/arena.png' }],
+      KORandom: [{ name: 'arena', path: 'knockoff/arena.png' }],
+      KODynamic: [{ name: 'arena', path: 'knockoff/arena.png' }],
+      KOWander: [{ name: 'arena', path: 'knockoff/arena.png' }],
       dodgebot: [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }],
       testGamemode: [],
     };
