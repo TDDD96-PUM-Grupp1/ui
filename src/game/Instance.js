@@ -80,6 +80,12 @@ class Instance {
     }
   }
 
+  pingUpdated(id, ping) {
+    if (this.instanceListener !== undefined) {
+      this.instanceListener.onPingUpdated(id, ping);
+    }
+  }
+
   /*
    * @return the name of the instance as a string
    */

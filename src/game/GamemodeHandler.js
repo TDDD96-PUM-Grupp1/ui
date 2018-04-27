@@ -5,6 +5,7 @@ import KnockOff from './gamemodes/KnockOff';
 import KnockOffRandom from './gamemodes/KnockOffRandom';
 import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 import KnockOffWander from './gamemodes/KnockOffWander';
+import Dodgebot from './gamemodes/Dodgebot';
 
 /*
 Singleton class for handling gamemode storage and selection
@@ -34,6 +35,7 @@ class GMHandlerClass {
       },
       [{ name: 'arena', path: 'knockoff/arena.png' }]
     );
+    this.addGamemode(Dodgebot, {}, [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]);
     this.addGamemode(KnockOffRandom, {}, [], KnockOff);
     this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
     this.addGamemode(KnockOffWander, {}, [], KnockOff);
