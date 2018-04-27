@@ -71,7 +71,7 @@ class Game {
       this.entityHandler.updateGraphics(dt);
     }
 
-    this.communication.update(dt);
+    this.communication.update();
   }
 
   // Called when a new player joins.

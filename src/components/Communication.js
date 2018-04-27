@@ -12,7 +12,6 @@ class Communication {
     this.instance = undefined; // this.client.getUid();
     this.players = {};
     this.timeoutCount = options.timeout_count;
-    this.pingtimer = 0;
     this.pingrate = options.pingrate;
     this.serviceName = options.service_name;
     this.id = undefined;
@@ -31,6 +30,7 @@ class Communication {
     this.update = this.update.bind(this);
     this.getInstance = this.getInstance.bind(this);
     this.onPingTime = this.onPingTime.bind(this);
+    this.setPingTime = this.setPingTime.bind(this);
   }
 
   /*
@@ -63,6 +63,9 @@ class Communication {
     // Ask the service if the UI can start an instance.
     this.client.rpc.make(`${this.serviceName}/createInstance`, gameInfo, (err, data) => {
       if (!err && !data.error) {
+
+        this.setPingTime(this.update, );
+        setInterval(this.update, 1000 / (1 * this.pingrate));
         // Instance can be created.
         this.instance = new Instance(gameInfo.name, gameInfo.maxPlayers, gameInfo.gamemode);
 
@@ -185,32 +188,25 @@ class Communication {
   /*
    * Updates the pingtimer and if enough time has passed it will ask the deepstream server
    * if all the players are still connected.
-   * @param timeElapsed time elapsed since the last update, in seconds
    */
-  update(timeElapsed) {
+  update() {
     // Instance is not yet created
     if (this.instance === undefined) {
       return;
     }
 
     // Increase the pingtimer.
-    this.pingtimer += timeElapsed;
-    if (this.pingtimer >= 1 / this.pingrate) {
-      // No need to decrease the timer by 1/pingrate since the precision
-      // is not necessary
-      this.pingtimer = 0;
+    this.setPingTime();
+    // Ping the service
+    this.client.event.emit(`${this.serviceName}/instancePing`, { name: this.instance.getName() });
 
-      // Ping the service
-      this.client.event.emit(`${this.serviceName}/instancePing`, { name: this.instance.getName() });
+    const playerKeys = Object.keys(this.players);
 
-      const playerKeys = Object.keys(this.players);
-
-      for (let i = 0; i < playerKeys.length; i += 1) {
-        this.players[playerKeys[i]].ping -= 1;
-        // Check if the player has timed out.
-        if (this.players[playerKeys[i]].ping === 0) {
-          this.removePlayer(playerKeys[i]);
-        }
+    for (let i = 0; i < playerKeys.length; i += 1) {
+      this.players[playerKeys[i]].ping -= 1;
+      // Check if the player has timed out.
+      if (this.players[playerKeys[i]].ping === 0) {
+        this.removePlayer(playerKeys[i]);
       }
     }
   }
@@ -221,6 +217,13 @@ class Communication {
    */
   getInstance() {
     return this.instance;
+  }
+
+  /**
+   * Sets the ping time correctly
+   */
+  setPingTime() {
+    this.pingTime = Date.now() + 1000 * (1 / this.pingrate);
   }
 }
 
