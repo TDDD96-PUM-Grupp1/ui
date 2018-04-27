@@ -32,8 +32,8 @@ class PlayerCircle extends BasicCircle {
 
   ownerLeft() {
     this.playerLeft = true;
-    // Clear id so it will not see input if player rejoins
-    this.controller.id = '';
+    // Make controller passive
+    this.controller.active = false;
     // Clear collision listeners
     this.collision.listeners = [];
   }

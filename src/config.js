@@ -7,6 +7,7 @@ const settings = {
   defaultGamemode: 'dodgebot',
   game: {
     localPlayer: false,
+    testLeave: false,
     forceCanvas: true,
     antialias: false,
   },

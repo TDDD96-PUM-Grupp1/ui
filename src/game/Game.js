@@ -112,6 +112,11 @@ class Game {
         localPlayer.setController(new LocalPlayerController(this, 'local'));
       }
     }, 500);
+    if (settings.game.testLeave) {
+      setTimeout(() => {
+        instance.removePlayer('local2');
+      }, 10 * 1000);
+    }
   }
 
   // Register an entity with the entityhandler
