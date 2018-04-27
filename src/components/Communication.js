@@ -99,6 +99,7 @@ class Communication {
   addPlayer(playerObject, response) {
     if (
       playerObject.id === undefined ||
+      playerObject.name === undefined ||
       playerObject.backgroundColor === undefined ||
       playerObject.iconColor === undefined ||
       playerObject.iconID === undefined
@@ -107,9 +108,10 @@ class Communication {
       return;
     }
 
-    // If false this usually means the instance is full.
-    if (!this.instance.addPlayer(playerObject)) {
-      response.error('cannot add player.');
+    // Check if the player can join.
+    let error = this.instance.addPlayer(playerObject);
+    if (error) {
+      response.error(error);
       return;
     }
 
