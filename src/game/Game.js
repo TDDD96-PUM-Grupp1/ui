@@ -107,6 +107,7 @@ class Game {
     setTimeout(() => {
       const localPlayer = this.currentGamemode.players.local;
       if (localPlayer) {
+        // TODO: Make local player work through a normal player controller
         localPlayer.setController(new LocalPlayerController(this, 'local'));
       }
     }, 500);
