@@ -39,21 +39,20 @@ class Game {
     this.resourceServer
       .requestResources([
         { name: 'circle', path: 'circle.png' },
-        { name: 'circle_outline', path: 'circle_outline.png' },
+        { name: 'circle_outline', path: 'circle_outline_good.png' },
       ])
       .then(resources => {
         this.basicResources = resources;
+        // Create gamemode
+        this.gamemodeLoaded = false;
+        const gamemodeHandler = GamemodeHandler.getInstance();
+        const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
+        this.resourceServer.requestResources(requestedResources).then(gamemodeResources => {
+          this.currentGamemode = new SelectedMode(this, gamemodeResources);
+          this.currentGamemode.init();
+          this.gamemodeLoaded = true;
+        });
       });
-
-    // Create gamemode
-    this.gamemodeLoaded = false;
-    const gamemodeHandler = GamemodeHandler.getInstance();
-    const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
-    this.resourceServer.requestResources(requestedResources).then(resources => {
-      this.currentGamemode = new SelectedMode(this, resources);
-      this.currentGamemode.init();
-      this.gamemodeLoaded = true;
-    });
   }
 
   // Main game loop
@@ -70,6 +69,12 @@ class Game {
       this.respawnHandler.checkRespawns();
       this.entityHandler.updateGraphics(dt);
     }
+  }
+
+  // Register an entity with the entityhandler
+  register(entity) {
+    this.app.stage.addChild(entity.graphic);
+    this.entityHandler.register(entity);
   }
 
   // Called when a new player joins.

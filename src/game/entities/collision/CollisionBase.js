@@ -80,9 +80,11 @@ class CollisionBase {
 
       // Count as a hit if impulse is big enough
       if (Math.abs(impulseSize) > 1) {
+        // We need to notify both since we can't be sure which one is calculating the collision!
+        // For example a rectangle will never be "this" when colliding with a circle.
         this.notifyListeners(other);
+        other.notifyListeners(this);
       }
-      // this.notifyListeners(other);
 
       // normal tangent
       let tx = vdx - cv * nx;
