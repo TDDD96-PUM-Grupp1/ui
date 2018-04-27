@@ -35,7 +35,7 @@ describe('ResourceServer', () => {
     const rs = new ResourceServer();
     /* eslint-disable function-paren-newline */
     await expect(rs.requestResources(filenames)).rejects.toEqual(
-      new Error(`Failed to load resource ${errorName} from path resources${errorFilepath}`),
+      new Error(`Failed to load resource ${errorName} from path resources${errorFilepath}`)
     );
     /* eslint-enable function-paren-newline */
   });
@@ -79,6 +79,28 @@ describe('GamemodeHandler', () => {
       // If this tests breaks in the future
       // the problem is probably that the resources aren't loaded
       gamemode = new SelectedMode(game, requestedResources);
+    }
+  });
+
+  it('makes sure all gamemodes overrides onWindowResize', () => {
+    const gmHandler = GamemodeHandler.getInstance();
+    const gmList = gmHandler.getGamemodes();
+    // eslint-disable-next-line no-unused-vars
+    let gamemode;
+
+    // Extra components to allow for loading gamemodes
+    const pixi = new PIXI.Application();
+    const com = new Communication(settings.communication, () => {});
+    const game = new Game(pixi, com);
+
+    for (let i = 0; i < gmList.length; i += 1) {
+      gmHandler.selectGameMode(gmList[i]);
+
+      const { SelectedMode, requestedResources } = gmHandler.getSelected();
+      // If this tests breaks in the future
+      // the problem is probably that the resources aren't loaded
+      gamemode = new SelectedMode(game, requestedResources);
+      gamemode.onWindowResize();
     }
   });
 });
