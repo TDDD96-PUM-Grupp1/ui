@@ -28,14 +28,46 @@ class GMHandlerClass {
     this.addGamemode(
       KnockOff,
       {
+        kill: {
+          tag: {
+            tagTime: 4,
+          },
+        },
         respawn: {
           time: 1,
           phase: 2,
         },
+        highscore: {
+          Kills: { default: 0, primary: true, events: [{ trigger: 'kill', action: 'increment' }] },
+          Deaths: { default: 0, events: [{ trigger: 'death', action: 'increment' }] },
+          Latency: { default: '- ms', display: 'latency' },
+        },
       },
       [{ name: 'arena', path: 'knockoff/arena.png' }]
     );
-    this.addGamemode(Dodgebot, {}, [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]);
+    this.addGamemode(
+      Dodgebot,
+      {
+        respawn: {
+          time: 1,
+          phase: 1.5,
+          moveWhilePhased: false,
+        },
+        highscore: {
+          Best_Time_Alive: {
+            default: 0,
+            primary: true,
+          },
+          Time_Alive: {
+            default: 0,
+            display: 'time',
+            events: [{ trigger: 'kill', action: 'reset' }],
+          },
+          Deaths: { default: 0, events: [{ trigger: 'death', action: 'increment' }] },
+        },
+      },
+      [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
+    );
     this.addGamemode(KnockOffRandom, {}, [], KnockOff);
     this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
     this.addGamemode(KnockOffWander, {}, [], KnockOff);
