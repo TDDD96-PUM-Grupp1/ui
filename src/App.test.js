@@ -12,6 +12,7 @@ import GamemodeHandler from './game/GamemodeHandler';
 import Game from './game/Game';
 import ScoreManager from './game/ScoreManager';
 import FirstMenu from './components/FirstMenu';
+import Instance from './game/Instance';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
@@ -221,5 +222,53 @@ describe('FirstMenu', () => {
       .create(<FirstMenu showCreate={showCreate} showAbout={showAbout} />)
       .toJSON();
     expect(tree).toMatchSnapshot();
+  });
+});
+
+describe('Instance', () => {
+  it('accepts players', () => {
+    const inst = new Instance('TestInstance', 10);
+    const testPlayer = {
+      id: 'test_id',
+      name: 'test_player',
+    };
+
+    expect(inst.addPlayer(testPlayer)).toBe('');
+  });
+
+  it('checks max players', () => {
+    const inst = new Instance('TestInstance', 1);
+    const testPlayer1 = {
+      id: 'test_id1',
+      name: 'test_player1',
+    };
+
+    const testPlayer2 = {
+      id: 'test_id2',
+      name: 'test_player2',
+    };
+
+    expect(inst.addPlayer(testPlayer1)).toBe('');
+    expect(inst.addPlayer(testPlayer2)).toBe('Instance is full');
+  });
+
+  it('denies players with too short name', () => {
+    const inst = new Instance('TestInstance', 10);
+    const testPlayer = {
+      id: 'test_id',
+      name: '',
+    };
+
+    expect(inst.addPlayer(testPlayer)).toBe('No name specified');
+  });
+
+  it('denies players with too long name', () => {
+    const inst = new Instance('TestInstance', 10);
+    const testPlayer = {
+      id: 'test_id',
+      name: 'a_really_really_really_really_really_long_name',
+    };
+
+    expect(inst.addPlayer(testPlayer)).toBe('Name is too long.');
   });
 });
