@@ -6,6 +6,9 @@ import GamemodeHandler from './GamemodeHandler';
 import ScoreManager from './ScoreManager';
 import RespawnHandler from './RespawnHandler';
 
+import settings from './../config';
+import LocalPlayerController from './entities/controllers/LocalPlayerController';
+
 /*
 Game.
 */
@@ -53,6 +56,23 @@ class Game {
       this.currentGamemode = new SelectedMode(this, resources);
       this.currentGamemode.init();
       this.gamemodeLoaded = true;
+
+      if (settings.game.localPlayer) {
+        this.onPlayerJoin({
+          iconID: 1,
+          id: 'local',
+          backgroundColor: '#EE6666',
+          iconColor: '#00ffff',
+        }).then(localPlayer => {
+          localPlayer.setController(new LocalPlayerController(this, 'local'));
+        });
+        this.onPlayerJoin({
+          iconID: 2,
+          id: 'local2',
+          backgroundColor: '#EEFFF66',
+          iconColor: '#4422ff',
+        });
+      }
     });
   }
 
@@ -74,8 +94,11 @@ class Game {
 
   // Called when a new player joins.
   onPlayerJoin(playerObject) {
-    this.currentGamemode.onPlayerJoin(playerObject).then(() => {
-      this.scoreManager.addPlayer(playerObject);
+    return new Promise(resolve => {
+      this.currentGamemode.onPlayerJoin(playerObject).then(playerEntity => {
+        this.scoreManager.addPlayer(playerObject);
+        resolve(playerEntity);
+      });
     });
   }
 

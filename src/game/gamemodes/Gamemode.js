@@ -1,7 +1,5 @@
-import settings from '../../config';
 import PlayerCircle from '../entities/PlayerCircle';
 import PlayerController from '../entities/controllers/PlayerController';
-import LocalPlayerController from '../entities/controllers/LocalPlayerController';
 import iconData from '../iconData';
 
 /*
@@ -16,27 +14,7 @@ class Gamemode {
     this.onButtonPressed = this.onButtonPressed.bind(this);
   }
 
-  init() {
-    if (settings.game.localPlayer) {
-      this.onPlayerJoin({
-        iconID: 1,
-        id: 'local',
-        backgroundColor: '#EE6666',
-        iconColor: '#00ffff',
-      }).then(localPlayer => {
-        localPlayer.setController(new LocalPlayerController(this.game, 'local'));
-        localPlayer.y = 300;
-      });
-      this.onPlayerJoin({
-        iconID: 2,
-        id: 'local2',
-        backgroundColor: '#EEFFF66',
-        iconColor: '#4422ff',
-      }).then(localPlayer => {
-        localPlayer.y = 350;
-      });
-    }
-  }
+  init() {}
   /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
   no-empty-function */
 
