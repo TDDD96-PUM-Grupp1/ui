@@ -20,7 +20,6 @@ class KnockOff extends Gamemode {
     super(game, resources);
 
     this.players = {};
-    this.respawn = {};
     this.tags = {};
     this.abilityTimer = {};
 
@@ -128,7 +127,6 @@ class KnockOff extends Gamemode {
 
     this.players[idTag] = circle;
     this.tags[idTag] = [];
-    this.respawn[idTag] = true;
     this.abilityTimer[idTag] = { active: false, time: 0 };
 
     circle.addEntityListener(this);
@@ -151,9 +149,8 @@ class KnockOff extends Gamemode {
 
   // Called when a player disconnects
   onPlayerLeave(idTag) {
-    // When a player leaves, just leave their entity on the map.
-    // But stop them from respawning.
-    this.respawn[idTag] = false;
+    // Turn the players entity into a dummy, leaving it in the game until it dies
+    this.players[idTag].ownerLeft();
   }
 
   onButtonPressed(id, button) {
@@ -195,7 +192,7 @@ class KnockOff extends Gamemode {
 
     this.game.scoreManager.addScore('Deaths', id, 1);
 
-    if (this.respawn[id]) {
+    if (entity.isPlayer()) {
       this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
     } else {
       this.game.entityHandler.unregisterFully(entity);

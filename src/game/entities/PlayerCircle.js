@@ -23,8 +23,19 @@ class PlayerCircle extends BasicCircle {
 
     this.restitution = 1;
 
+    // Flag for if the player has left the game.
+    this.playerLeft = false;
+
     // default player collision group is random so they will be able to collide
     this.collisionGroup = Math.random();
+  }
+
+  ownerLeft() {
+    this.playerLeft = true;
+    // Clear id so it will not see input if player rejoins
+    this.controller.id = '';
+    // Clear collision listeners
+    this.collision.listeners = [];
   }
 
   setColor(backgroundColor, iconColor) {
@@ -39,26 +50,15 @@ class PlayerCircle extends BasicCircle {
     super.update(dt);
   }
 
-  // Update this entity's graphics
-  // graphicUpdate(dt) {
-  //   super.graphicUpdate(dt);
-
-  //   this.sprite.x = this.x;
-  //   this.sprite.y = this.y;
-  //   this.sprite.rotation = this.rotation;
-  // }
-
   // Destroy sprite when removed
   destroy() {
     super.destroy();
     this.sprite.destroy();
   }
 
-  /* eslint-disable */
   isPlayer() {
-    return true;
+    return !this.playerLeft;
   }
-  /* eslint-enable */
 }
 
 export default PlayerCircle;

@@ -24,7 +24,6 @@ class Dodgebot extends Gamemode {
     this.hs_list = new HighscoreList(game.scoreManager, game);
 
     this.players = {};
-    this.respawn = {};
 
     this.time = 0;
 
@@ -128,16 +127,14 @@ class Dodgebot extends Gamemode {
     circle.phase(3);
 
     this.players[idTag] = circle;
-    this.respawn[idTag] = true;
 
     circle.addEntityListener(this);
   }
 
   // Called when a player disconnects
   onPlayerLeave(idTag) {
-    // When a player leaves, just leave their entity on the map.
-    // But stop them from respawning.
-    this.respawn[idTag] = false;
+    // Turn the players entity into a dummy, leaving it in the game until it dies
+    this.players[idTag].ownerLeft();
   }
 
   onButtonPressed(id, button) {}
@@ -168,7 +165,7 @@ class Dodgebot extends Gamemode {
     this.game.scoreManager.setScore('Time Alive', id, 0);
     this.game.scoreManager.addScore('Deaths', id, 1);
 
-    if (this.respawn[id]) {
+    if (entity.isPlayer()) {
       this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
     } else {
       this.game.entityHandler.unregisterFully(entity);
