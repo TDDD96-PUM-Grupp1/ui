@@ -4,12 +4,11 @@ Configuration file for different project parameters.
 
 const settings = {
   skipmenu: false,
-  defaultGamemode: 'knockOff',
+  defaultGamemode: 'dodgebot',
   game: {
     localPlayer: false,
     forceCanvas: true,
     antialias: false,
-    fxaa: false,
   },
   communication: {
     host_ip: 'ds.tddd96.i4demo.com:80',
