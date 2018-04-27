@@ -61,6 +61,10 @@ class ScoreManager {
     }
   }
 
+  hasScoreType(name) {
+    return this.defaultScores[name] !== undefined;
+  }
+
   /*
   Sort highscorelist based on the current orderPolicy and primaryScore
   */
