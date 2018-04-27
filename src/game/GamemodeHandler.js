@@ -12,6 +12,7 @@ Singleton class for handling gamemode storage and selection
 class GMHandlerClass {
   constructor() {
     // List of all available gamemodes
+    /* eslint-disable object-shorthand */
     this.gamemodes = {
       knockOff: KnockOff,
       KORandom: KORandom,
@@ -20,7 +21,7 @@ class GMHandlerClass {
       dodgebot: Dodgebot,
       testGamemode: TestGamemode,
     };
-
+    /* eslint-enable object-shorthand */
     this.gamemodeResources = {
       knockOff: [{ name: 'arena', path: 'knockoff/arena.png' }],
       KORandom: [{ name: 'arena', path: 'knockoff/arena.png' }],
