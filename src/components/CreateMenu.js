@@ -53,7 +53,7 @@ class CreateMenu extends Component {
         gamemode: GamemodeHandler.getInstance().getSelectedId(),
       };
       // Try to create an instance (as the service if the instance name is unique).
-      this.props.communication.createInstance(gameInfo, (err, data) => {
+      this.props.communication.createInstance(gameInfo, (err) => {
         this.setState({ loading: false });
         if (err) {
           if (err === deepstream.CONSTANTS.EVENT.NO_RPC_PROVIDER) {
