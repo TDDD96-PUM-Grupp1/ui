@@ -63,8 +63,7 @@ class Communication {
     // Ask the service if the UI can start an instance.
     this.client.rpc.make(`${this.serviceName}/createInstance`, gameInfo, (err, data) => {
       if (!err && !data.error) {
-
-        this.setPingTime(this.update, );
+        this.setPingTime(this.update);
         setInterval(this.update, 1000 / (1 * this.pingrate));
         // Instance can be created.
         this.instance = new Instance(gameInfo.name, gameInfo.maxPlayers, gameInfo.gamemode);
