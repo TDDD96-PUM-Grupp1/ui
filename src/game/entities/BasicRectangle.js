@@ -21,7 +21,6 @@ class BasicRectangle extends GameEntity {
     graphic.beginFill(0xfffffff);
     graphic.drawRect(-width * 0.5, -height * 0.5, width, height);
     graphic.endFill();
-    game.app.stage.addChild(graphic);
     graphic.tint = color;
     this.graphic = graphic;
 

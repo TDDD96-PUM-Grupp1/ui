@@ -42,30 +42,31 @@ class Game {
     this.resourceServer = new ResourceServer();
     this.scoreManager = new ScoreManager();
 
+    this.gamemodeLoaded = false;
+
     // Load in basic resources
     this.basicResources = {};
     this.resourceServer
       .requestResources([
         { name: 'circle', path: 'circle.png' },
-        { name: 'circle_outline', path: 'circle_outline.png' },
+        { name: 'circle_outline', path: 'circle_outline_good.png' },
       ])
       .then(resources => {
         this.basicResources = resources;
+        // Create gamemode
+
+        const gamemodeHandler = GamemodeHandler.getInstance();
+        const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
+        this.resourceServer.requestResources(requestedResources).then(gamemodeResources => {
+          this.currentGamemode = new SelectedMode(this, gamemodeResources);
+          this.currentGamemode.init();
+          this.gamemodeLoaded = true;
+
+          if (settings.game.localPlayer) {
+            this.addLocalPlayers();
+          }
+        });
       });
-
-    // Create gamemode
-    this.gamemodeLoaded = false;
-    const gamemodeHandler = GamemodeHandler.getInstance();
-    const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
-    this.resourceServer.requestResources(requestedResources).then(resources => {
-      this.currentGamemode = new SelectedMode(this, resources);
-      this.currentGamemode.init();
-      this.gamemodeLoaded = true;
-
-      if (settings.game.localPlayer) {
-        this.addLocalPlayers();
-      }
-    });
   }
 
   // Main game loop
@@ -111,6 +112,12 @@ class Game {
         localPlayer.setController(new LocalPlayerController(this, 'local'));
       }
     }, 500);
+  }
+
+  // Register an entity with the entityhandler
+  register(entity) {
+    this.app.stage.addChild(entity.graphic);
+    this.entityHandler.register(entity);
   }
 
   // Called when a new player joins.
