@@ -69,8 +69,6 @@ class Game {
       this.respawnHandler.checkRespawns();
       this.entityHandler.updateGraphics(dt);
     }
-
-    this.communication.update(dt);
   }
 
   // Register an entity with the entityhandler
@@ -101,6 +99,12 @@ class Game {
 
   // eslint-disable-next-line
   onButtonPressed(id, button) {}
+
+  onPingUpdated(id, ping) {
+    if (this.scoreManager.hasScoreType('Latency')) {
+      this.scoreManager.setScore('Latency', id, `${ping} ms`);
+    }
+  }
 
   registerResizeListener(listener) {
     this.resizeListeners.push(listener);
