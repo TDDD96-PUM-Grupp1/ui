@@ -31,6 +31,7 @@ class CreateMenu extends Component {
 
     this.startGame = this.startGame.bind(this);
     this.validatePlayers = this.validatePlayers.bind(this);
+    this.validateName = this.validateName.bind(this);
     this.updateGameMode = this.updateGameMode.bind(this);
     this.randomName = this.randomName.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
@@ -74,6 +75,7 @@ class CreateMenu extends Component {
    */
   randomName() {
     this.setState({ instanceName: getRandomInstanceName() });
+    this.validateName(this.state.instanceName);
   }
 
   /*
@@ -88,7 +90,7 @@ class CreateMenu extends Component {
 
   validateName(name) {
     const newErrors = [];
-    if (name.length > 20) {
+    if (name.length > 21) {
       newErrors.push('Name is too long.');
     } else if (name.length === 0) {
       newErrors.push('No name specified');
