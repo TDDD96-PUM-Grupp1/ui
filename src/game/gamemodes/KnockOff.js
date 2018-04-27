@@ -62,6 +62,7 @@ class KnockOff extends Gamemode {
     // Set up scores
     game.scoreManager.addScoreType('Kills', 0, true);
     game.scoreManager.addScoreType('Deaths', 0);
+    game.scoreManager.addScoreType('Latency', '- ms');
     game.scoreManager.setAscOrder(false);
     this.hs_list = new HighscoreList(game.scoreManager, game);
   }

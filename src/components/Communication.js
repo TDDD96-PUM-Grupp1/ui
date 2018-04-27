@@ -165,6 +165,10 @@ class Communication {
         this.instance.sensorMoved(data.id, data.sensor);
       }
 
+      if (data.ping !== undefined) {
+        this.instance.pingUpdated(data.id, data.ping);
+      }
+
       for (let i = 0; i < data.bnum.length; i += 1) {
         // Update the button data.
         this.instance.buttonPressed(data.id, data.bnum[i]);
