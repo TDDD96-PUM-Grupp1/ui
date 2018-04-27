@@ -57,14 +57,13 @@ class CreateMenu extends Component {
         this.setState({ loading: false });
         if (err) {
           if (err === deepstream.CONSTANTS.EVENT.NO_RPC_PROVIDER) {
-            this.setState({ errors: ['Service server is not running.'], serviceError: true });
+            this.setState({ errors: ['Service is not responding.'], serviceError: true });
+          } else {
+            this.setState({ errors: [err], serviceError: true });
           }
-        } else if (data.error) {
-          // Instance is not valid
-          this.setState({ errors: [data.error], serviceError: true });
         } else {
-          this.props.onStart();
           // Instance is valid
+          this.props.onStart();
         }
       });
     }
@@ -85,6 +84,17 @@ class CreateMenu extends Component {
     const modeIndex = event.target.selectedIndex;
     const newMode = this.state.gamemodeList[modeIndex];
     this.setState({ gamemode: newMode });
+  }
+
+  validateName(name) {
+    const newErrors = [];
+    if (name.length > 20) {
+      newErrors.push('Name is too long.');
+    } else if (name.length === 0) {
+      newErrors.push('No name specified');
+    }
+
+    this.setState({ errors: newErrors, serviceError: false });
   }
 
   /*
@@ -113,6 +123,7 @@ class CreateMenu extends Component {
   // Change the state if the textbox is changed.
   handleNameChange(event) {
     this.setState({ instanceName: event.target.value });
+    this.validateName(event.target.value);
   }
 
   render() {
