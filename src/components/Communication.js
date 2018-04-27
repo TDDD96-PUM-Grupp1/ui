@@ -109,7 +109,7 @@ class Communication {
     }
 
     // Check if the player can join.
-    let error = this.instance.addPlayer(playerObject);
+    const error = this.instance.addPlayer(playerObject);
     if (error) {
       response.error(error);
       return;
