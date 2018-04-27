@@ -12,6 +12,7 @@ class Gamemode {
   no-empty-function */
   constructor(game, resources) {
     this.game = game;
+    this.resources = resources;
     this.game.registerResizeListener(this);
     this.onButtonPressed = this.onButtonPressed.bind(this);
   }
