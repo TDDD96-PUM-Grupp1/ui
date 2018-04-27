@@ -70,8 +70,6 @@ class Game {
       this.respawnHandler.checkRespawns();
       this.entityHandler.updateGraphics(dt);
     }
-
-    this.communication.update();
   }
 
   // Called when a new player joins.
