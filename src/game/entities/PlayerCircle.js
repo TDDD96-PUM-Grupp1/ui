@@ -56,7 +56,8 @@ class PlayerCircle extends BasicCircle {
     this.sprite.destroy();
   }
 
-  static isPlayer() {
+  // eslint-disable-next-line
+  isPlayer() {
     return true;
   }
 }

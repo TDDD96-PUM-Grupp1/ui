@@ -78,7 +78,7 @@ class GameEntity {
     if (this.dead) {
       return;
     }
-    if (this.controller !== null) {
+    if (this.controller != null) {
       this.controller.update(dt);
     }
     const frictionMultiplier = 1 - this.floorFriction;
