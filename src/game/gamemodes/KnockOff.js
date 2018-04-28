@@ -97,8 +97,7 @@ class KnockOff extends Gamemode {
 
   // Called after the game objects are updated.
   postUpdate(dt) {
-    Object.keys(this.players).forEach(id => {
-      const entity = this.players[id];
+    this.entityHandler.getPlayers().forEach(entity => {
       if (!entity.dead) {
         const dx = this.arenaGraphic.x - entity.x;
         const dy = this.arenaGraphic.y - entity.y;
@@ -192,10 +191,10 @@ class KnockOff extends Gamemode {
 
     this.game.scoreManager.addScore('Deaths', id, 1);
 
-    if (entity.isPlayer()) {
-      this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
-    } else {
+    if (entity.playerLeft) {
       this.game.entityHandler.unregisterFully(entity);
+    } else {
+      this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
     }
   }
 

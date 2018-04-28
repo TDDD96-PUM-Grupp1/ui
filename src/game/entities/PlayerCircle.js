@@ -56,8 +56,8 @@ class PlayerCircle extends BasicCircle {
     this.sprite.destroy();
   }
 
-  isPlayer() {
-    return !this.playerLeft;
+  static isPlayer() {
+    return true;
   }
 }
 

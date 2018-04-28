@@ -1,7 +1,6 @@
 import * as PIXI from 'pixi.js';
 import GameEntity from './GameEntity';
 import CollisionCircle from './collision/CollisionCircle';
-import PlayerCircle from './PlayerCircle';
 
 /*
 Circular object that will kill players that it touches.
@@ -28,7 +27,7 @@ class Dangerbot extends GameEntity {
     this.collision = new CollisionCircle(radius);
     this.collision.setEntity(this);
     this.collision.addListener((dangerbot, victim) => {
-      if (victim instanceof PlayerCircle) {
+      if (victim.isPlayer()) {
         victim.die();
       }
     });
