@@ -3,9 +3,6 @@ import Dangerbot from '../entities/Dangerbot';
 import DangerbotController from '../entities/controllers/DangerbotController';
 import BasicRectangle from '../entities/BasicRectangle';
 
-// Respawn time in seconds
-const RESPAWN_TIME = 1;
-
 // How many walls the arena should have.
 const WALLS = 4;
 
@@ -101,8 +98,7 @@ class Dodgebot extends Gamemode {
     Object.keys(this.players).forEach(id => {
       const entity = this.players[id];
 
-      // Increase score if player is alive
-      // TODO: Better way to determine this
+      // Increase best score if time alive is higher
       if (!entity.dead) {
         const bestScore = this.game.scoreManager.getScore('Best Time Alive', id);
         const score = this.game.scoreManager.getScore('Time Alive', id);
@@ -147,10 +143,6 @@ class Dodgebot extends Gamemode {
     // Move the entity close to the center
     entity.x = this.centerx;
     entity.y = this.centery;
-
-    // Phase the entity for a bit
-    entity.dead = false;
-    entity.phase(1.5);
   }
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
@@ -162,13 +154,8 @@ class Dodgebot extends Gamemode {
   }
 
   // Called when an entity dies.
-  onDeath(entity) {
-    if (entity.playerLeft) {
-      this.game.entityHandler.unregisterFully(entity);
-    } else {
-      this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
-    }
-  }
+  // eslint-disable-next-line
+  onDeath(entity) {}
 
   /* eslint-disable class-methods-use-this */
   onWindowResize() {}

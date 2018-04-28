@@ -40,6 +40,7 @@ class GameEntity {
 
     // Death
     this.dead = false;
+    this.respawnable = false;
 
     // Phasing
     this.phaseTimer = 2;

@@ -26,6 +26,21 @@ class GamemodeEventHandler {
     this.timeDisplays = [];
   }
 
+  setUpRespawn() {
+    if (this.options.respawn) {
+      let { time, phase } = this.options.respawn;
+      if (time === undefined) {
+        time = 0;
+      }
+      if (phase === undefined) {
+        phase = 0;
+      }
+      this.respawnTime = time;
+      this.respawnPhaseTime = phase;
+      this.respawn = true;
+    }
+  }
+
   setUpHighscoreEvents() {
     Object.keys(this.options.highscore.scores).forEach(title => {
       const score = this.options.highscore.scores[title];
@@ -39,7 +54,7 @@ class GamemodeEventHandler {
           case HIGHSCORE_DISPLAY_LATENCY:
             break;
           default:
-            break;
+            throw new Error(`Invalid display type '${display}'.`);
         }
       }
       if (events !== undefined) {
@@ -111,6 +126,13 @@ class GamemodeEventHandler {
         this.game.scoreManager.mutateScore(name, id, action);
       });
     }
+    if (this.respawn) {
+      if (entity.isPlayer() && entity.playerLeft) {
+        this.game.entityHandler.unregisterFully(entity);
+      } else if (entity.respawnable) {
+        this.game.respawnHandler.addRespawn(entity, this.respawnTime);
+      }
+    }
     this.binds.onDeath(entity);
   }
 
@@ -127,6 +149,11 @@ class GamemodeEventHandler {
   }
 
   onRespawn(entity) {
+    if (this.respawn) {
+      if (this.respawnPhaseTime > 0) {
+        entity.phase(this.respawnPhaseTime);
+      }
+    }
     this.binds.onRespawn(entity);
   }
 }

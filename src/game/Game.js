@@ -60,7 +60,6 @@ class Game {
         const gamemodeHandler = GamemodeHandler.getInstance();
         const { SelectedMode, requestedResources, options } = gamemodeHandler.getSelected();
         this.resourceServer.requestResources(requestedResources).then(gamemodeResources => {
-          console.log(options);
           this.currentGamemode = new SelectedMode(this, gamemodeResources);
           this.currentGamemode.init();
 
@@ -108,6 +107,7 @@ class Game {
       this.currentGamemode.hs_list = new HighscoreList(this.scoreManager, this);
     }
     handler.setUpHighscoreEvents();
+    handler.setUpRespawn();
   }
 
   // Adds local players to the instance.

@@ -1,9 +1,6 @@
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
 
-// Respawn time in seconds
-const RESPAWN_TIME = 1;
-
 // The max time between a collision and a player dying in order to count as a kill.
 const TAG_TIME = 1;
 
@@ -47,13 +44,6 @@ class KnockOff extends Gamemode {
     graphic.anchor.set(0.5, 0.5);
     graphic.x = this.arenaCenterx;
     graphic.y = this.arenaCentery;
-
-    // Set up scores
-    /* game.scoreManager.addScoreType('Kills', 0, true);
-    game.scoreManager.addScoreType('Deaths', 0);
-    game.scoreManager.addScoreType('Latency', '- ms'); */
-    // game.scoreManager.setAscOrder(false);
-    // this.hs_list = new HighscoreList(game.scoreManager, game);
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
@@ -174,9 +164,6 @@ class KnockOff extends Gamemode {
     // Move the entity close to the center
     entity.x = this.arenaCenterx + Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
     entity.y = this.arenaCentery + Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
-
-    // Phase the entity for a bit
-    entity.phase(2);
   }
 
   // Called when an entity dies.
@@ -186,12 +173,6 @@ class KnockOff extends Gamemode {
       // console.log("%s killed %s", item.id, id);
       this.game.scoreManager.addScore('Kills', item.id, 1);
     });
-
-    if (entity.playerLeft) {
-      this.game.entityHandler.unregisterFully(entity);
-    } else {
-      this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
-    }
   }
 
   onWindowResize() {
