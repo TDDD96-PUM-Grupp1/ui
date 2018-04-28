@@ -10,6 +10,8 @@ class ScoreManager {
 
     this.defaultScores = {};
     this.primaryScore = '';
+
+    this.styleGuide = {};
   }
 
   /*
@@ -59,6 +61,10 @@ class ScoreManager {
     }
   }
 
+  hasScoreType(name) {
+    return this.defaultScores[name] !== undefined;
+  }
+
   /*
   Sort highscorelist based on the current orderPolicy and primaryScore
   */
@@ -95,12 +101,19 @@ class ScoreManager {
       name: playerObj.name,
     };
 
+    const newStyling = {
+      backgroundColor: playerObj.backgroundColor,
+      iconColor: playerObj.iconColor,
+      iconID: playerObj.iconID,
+    };
+
     // Add default values of all score types
     Object.keys(this.defaultScores).forEach(key => {
       newObj[key] = this.defaultScores[key];
     });
 
     this.highscoreList.push(newObj);
+    this.styleGuide[playerObj.id] = newStyling;
     this.resort();
   }
 
@@ -119,6 +132,8 @@ class ScoreManager {
     if (remId !== -1) {
       this.highscoreList.splice(remId, 1);
     }
+
+    delete this.styleGuide[idTag];
 
     this.triggerUpdate();
   }

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as PIXI from 'pixi.js';
+import renderer from 'react-test-renderer';
 
 import settings from './config';
 import Communication from './components/Communication';
@@ -10,8 +11,8 @@ import ResourceServer from './game/ResourceServer';
 import GamemodeHandler from './game/GamemodeHandler';
 import Game from './game/Game';
 import ScoreManager from './game/ScoreManager';
-import renderer from 'react-test-renderer';
 import FirstMenu from './components/FirstMenu';
+import Instance from './game/Instance';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
@@ -35,7 +36,7 @@ describe('ResourceServer', () => {
     const rs = new ResourceServer();
     /* eslint-disable function-paren-newline */
     await expect(rs.requestResources(filenames)).rejects.toEqual(
-      new Error(`Failed to load resource ${errorName} from path resources${errorFilepath}`),
+      new Error(`Failed to load resource ${errorName} from path resources${errorFilepath}`)
     );
     /* eslint-enable function-paren-newline */
   });
@@ -79,6 +80,28 @@ describe('GamemodeHandler', () => {
       // If this tests breaks in the future
       // the problem is probably that the resources aren't loaded
       gamemode = new SelectedMode(game, requestedResources);
+    }
+  });
+
+  it('makes sure all gamemodes overrides onWindowResize', () => {
+    const gmHandler = GamemodeHandler.getInstance();
+    const gmList = gmHandler.getGamemodes();
+    // eslint-disable-next-line no-unused-vars
+    let gamemode;
+
+    // Extra components to allow for loading gamemodes
+    const pixi = new PIXI.Application();
+    const com = new Communication(settings.communication, () => {});
+    const game = new Game(pixi, com);
+
+    for (let i = 0; i < gmList.length; i += 1) {
+      gmHandler.selectGameMode(gmList[i]);
+
+      const { SelectedMode, requestedResources } = gmHandler.getSelected();
+      // If this tests breaks in the future
+      // the problem is probably that the resources aren't loaded
+      gamemode = new SelectedMode(game, requestedResources);
+      gamemode.onWindowResize();
     }
   });
 });
@@ -193,10 +216,59 @@ describe('ScoreManager', () => {
 
 describe('FirstMenu', () => {
   it('matches the snapshot', () => {
-    var showAbout = jest.fn();
-    var showCreate = jest.fn();
-    const tree = renderer.create(<FirstMenu showCreate={showCreate} showAbout={showAbout} />).toJSON();
+    const showAbout = jest.fn();
+    const showCreate = jest.fn();
+    const tree = renderer
+      .create(<FirstMenu showCreate={showCreate} showAbout={showAbout} />)
+      .toJSON();
     expect(tree).toMatchSnapshot();
+  });
+});
 
+describe('Instance', () => {
+  it('accepts players', () => {
+    const inst = new Instance('TestInstance', 10);
+    const testPlayer = {
+      id: 'test_id',
+      name: 'test_player',
+    };
+
+    expect(inst.addPlayer(testPlayer)).toBe('');
+  });
+
+  it('checks max players', () => {
+    const inst = new Instance('TestInstance', 1);
+    const testPlayer1 = {
+      id: 'test_id1',
+      name: 'test_player1',
+    };
+
+    const testPlayer2 = {
+      id: 'test_id2',
+      name: 'test_player2',
+    };
+
+    expect(inst.addPlayer(testPlayer1)).toBe('');
+    expect(inst.addPlayer(testPlayer2)).toBe('Instance is full');
+  });
+
+  it('denies players with too short name', () => {
+    const inst = new Instance('TestInstance', 10);
+    const testPlayer = {
+      id: 'test_id',
+      name: '',
+    };
+
+    expect(inst.addPlayer(testPlayer)).toBe('No name specified');
+  });
+
+  it('denies players with too long name', () => {
+    const inst = new Instance('TestInstance', 10);
+    const testPlayer = {
+      id: 'test_id',
+      name: 'a_really_really_really_really_really_long_name',
+    };
+
+    expect(inst.addPlayer(testPlayer)).toBe('Name is too long.');
   });
 });

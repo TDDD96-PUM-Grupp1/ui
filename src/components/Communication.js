@@ -12,7 +12,6 @@ class Communication {
     this.instance = undefined; // this.client.getUid();
     this.players = {};
     this.timeoutCount = options.timeout_count;
-    this.pingtimer = 0;
     this.pingrate = options.pingrate;
     this.serviceName = options.service_name;
     this.id = undefined;
@@ -63,26 +62,27 @@ class Communication {
     // Ask the service if the UI can start an instance.
     this.client.rpc.make(`${this.serviceName}/createInstance`, gameInfo, (err, data) => {
       if (!err && !data.error) {
+        setInterval(this.update, 1000 / (1 * this.pingrate));
         // Instance can be created.
         this.instance = new Instance(gameInfo.name, gameInfo.maxPlayers, gameInfo.gamemode);
 
         // Provide an RPC that will let players join.
         this.client.rpc.provide(
           `${this.serviceName}/addPlayer/${this.instance.getName()}`,
-          this.addPlayer,
+          this.addPlayer
         );
 
         // Provide an RPC to let controllers test the ping to the UI.
         this.client.rpc.provide(
           `${this.serviceName}/pingTime/${this.instance.getName()}`,
-          this.onPingTime,
+          this.onPingTime
         );
 
         // Subsribe to the data channel of the players.
         // The sensor data and button data will be sent here.
         this.client.event.subscribe(
           `${this.serviceName}/data/${this.instance.getName()}`,
-          this.readData,
+          this.readData
         );
       }
       callback(err, data);
@@ -92,18 +92,26 @@ class Communication {
   /*
   * This is an RPC that adds player to the list of players. Starts to listen to the events
   * published by that player.
-  * @param data the data send from the controller. Should contain name, id and sensor data.
+  * @param data the data send from the controller. Should contain name, id,
+  * backgroundColor, iconColor, iconID and sensor data.
   * @param response the response from the RPC
   */
   addPlayer(playerObject, response) {
-    if (playerObject.id === undefined || playerObject.name === undefined) {
+    if (
+      playerObject.id === undefined ||
+      playerObject.name === undefined ||
+      playerObject.backgroundColor === undefined ||
+      playerObject.iconColor === undefined ||
+      playerObject.iconID === undefined
+    ) {
       response.error('Invalid data format');
       return;
     }
 
-    // If false this usually means the instance is full.
-    if (!this.instance.addPlayer(playerObject)) {
-      response.error('cannot add player.');
+    // Check if the player can join.
+    const error = this.instance.addPlayer(playerObject);
+    if (error) {
+      response.error(error);
       return;
     }
 
@@ -159,6 +167,10 @@ class Communication {
         this.instance.sensorMoved(data.id, data.sensor);
       }
 
+      if (data.ping !== undefined) {
+        this.instance.pingUpdated(data.id, data.ping);
+      }
+
       for (let i = 0; i < data.bnum.length; i += 1) {
         // Update the button data.
         this.instance.buttonPressed(data.id, data.bnum[i]);
@@ -179,32 +191,23 @@ class Communication {
   /*
    * Updates the pingtimer and if enough time has passed it will ask the deepstream server
    * if all the players are still connected.
-   * @param timeElapsed time elapsed since the last update, in seconds
    */
-  update(timeElapsed) {
+  update() {
     // Instance is not yet created
     if (this.instance === undefined) {
       return;
     }
 
-    // Increase the pingtimer.
-    this.pingtimer += timeElapsed;
-    if (this.pingtimer >= 1 / this.pingrate) {
-      // No need to decrease the timer by 1/pingrate since the precision
-      // is not necessary
-      this.pingtimer = 0;
+    // Ping the service
+    this.client.event.emit(`${this.serviceName}/instancePing`, { name: this.instance.getName() });
 
-      // Ping the service
-      this.client.event.emit(`${this.serviceName}/instancePing`, { name: this.instance.getName() });
+    const playerKeys = Object.keys(this.players);
 
-      const playerKeys = Object.keys(this.players);
-
-      for (let i = 0; i < playerKeys.length; i += 1) {
-        this.players[playerKeys[i]].ping -= 1;
-        // Check if the player has timed out.
-        if (this.players[playerKeys[i]].ping === 0) {
-          this.removePlayer(playerKeys[i]);
-        }
+    for (let i = 0; i < playerKeys.length; i += 1) {
+      this.players[playerKeys[i]].ping -= 1;
+      // Check if the player has timed out.
+      if (this.players[playerKeys[i]].ping === 0) {
+        this.removePlayer(playerKeys[i]);
       }
     }
   }

@@ -21,7 +21,6 @@ class BasicCircle extends GameEntity {
     graphic.width = radius * 2;
     graphic.height = radius * 2;
     graphic.anchor.set(0.5, 0.5);
-    game.app.stage.addChild(graphic);
     graphic.tint = color;
     this.graphic = graphic;
 
