@@ -92,8 +92,8 @@ class Game {
   }
 
   configure(options) {
-    const injector = new GamemodeEventHandler(this, this.currentGamemode, options);
-    injector.injectBinds();
+    const handler = new GamemodeEventHandler(this, this.currentGamemode, options);
+    handler.injectBinds();
     if (options.highscore) {
       if (options.highscore.order) {
         this.scoreManager.setAscOrder(options.highscore.order);
@@ -107,6 +107,7 @@ class Game {
       });
       this.currentGamemode.hs_list = new HighscoreList(this.scoreManager, this);
     }
+    handler.setUpHighscoreEvents();
   }
 
   // Adds local players to the instance.

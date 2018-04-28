@@ -5,7 +5,7 @@ import Gamemode from './Gamemode';
 const RESPAWN_TIME = 1;
 
 // The max time between a collision and a player dying in order to count as a kill.
-const TAG_TIME = 4;
+const TAG_TIME = 1;
 
 // Ability times
 const ABILITY_COOLDOWN = 10;
@@ -186,8 +186,6 @@ class KnockOff extends Gamemode {
       // console.log("%s killed %s", item.id, id);
       this.game.scoreManager.addScore('Kills', item.id, 1);
     });
-
-    this.game.scoreManager.addScore('Deaths', id, 1);
 
     if (entity.playerLeft) {
       this.game.entityHandler.unregisterFully(entity);

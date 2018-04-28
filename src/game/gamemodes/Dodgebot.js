@@ -165,15 +165,10 @@ class Dodgebot extends Gamemode {
 
   // Called when an entity dies.
   onDeath(entity) {
-    const { id } = entity.controller;
-
-    this.game.scoreManager.setScore('Time Alive', id, 0);
-    this.game.scoreManager.addScore('Deaths', id, 1);
-
-    if (entity.isPlayer()) {
-      this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
-    } else {
+    if (entity.ownerLeft) {
       this.game.entityHandler.unregisterFully(entity);
+    } else {
+      this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
     }
   }
 
