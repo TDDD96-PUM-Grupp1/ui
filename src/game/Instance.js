@@ -29,21 +29,27 @@ class Instance {
    * Adds a player to the instance.
    * @param String id Id of the player.
    * @param String name Name of the player.
-   * @return true if the player was added and false otherwise.
-   */
+   * @return String with error if one has occured */
   addPlayer(playerObject) {
     const { id, name } = playerObject;
 
     if (Object.keys(this.players).length >= this.maxPlayers) {
-      return false;
+      return 'Instance is full';
     }
+
+    if (name.length > 21) {
+      return 'Name is too long.';
+    } else if (name.length === 0) {
+      return 'No name specified';
+    }
+
     this.players[id] = { name, sensor: { beta: 0, gamma: 0 } };
 
     if (this.instanceListener !== undefined) {
       this.instanceListener.onPlayerJoin(playerObject);
     }
-
-    return true;
+    // No error has occured
+    return '';
   }
 
   /*
