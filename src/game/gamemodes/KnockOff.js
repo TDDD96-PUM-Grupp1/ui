@@ -97,7 +97,7 @@ class KnockOff extends Gamemode {
 
   // Called after the game objects are updated.
   postUpdate(dt) {
-    this.entityHandler.getPlayers().forEach(entity => {
+    this.game.entityHandler.getPlayers().forEach(entity => {
       if (!entity.dead) {
         const dx = this.arenaGraphic.x - entity.x;
         const dy = this.arenaGraphic.y - entity.y;
