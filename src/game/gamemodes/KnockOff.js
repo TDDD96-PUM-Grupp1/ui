@@ -20,7 +20,6 @@ class KnockOff extends Gamemode {
     super(game, resources);
 
     this.players = {};
-    this.respawn = {};
     this.tags = {};
     this.abilityTimer = {};
 
@@ -98,8 +97,7 @@ class KnockOff extends Gamemode {
 
   // Called after the game objects are updated.
   postUpdate(dt) {
-    Object.keys(this.players).forEach(id => {
-      const entity = this.players[id];
+    this.game.entityHandler.getPlayers().forEach(entity => {
       if (!entity.dead) {
         const dx = this.arenaGraphic.x - entity.x;
         const dy = this.arenaGraphic.y - entity.y;
@@ -122,13 +120,11 @@ class KnockOff extends Gamemode {
     circle.y = this.arenaCentery;
 
     this.game.register(circle);
-    circle.collisionGroup = idTag;
 
     circle.phase(3);
 
     this.players[idTag] = circle;
     this.tags[idTag] = [];
-    this.respawn[idTag] = true;
     this.abilityTimer[idTag] = { active: false, time: 0 };
 
     circle.addEntityListener(this);
@@ -151,9 +147,8 @@ class KnockOff extends Gamemode {
 
   // Called when a player disconnects
   onPlayerLeave(idTag) {
-    // When a player leaves, just leave their entity on the map.
-    // But stop them from respawning.
-    this.respawn[idTag] = false;
+    // Turn the players entity into a dummy, leaving it in the game until it dies
+    this.players[idTag].ownerLeft();
   }
 
   onButtonPressed(id, button) {
@@ -195,10 +190,10 @@ class KnockOff extends Gamemode {
 
     this.game.scoreManager.addScore('Deaths', id, 1);
 
-    if (this.respawn[id]) {
-      this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
-    } else {
+    if (entity.playerLeft) {
       this.game.entityHandler.unregisterFully(entity);
+    } else {
+      this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
     }
   }
 

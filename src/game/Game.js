@@ -25,8 +25,8 @@ class Game {
       this.instance.addInstanceListener(this);
     } else {
       // Test instance
-      this.testInstance = new Instance('Test', 8);
-      this.testInstance.addInstanceListener(this);
+      this.instance = new Instance('Test', 8);
+      this.instance.addInstanceListener(this);
     }
 
     // Resize listener
@@ -87,10 +87,7 @@ class Game {
 
   // Adds local players to the instance.
   addLocalPlayers() {
-    let { instance } = this;
-    if (instance === undefined) {
-      instance = this.testInstance;
-    }
+    const { instance } = this;
     instance.addPlayer({
       iconID: 1,
       id: 'local',
@@ -112,6 +109,32 @@ class Game {
         localPlayer.setController(new LocalPlayerController(this, 'local'));
       }
     }, 500);
+    if (settings.game.testLeave) {
+      setTimeout(() => {
+        instance.sensorMoved('local2', { beta: 30, gamma: 0 });
+      }, 3 * 1000);
+    }
+    if (settings.game.testLeave) {
+      setTimeout(() => {
+        instance.removePlayer('local2');
+      }, 10 * 1000);
+    }
+    if (settings.game.testLeave) {
+      setTimeout(() => {
+        instance.addPlayer({
+          iconID: 2,
+          id: 'local2',
+          name: 'local2',
+          backgroundColor: '#EEFFF66',
+          iconColor: '#4422ff',
+        });
+      }, 13 * 1000);
+    }
+    if (settings.game.testLeave) {
+      setTimeout(() => {
+        instance.sensorMoved('local2', { beta: 30, gamma: 0 });
+      }, 16 * 1000);
+    }
   }
 
   // Register an entity with the entityhandler
