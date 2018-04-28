@@ -9,6 +9,7 @@ import RespawnHandler from './RespawnHandler';
 import settings from './../config';
 import LocalPlayerController from './entities/controllers/LocalPlayerController';
 import Instance from './Instance';
+import HighscoreList from './HighscoreList';
 
 /*
 Game.
@@ -56,10 +57,14 @@ class Game {
         // Create gamemode
 
         const gamemodeHandler = GamemodeHandler.getInstance();
-        const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
+        const { SelectedMode, requestedResources, options } = gamemodeHandler.getSelected();
         this.resourceServer.requestResources(requestedResources).then(gamemodeResources => {
+          console.log(options);
           this.currentGamemode = new SelectedMode(this, gamemodeResources);
           this.currentGamemode.init();
+
+          this.configure(options);
+
           this.gamemodeLoaded = true;
 
           if (settings.game.localPlayer) {
@@ -82,6 +87,22 @@ class Game {
       this.currentGamemode.postUpdate(dt);
       this.respawnHandler.checkRespawns();
       this.entityHandler.updateGraphics(dt);
+    }
+  }
+
+  configure(options) {
+    if (options.highscore) {
+      if (options.highscore.order) {
+        this.scoreManager.setAscOrder(options.highscore.order);
+      }
+      Object.keys(options.highscore.scores).forEach(title => {
+        const score = options.highscore.scores[title];
+        const name = title.replace(/_/g, ' ');
+        const { initial, primary } = score;
+        // console.log(title, initial, primary);
+        this.scoreManager.addScoreType(name, initial, primary);
+      });
+      this.currentGamemode.hs_list = new HighscoreList(this.scoreManager, this);
     }
   }
 
@@ -109,7 +130,7 @@ class Game {
         localPlayer.setController(new LocalPlayerController(this, 'local'));
       }
     }, 500);
-    if (settings.game.testLeave) {
+    if (settings.game.testMove) {
       setTimeout(() => {
         instance.sensorMoved('local2', { beta: 30, gamma: 0 });
       }, 3 * 1000);
@@ -119,7 +140,7 @@ class Game {
         instance.removePlayer('local2');
       }, 10 * 1000);
     }
-    if (settings.game.testLeave) {
+    if (settings.game.testRejoin) {
       setTimeout(() => {
         instance.addPlayer({
           iconID: 2,
@@ -130,7 +151,7 @@ class Game {
         });
       }, 13 * 1000);
     }
-    if (settings.game.testLeave) {
+    if (settings.game.testMove) {
       setTimeout(() => {
         instance.sensorMoved('local2', { beta: 30, gamma: 0 });
       }, 16 * 1000);

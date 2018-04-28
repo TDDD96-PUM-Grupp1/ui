@@ -1,6 +1,5 @@
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
-import HighscoreList from '../HighscoreList';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 1;
@@ -50,11 +49,11 @@ class KnockOff extends Gamemode {
     graphic.y = this.arenaCentery;
 
     // Set up scores
-    game.scoreManager.addScoreType('Kills', 0, true);
+    /* game.scoreManager.addScoreType('Kills', 0, true);
     game.scoreManager.addScoreType('Deaths', 0);
-    game.scoreManager.addScoreType('Latency', '- ms');
-    game.scoreManager.setAscOrder(false);
-    this.hs_list = new HighscoreList(game.scoreManager, game);
+    game.scoreManager.addScoreType('Latency', '- ms'); */
+    // game.scoreManager.setAscOrder(false);
+    // this.hs_list = new HighscoreList(game.scoreManager, game);
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */

@@ -7,6 +7,21 @@ import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 import KnockOffWander from './gamemodes/KnockOffWander';
 import Dodgebot from './gamemodes/Dodgebot';
 
+/* eslint-disable no-unused-vars */
+const EVENT_TRIGGER_DEATH = 0;
+const EVENT_TRIGGER_KILL = 1;
+
+const EVENT_ACTION_RESET = 0;
+const EVENT_ACTION_INCREMENT = 1;
+const EVENT_ACTION_DECREMENT = 2;
+
+const HIGHSCORE_ORDER_ASCENDING = true;
+const HIGHSCORE_ORDER_DESCENDING = false;
+
+const HIGHSCORE_DISPLAY_TIME = 0;
+const HIGHSCORE_DISPLAY_LATENCY = 1;
+/* eslint-enable no-unused-vars */
+
 /*
 Singleton class for handling gamemode storage and selection
 */
@@ -28,6 +43,7 @@ class GMHandlerClass {
     this.addGamemode(
       KnockOff,
       {
+        backgroundColor: 0x061639,
         kill: {
           tag: {
             tagTime: 4,
@@ -38,9 +54,19 @@ class GMHandlerClass {
           phase: 2,
         },
         highscore: {
-          Kills: { default: 0, primary: true, events: [{ trigger: 'kill', action: 'increment' }] },
-          Deaths: { default: 0, events: [{ trigger: 'death', action: 'increment' }] },
-          Latency: { default: '- ms', display: 'latency' },
+          order: HIGHSCORE_ORDER_DESCENDING,
+          scores: {
+            Kills: {
+              initial: 0,
+              primary: true,
+              events: [{ trigger: EVENT_TRIGGER_KILL, action: EVENT_ACTION_INCREMENT }],
+            },
+            Deaths: {
+              initial: 0,
+              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
+            },
+            Latency: { initial: '- ms', display: HIGHSCORE_DISPLAY_LATENCY },
+          },
         },
       },
       [{ name: 'arena', path: 'knockoff/arena.png' }]
@@ -48,22 +74,29 @@ class GMHandlerClass {
     this.addGamemode(
       Dodgebot,
       {
+        backgroundColor: 0x061639,
         respawn: {
           time: 1,
           phase: 1.5,
           moveWhilePhased: false,
         },
         highscore: {
-          Best_Time_Alive: {
-            default: 0,
-            primary: true,
+          order: HIGHSCORE_ORDER_DESCENDING,
+          scores: {
+            Best_Time_Alive: {
+              initial: 0,
+              primary: true,
+            },
+            Time_Alive: {
+              initial: 0,
+              display: HIGHSCORE_DISPLAY_TIME,
+              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_RESET }],
+            },
+            Deaths: {
+              initial: 0,
+              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
+            },
           },
-          Time_Alive: {
-            default: 0,
-            display: 'time',
-            events: [{ trigger: 'kill', action: 'reset' }],
-          },
-          Deaths: { default: 0, events: [{ trigger: 'death', action: 'increment' }] },
         },
       },
       [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]

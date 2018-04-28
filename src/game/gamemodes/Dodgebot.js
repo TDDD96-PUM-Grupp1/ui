@@ -2,7 +2,6 @@ import Gamemode from './Gamemode';
 import Dangerbot from '../entities/Dangerbot';
 import DangerbotController from '../entities/controllers/DangerbotController';
 import BasicRectangle from '../entities/BasicRectangle';
-import HighscoreList from '../HighscoreList';
 
 // Respawn time in seconds
 const RESPAWN_TIME = 1;
@@ -18,18 +17,18 @@ class Dodgebot extends Gamemode {
     super(game, resources);
     this.game.respawnHandler.registerRespawnListener(this);
 
-    game.scoreManager.addScoreType('Time Alive', 0, true);
+    /* game.scoreManager.addScoreType('Time Alive', 0, true);
     game.scoreManager.addScoreType('Deaths', 0);
     game.scoreManager.setAscOrder(false);
-    this.hs_list = new HighscoreList(game.scoreManager, game);
+    this.hs_list = new HighscoreList(game.scoreManager, game); */
 
     this.players = {};
 
     this.time = 0;
 
     // Create the dangerbots
-    this.createDangerbot(500, 500);
-    this.createDangerbot(0, 0);
+    this.createDangerbot(700, 700);
+    this.createDangerbot(200, 200);
 
     // Create the arena
     this.arenaSize = 700;
@@ -104,8 +103,14 @@ class Dodgebot extends Gamemode {
 
       // Increase score if player is alive
       // TODO: Better way to determine this
-      if (!entity.phasing && !entity.dead) {
+      if (!entity.dead) {
         this.game.scoreManager.addScore('Time Alive', id, dt);
+
+        const bestScore = this.game.scoreManager.getScore('Best Time Alive', id);
+        const score = this.game.scoreManager.getScore('Time Alive', id);
+        if (score > bestScore) {
+          this.game.scoreManager.setScore('Best Time Alive', id, score);
+        }
       }
     });
   }
