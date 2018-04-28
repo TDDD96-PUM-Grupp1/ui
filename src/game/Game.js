@@ -6,6 +6,10 @@ import GamemodeHandler from './GamemodeHandler';
 import ScoreManager from './ScoreManager';
 import RespawnHandler from './RespawnHandler';
 
+import settings from './../config';
+import LocalPlayerController from './entities/controllers/LocalPlayerController';
+import Instance from './Instance';
+
 /*
 Game.
 */
@@ -15,10 +19,14 @@ class Game {
     this.communication = communication;
     this.instance = this.communication.getInstance();
 
-    // This will be undefined when running tests since we havn't
+    // This will be undefined when running tests since we haven't
     // started an instance.
     if (this.instance !== undefined) {
       this.instance.addInstanceListener(this);
+    } else {
+      // Test instance
+      this.testInstance = new Instance('Test', 8);
+      this.testInstance.addInstanceListener(this);
     }
 
     // Resize listener
@@ -34,6 +42,8 @@ class Game {
     this.resourceServer = new ResourceServer();
     this.scoreManager = new ScoreManager();
 
+    this.gamemodeLoaded = false;
+
     // Load in basic resources
     this.basicResources = {};
     this.resourceServer
@@ -44,13 +54,17 @@ class Game {
       .then(resources => {
         this.basicResources = resources;
         // Create gamemode
-        this.gamemodeLoaded = false;
+
         const gamemodeHandler = GamemodeHandler.getInstance();
         const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
         this.resourceServer.requestResources(requestedResources).then(gamemodeResources => {
           this.currentGamemode = new SelectedMode(this, gamemodeResources);
           this.currentGamemode.init();
           this.gamemodeLoaded = true;
+
+          if (settings.game.localPlayer) {
+            this.addLocalPlayers();
+          }
         });
       });
   }
@@ -69,6 +83,35 @@ class Game {
       this.respawnHandler.checkRespawns();
       this.entityHandler.updateGraphics(dt);
     }
+  }
+
+  // Adds local players to the instance.
+  addLocalPlayers() {
+    let { instance } = this;
+    if (instance === undefined) {
+      instance = this.testInstance;
+    }
+    instance.addPlayer({
+      iconID: 1,
+      id: 'local',
+      name: 'local',
+      backgroundColor: '#EE6666',
+      iconColor: '#00ffff',
+    });
+    instance.addPlayer({
+      iconID: 2,
+      id: 'local2',
+      name: 'local2',
+      backgroundColor: '#EEFFF66',
+      iconColor: '#4422ff',
+    });
+    setTimeout(() => {
+      const localPlayer = this.currentGamemode.players.local;
+      if (localPlayer) {
+        // TODO: Make local player work through a normal player controller
+        localPlayer.setController(new LocalPlayerController(this, 'local'));
+      }
+    }, 500);
   }
 
   // Register an entity with the entityhandler
