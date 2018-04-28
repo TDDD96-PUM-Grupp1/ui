@@ -104,8 +104,6 @@ class Dodgebot extends Gamemode {
       // Increase score if player is alive
       // TODO: Better way to determine this
       if (!entity.dead) {
-        this.game.scoreManager.addScore('Time Alive', id, dt);
-
         const bestScore = this.game.scoreManager.getScore('Best Time Alive', id);
         const score = this.game.scoreManager.getScore('Time Alive', id);
         if (score > bestScore) {
@@ -165,7 +163,7 @@ class Dodgebot extends Gamemode {
 
   // Called when an entity dies.
   onDeath(entity) {
-    if (entity.ownerLeft) {
+    if (entity.playerLeft) {
       this.game.entityHandler.unregisterFully(entity);
     } else {
       this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);

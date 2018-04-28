@@ -22,6 +22,8 @@ class GamemodeEventHandler {
 
     this.onDeathEvents = [];
     this.onKillEvents = [];
+
+    this.timeDisplays = [];
   }
 
   setUpHighscoreEvents() {
@@ -32,6 +34,7 @@ class GamemodeEventHandler {
       if (display !== undefined) {
         switch (display) {
           case HIGHSCORE_DISPLAY_TIME:
+            this.timeDisplays.push({ name });
             break;
           case HIGHSCORE_DISPLAY_LATENCY:
             break;
@@ -88,6 +91,15 @@ class GamemodeEventHandler {
   }
 
   preUpdate(dt) {
+    this.timeDisplays.forEach(display => {
+      const { name } = display;
+      this.game.entityHandler.getPlayers().forEach(entity => {
+        if (!entity.isDead) {
+          const { id } = entity.controller;
+          this.game.scoreManager.addScore(name, id, dt);
+        }
+      });
+    });
     this.binds.preUpdate(dt);
   }
 
