@@ -10,6 +10,7 @@ import settings from './../config';
 import LocalPlayerController from './entities/controllers/LocalPlayerController';
 import Instance from './Instance';
 import HighscoreList from './HighscoreList';
+import GamemodeEventHandler from './GamemodeEventHandler';
 
 /*
 Game.
@@ -91,6 +92,8 @@ class Game {
   }
 
   configure(options) {
+    const injector = new GamemodeEventHandler(this, this.currentGamemode, options);
+    injector.injectBinds();
     if (options.highscore) {
       if (options.highscore.order) {
         this.scoreManager.setAscOrder(options.highscore.order);
