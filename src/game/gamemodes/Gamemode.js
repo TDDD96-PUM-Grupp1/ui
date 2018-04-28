@@ -68,6 +68,10 @@ class Gamemode {
     }
   }
 
+  onPlayerBeginTimeout(idTag) {
+    console.log(`Player with ${idTag} is timing out...`);
+  }
+
   onButtonPressed(id, button) {}
 
   // Force all gamemmodes to implement this

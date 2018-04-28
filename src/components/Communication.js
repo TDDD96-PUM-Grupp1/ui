@@ -1,6 +1,10 @@
 import deepstream from 'deepstream.io-client-js';
 import Instance from './../game/Instance';
 
+const CONNECTED = 0;
+const TIMING_OUT = 1;
+const DISCONNECTED = 2;
+
 class Communication {
   /*
   * Constructor for Communication.
@@ -30,6 +34,18 @@ class Communication {
     this.update = this.update.bind(this);
     this.getInstance = this.getInstance.bind(this);
     this.onPingTime = this.onPingTime.bind(this);
+  }
+
+  static get CONNECTED() {
+    return CONNECTED;
+  }
+
+  static get TIMING_OUT() {
+    return TIMING_OUT;
+  }
+
+  static get DISCONNECTED() {
+    return DISCONNECTED;
   }
 
   /*
@@ -116,7 +132,10 @@ class Communication {
     }
 
     // Initialize the communication players, keeping count of the timeout.
-    this.players[playerObject.id] = { ping: this.timeoutCount };
+    this.players[playerObject.id] = {
+      ping: this.timeoutCount,
+      connectionStatus: Communication.CONNECTED,
+    };
 
     // Tell the service that another player has joined this instance.
     this.client.event.emit(`${this.serviceName}/playerAdded`, {
@@ -162,6 +181,7 @@ class Communication {
     if (this.players[data.id] !== undefined) {
       // Reset the timout.
       this.players[data.id].ping = this.timeoutCount;
+      this.players[data.id].communicationStatus = Communication.CONNECTED;
       if (data.sensor !== undefined) {
         // Update the sensor data.
         this.instance.sensorMoved(data.id, data.sensor);
@@ -204,11 +224,24 @@ class Communication {
     const playerKeys = Object.keys(this.players);
 
     for (let i = 0; i < playerKeys.length; i += 1) {
-      this.players[playerKeys[i]].ping -= 1;
+      const playerInfo = this.players[playerKeys[i]];
+
+      console.log(playerInfo.ping);
+
       // Check if the player has timed out.
-      if (this.players[playerKeys[i]].ping === 0) {
+      if (playerInfo.ping === 0) {
         this.removePlayer(playerKeys[i]);
+        return;
       }
+
+      if (
+        playerInfo.ping < this.timeoutCount &&
+        playerInfo.connectionStatus !== Communication.TIMING_OUT
+      ) {
+        playerInfo.connectionStatus = Communication.TIMING_OUT;
+        this.instance.beginPlayerTimeout(playerKeys[i]);
+      }
+      playerInfo.ping -= 1;
     }
   }
 

@@ -63,6 +63,15 @@ class Instance {
     delete this.players[id];
   }
 
+  /**
+   * Notifies listeners that a player has started to time out
+   */
+  beginPlayerTimeout(id) {
+    if (this.instanceListener !== undefined) {
+      this.instanceListener.onBeginTimeout(id);
+    }
+  }
+
   /*
    * Updates the sensor data of a player and notifies the game about it.
    * @param String id Id of the player.

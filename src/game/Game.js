@@ -155,6 +155,12 @@ class Game {
     this.scoreManager.removePlayer(idTag);
     this.currentGamemode.onPlayerLeave(idTag);
   }
+
+  // Gets called when a player starts timing out
+  onBeginTimeout(idTag) {
+    this.currentGamemode.onPlayerBeginTimeout(idTag);
+  }
+
   // eslint-disable-next-line
   onSensorMoved(id, sensor) {}
 
