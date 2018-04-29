@@ -23,8 +23,6 @@ class BasicLine extends GameEntity {
     graphic.lineStyle(2, 0xffffff);
     graphic.moveTo(0, 0);
     graphic.lineTo(ex - x, ey - y);
-    // graphic.endFill();
-    game.app.stage.addChild(graphic);
     graphic.tint = color;
     this.graphic = graphic;
 

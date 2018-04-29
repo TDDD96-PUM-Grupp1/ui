@@ -58,6 +58,14 @@ class RespawnHandler {
   }
 
   // Notifies respawnListeners of a specific entity that should respawn.
+  respawnEntity(entity) {
+    entity.graphic.visible = true;
+    entity.dead = false;
+    this.entityHandler.register(entity);
+    this.notifyListeners(entity);
+  }
+
+  // Respawns an entity and removes it from the respawn list.
   respawnSpecific(entity, index) {
     let i;
     if (typeof index === 'undefined') {
@@ -66,20 +74,14 @@ class RespawnHandler {
       i = index;
     }
     this.respawnList.splice(i, 1);
-    entity.graphic.visible = true;
-    this.entityHandler.register(entity);
-
-    this.notifyListeners(entity);
+    this.respawnEntity(entity);
   }
 
   // Respawns all entities in the respawn list.
   respawnAll() {
     this.respawnList.forEach(timeEntityPair => {
       const entity = getEntity(timeEntityPair);
-      entity.graphic.visible = true;
-      this.entityHandler.register(entity);
-
-      this.notifyListeners(entity);
+      this.respawnEntity(entity);
     });
 
     this.respawnList = [];
@@ -135,6 +137,15 @@ class RespawnHandler {
 
   registerRespawnListener(listener) {
     this.respawnListeners.push(listener);
+  }
+
+  // Destroy entities waiting on respawn and disconnect listeners.
+  clean() {
+    this.respawnList.forEach(entity => {
+      entity.destroy();
+    });
+    this.respawnList = [];
+    this.respawnListeners = [];
   }
 }
 

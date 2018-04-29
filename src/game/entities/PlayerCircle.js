@@ -10,8 +10,8 @@ const ICONSIZE = Math.floor(256 * SQUAREROOTOF2);
 Game object representing a player
 */
 class PlayerCircle extends BasicCircle {
-  constructor(game, resource, spawn = true) {
-    super(game, RADIUS, MASS, 0xffffff, true, spawn);
+  constructor(game, resource) {
+    super(game, RADIUS, MASS, 0xffffff, true);
 
     this.sprite = new PIXI.Sprite(resource);
     this.sprite.width = ICONSIZE;
@@ -23,8 +23,19 @@ class PlayerCircle extends BasicCircle {
 
     this.restitution = 1;
 
+    // Flag for if the player has left the game.
+    this.playerLeft = false;
+
     // default player collision group is random so they will be able to collide
     this.collisionGroup = Math.random();
+  }
+
+  ownerLeft() {
+    this.playerLeft = true;
+    // Make controller passive
+    this.controller.active = false;
+    // Clear collision listeners
+    this.collision.listeners = [];
   }
 
   setColor(backgroundColor, iconColor) {
@@ -39,26 +50,16 @@ class PlayerCircle extends BasicCircle {
     super.update(dt);
   }
 
-  // Update this entity's graphics
-  // graphicUpdate(dt) {
-  //   super.graphicUpdate(dt);
-
-  //   this.sprite.x = this.x;
-  //   this.sprite.y = this.y;
-  //   this.sprite.rotation = this.rotation;
-  // }
-
   // Destroy sprite when removed
   destroy() {
     super.destroy();
     this.sprite.destroy();
   }
 
-  /* eslint-disable */
+  // eslint-disable-next-line
   isPlayer() {
     return true;
   }
-  /* eslint-enable */
 }
 
 export default PlayerCircle;

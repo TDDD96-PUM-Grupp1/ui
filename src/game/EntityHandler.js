@@ -49,6 +49,11 @@ class EntityHandler {
     return this.entities;
   }
 
+  // Returns an array containing all player entities.
+  getPlayers() {
+    return this.entities.filter(ent => ent.isPlayer());
+  }
+
   // Destroy all entities and clear the entity list.
   clear() {
     for (let i = 0; i < this.entities.length; i += 1) {

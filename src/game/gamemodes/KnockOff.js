@@ -20,7 +20,6 @@ class KnockOff extends Gamemode {
     super(game, resources);
 
     this.players = {};
-    this.respawn = {};
     this.tags = {};
     this.abilityTimer = {};
 
@@ -34,15 +33,6 @@ class KnockOff extends Gamemode {
     this.arenaCentery = Math.round(window.innerHeight / 2);
 
     // Set up arena graphic
-    /* const graphic = new PIXI.Graphics();
-    graphic.beginFill(0xfffffff);
-    this.mainCircle = graphic.drawCircle(0, 0, this.arenaRadius);
-    graphic.endFill();
-    game.app.stage.addChildAt(graphic, 0); // Set arena to be first thing to render
-    graphic.tint = 0x555555;
-    graphic.x = this.arenaCenterx;
-    graphic.y = this.arenaCentery;
-    this.arenaGraphic = graphic; */
     const graphic = new PIXI.Sprite(resources.arena);
     game.app.stage.addChildAt(graphic, 0);
     this.arenaGraphic = graphic;
@@ -107,8 +97,8 @@ class KnockOff extends Gamemode {
 
   // Called after the game objects are updated.
   postUpdate(dt) {
-    this.game.entityHandler.getEntities().forEach(entity => {
-      if (entity.isPlayer()) {
+    this.game.entityHandler.getPlayers().forEach(entity => {
+      if (!entity.dead) {
         const dx = this.arenaGraphic.x - entity.x;
         const dy = this.arenaGraphic.y - entity.y;
         const centerDist = Math.sqrt(dx * dx + dy * dy);
@@ -129,36 +119,36 @@ class KnockOff extends Gamemode {
     circle.x = this.arenaCenterx;
     circle.y = this.arenaCentery;
 
-    this.game.entityHandler.register(circle);
-    circle.collisionGroup = idTag;
+    this.game.register(circle);
 
     circle.phase(3);
 
     this.players[idTag] = circle;
     this.tags[idTag] = [];
-    this.respawn[idTag] = true;
     this.abilityTimer[idTag] = { active: false, time: 0 };
 
     circle.addEntityListener(this);
 
     circle.collision.addListener((player, victim) => {
       // Check if victim is a player
-      if (victim.controller && victim.controller.id !== undefined) {
+      if (victim.isPlayer()) {
         const vid = victim.controller.id;
         const pid = player.controller.id;
         this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
         this.tags[vid].push({ id: pid, timer: TAG_TIME });
-        this.tags[pid] = this.tags[pid].filter(e => e.id !== vid);
-        this.tags[pid].push({ id: vid, timer: TAG_TIME });
+        // Since this function is activated for both players
+        // we should only need to update tags on the victim
+        // and the "player" should be tagged by the twin call.
+        // this.tags[pid] = this.tags[pid].filter(e => e.id !== vid);
+        // this.tags[pid].push({ id: vid, timer: TAG_TIME });
       }
     });
   }
 
   // Called when a player disconnects
   onPlayerLeave(idTag) {
-    // When a player leaves, just leave their entity on the map.
-    // But stop them from respawning.
-    this.respawn[idTag] = false;
+    // Turn the players entity into a dummy, leaving it in the game until it dies
+    this.players[idTag].ownerLeft();
   }
 
   onButtonPressed(id, button) {
@@ -177,8 +167,7 @@ class KnockOff extends Gamemode {
   // Clean up after the gamemode is finished.
   cleanUp() {
     this.game.entityHandler.clear();
-    // TODO: Clear respawns
-    // this.game.respawnHandler.clear();
+    this.game.respawnHandler.clean();
   }
 
   // Called when an entity is respawned.
@@ -201,10 +190,10 @@ class KnockOff extends Gamemode {
 
     this.game.scoreManager.addScore('Deaths', id, 1);
 
-    if (this.respawn[id]) {
-      this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
-    } else {
+    if (entity.playerLeft) {
       this.game.entityHandler.unregisterFully(entity);
+    } else {
+      this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
     }
   }
 
