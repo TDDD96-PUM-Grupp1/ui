@@ -4,6 +4,7 @@ import settings from '../config';
 import KnockOffRandom from './gamemodes/KnockOffRandom';
 import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 import KnockOffWander from './gamemodes/KnockOffWander';
+import Dodgebot from './gamemodes/Dodgebot';
 
 /*
 Singleton class for handling gamemode storage and selection
@@ -16,6 +17,7 @@ class GMHandlerClass {
       knockOffRandom: KnockOffRandom,
       knockOffDynamic: KnockOffDynamic,
       knockOffWander: KnockOffWander,
+      dodgebot: Dodgebot,
       testGamemode: TestGamemode,
     };
 
@@ -24,6 +26,7 @@ class GMHandlerClass {
       knockOffRandom: [{ name: 'arena', path: 'knockoff/arena.png' }],
       knockOffDynamic: [{ name: 'arena', path: 'knockoff/arena.png' }],
       knockOffWander: [{ name: 'arena', path: 'knockoff/arena.png' }],
+      dodgebot: [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }],
       testGamemode: [],
     };
 

@@ -7,9 +7,11 @@ const settings = {
   defaultGamemode: 'knockOff',
   game: {
     localPlayer: false,
+    testLeave: false,
+    testRejoin: false,
+    testMove: false,
     forceCanvas: true,
     antialias: false,
-    fxaa: false,
   },
   communication: {
     host_ip: 'ds.tddd96.i4demo.com:80',
