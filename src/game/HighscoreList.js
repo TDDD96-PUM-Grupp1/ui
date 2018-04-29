@@ -106,7 +106,7 @@ class HighscoreList {
           if (curRow[scoreName].text !== val[scoreName].toString()) {
             let value = val[scoreName];
             if (value.toFixed) {
-              value = value.toFixed(2);
+              value = +value.toFixed(2);
             }
             curRow[scoreName].text = value;
           }
@@ -168,7 +168,7 @@ class HighscoreList {
         scores.forEach((scoreName, scoreI) => {
           let value = val[scoreName];
           if (value.toFixed) {
-            value = value.toFixed(2);
+            value = +value.toFixed(2);
           }
           const text = new PIXI.Text(value, TEXT_STYLE);
           text.x = scoreAdjust;
