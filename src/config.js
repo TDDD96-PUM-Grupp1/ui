@@ -3,10 +3,10 @@ Configuration file for different project parameters.
 */
 
 const settings = {
-  skipmenu: true,
-  defaultGamemode: 'KnockOff',
+  skipmenu: false,
+  defaultGamemode: 'Dodgebot',
   game: {
-    localPlayer: true,
+    localPlayer: false,
     testLeave: false,
     testRejoin: false,
     testMove: false,

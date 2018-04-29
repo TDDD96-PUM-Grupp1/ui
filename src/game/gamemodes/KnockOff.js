@@ -38,10 +38,6 @@ class KnockOff extends Gamemode {
   // Called before the game objects are updated.
   preUpdate(dt) {}
 
-  /* eslint-enable no-unused-vars, class-methods-use-this */
-
-  /* eslint-disable class-methods-use-this, no-unused-vars */
-
   // Called after the game objects are updated.
   postUpdate(dt) {
     this.game.entityHandler.getPlayers().forEach(entity => {
@@ -109,8 +105,6 @@ class KnockOff extends Gamemode {
       entity.y -= dy;
     });
   }
-
-  /* eslint-disable class-methods-use-this */
 }
 
 export default KnockOff;

@@ -1,16 +1,14 @@
-import GamemodeHandler from './GamemodeHandler';
-
 /*
 Data model for a gamemodes resources and config.
 */
 class GamemodeConfig {
-  constructor(name, resources = [], options = {}, extending = []) {
+  constructor(list, name, resources = [], options = {}, extending = []) {
     this.name = name;
     this.resources = resources;
     this.options = options;
     this.extending = extending;
     extending.forEach(gamemode => {
-      this.extend(GamemodeHandler.getInstance().getConfig(gamemode));
+      this.extend(list.getConfig(gamemode));
     });
   }
 

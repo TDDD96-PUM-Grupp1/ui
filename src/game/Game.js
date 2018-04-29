@@ -9,7 +9,7 @@ import RespawnHandler from './RespawnHandler';
 import settings from './../config';
 import LocalPlayerController from './entities/controllers/LocalPlayerController';
 import Instance from './Instance';
-import GamemodeEventHandler from './GamemodeEventHandler';
+import GamemodeConfigHandler from './GamemodeConfigHandler';
 
 /*
 Game.
@@ -62,7 +62,7 @@ class Game {
           this.currentGamemode = new SelectedMode(this, gamemodeResources);
           this.currentGamemode.init();
 
-          this.configure(options);
+          this.handler = new GamemodeConfigHandler(this, this.currentGamemode, options);
 
           this.gamemodeLoaded = true;
 
@@ -87,16 +87,6 @@ class Game {
       this.respawnHandler.checkRespawns();
       this.entityHandler.updateGraphics(dt);
     }
-  }
-
-  configure(options) {
-    const handler = new GamemodeEventHandler(this, this.currentGamemode, options);
-    handler.injectBinds();
-    handler.setUpHighscores();
-    handler.setUpMisc();
-    handler.setUpRespawn();
-    handler.setUpKillSystem();
-    handler.setUpAbilities();
   }
 
   // Adds local players to the instance.

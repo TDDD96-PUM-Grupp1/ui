@@ -1,139 +1,22 @@
 import settings from '../config';
-import GamemodeConfig from './GamemodeConfig';
-import TestGamemode from './gamemodes/TestGamemode';
-import KnockOff from './gamemodes/KnockOff';
-import KnockOffRandom from './gamemodes/KnockOffRandom';
-import KnockOffDynamic from './gamemodes/KnockOffDynamic';
-import KnockOffWander from './gamemodes/KnockOffWander';
-import Dodgebot from './gamemodes/Dodgebot';
-
-/* eslint-disable no-unused-vars */
-const EVENT_TRIGGER_DEATH = 0;
-const EVENT_TRIGGER_KILL = 1;
-
-const EVENT_ACTION_RESET = 0;
-const EVENT_ACTION_INCREMENT = 1;
-const EVENT_ACTION_DECREMENT = 2;
-
-const HIGHSCORE_ORDER_ASCENDING = true;
-const HIGHSCORE_ORDER_DESCENDING = false;
-
-const HIGHSCORE_DISPLAY_TIME = 0;
-const HIGHSCORE_DISPLAY_LATENCY = 1;
-/* eslint-enable no-unused-vars */
+import GamemodeConfigHandler from './GamemodeConfigHandler';
 
 /*
 Singleton class for handling gamemode storage and selection
 */
 class GMHandlerClass {
   constructor() {
+    const { gamemodes, configs } = GamemodeConfigHandler.getGamemodes();
     // Map of all available gamemodes
-    this.gamemodes = {};
+    this.gamemodes = gamemodes;
     // Map of the gamemodes configs
-    this.configs = {};
+    this.configs = configs;
 
     if (settings.skipmenu) {
       this.selected = settings.defaultGamemode;
     } else {
       this.selected = '';
     }
-  }
-
-  loadConfig() {
-    this.addGamemode(
-      KnockOff,
-      {
-        backgroundColor: 0x061639,
-        abilities: [
-          {
-            button: 0,
-            cooldown: 10,
-            duration: 3,
-            activateFunc: entity => {
-              entity.mass *= 50;
-              entity.graphic.tint ^= 0xffffff;
-            },
-            deactivateFunc: entity => {
-              entity.mass /= 50;
-              entity.graphic.tint ^= 0xffffff;
-            },
-          },
-        ],
-        kill: {
-          tag: {
-            tagTime: 1.5,
-          },
-        },
-        respawn: {
-          time: 1,
-          phase: 2,
-        },
-        highscore: {
-          order: HIGHSCORE_ORDER_DESCENDING,
-          scores: {
-            Kills: {
-              initial: 0,
-              primary: true,
-              events: [{ trigger: EVENT_TRIGGER_KILL, action: EVENT_ACTION_INCREMENT }],
-            },
-            Deaths: {
-              initial: 0,
-              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
-            },
-            Latency: { initial: '- ms', display: HIGHSCORE_DISPLAY_LATENCY },
-          },
-        },
-      },
-      [{ name: 'arena', path: 'knockoff/arena.png' }]
-    );
-    this.addGamemode(
-      Dodgebot,
-      {
-        backgroundColor: 0x061639,
-        moveWhilePhased: false,
-        respawn: {
-          time: 1,
-          phase: 1.5,
-        },
-        highscore: {
-          order: HIGHSCORE_ORDER_DESCENDING,
-          scores: {
-            Best_Time_Alive: {
-              initial: 0,
-              primary: true,
-            },
-            Time_Alive: {
-              initial: 0,
-              display: HIGHSCORE_DISPLAY_TIME,
-              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_RESET }],
-            },
-            Deaths: {
-              initial: 0,
-              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
-            },
-          },
-        },
-      },
-      [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
-    );
-    this.addGamemode(KnockOffRandom, {}, [], KnockOff);
-    this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
-    this.addGamemode(KnockOffWander, {}, [], KnockOff);
-    this.addGamemode(TestGamemode);
-  }
-
-  addGamemode(Gamemode, options = {}, resources = [], extending = []) {
-    let extendingArray = extending;
-    if (extending.constructor !== Array) {
-      extendingArray = [extending];
-    }
-    const { name } = Gamemode;
-    this.gamemodes[name] = Gamemode;
-    this.configs[name] = new GamemodeConfig(name, resources, options, extendingArray);
-  }
-
-  getConfig(Gamemode) {
-    return this.configs[Gamemode.name];
   }
 
   /*
@@ -190,7 +73,6 @@ const GamemodeHandler = (() => {
     getInstance: () => {
       if (!instance) {
         instance = createInstance();
-        instance.loadConfig();
       }
 
       return instance;

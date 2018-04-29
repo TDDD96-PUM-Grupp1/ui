@@ -14,13 +14,6 @@ class Dodgebot extends Gamemode {
     super(game, resources);
     this.game.respawnHandler.registerRespawnListener(this);
 
-    /* game.scoreManager.addScoreType('Time Alive', 0, true);
-    game.scoreManager.addScoreType('Deaths', 0);
-    game.scoreManager.setAscOrder(false);
-    this.hs_list = new HighscoreList(game.scoreManager, game); */
-
-    this.players = {};
-
     this.time = 0;
 
     // Create the dangerbots
@@ -53,8 +46,6 @@ class Dodgebot extends Gamemode {
       wall.y = this.centery + Math.sin(angle) * this.arenaSize * 0.5;
     }
   }
-
-  /* eslint-disable no-unused-vars, class-methods-use-this */
 
   createDangerbot(x, y) {
     const dangerbot = new Dangerbot(this.game, 25, Infinity, this.resources);
@@ -89,8 +80,6 @@ class Dodgebot extends Gamemode {
     }
   }
 
-  /* eslint-enable no-unused-vars, class-methods-use-this */
-
   /* eslint-disable class-methods-use-this, no-unused-vars */
 
   // Called after the game objects are updated.
@@ -119,8 +108,6 @@ class Dodgebot extends Gamemode {
     circle.y = this.centery;
 
     circle.collisionGroup = idTag;
-
-    circle.moveWhilePhased = false;
   }
 
   // Called when a player disconnects
@@ -147,7 +134,7 @@ class Dodgebot extends Gamemode {
   // eslint-disable-next-line
   onDeath(entity) {}
 
-  /* eslint-disable class-methods-use-this */
+  /* eslint-disable-next-line */
   onWindowResize() {}
 }
 

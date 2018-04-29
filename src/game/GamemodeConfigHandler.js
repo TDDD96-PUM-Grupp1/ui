@@ -1,3 +1,11 @@
+import GamemodeConfig from './GamemodeConfig';
+import TestGamemode from './gamemodes/TestGamemode';
+import KnockOff from './gamemodes/KnockOff';
+import KnockOffRandom from './gamemodes/KnockOffRandom';
+import KnockOffDynamic from './gamemodes/KnockOffDynamic';
+import KnockOffWander from './gamemodes/KnockOffWander';
+import Dodgebot from './gamemodes/Dodgebot';
+
 import HighscoreList from './HighscoreList';
 
 /* eslint-disable no-unused-vars */
@@ -15,7 +23,112 @@ const HIGHSCORE_DISPLAY_TIME = 0;
 const HIGHSCORE_DISPLAY_LATENCY = 1;
 /* eslint-enable no-unused-vars */
 
-class GamemodeEventHandler {
+class GamemodeConfigList {
+  constructor() {
+    this.gamemodes = {};
+    this.configs = {};
+    this.loadConfig();
+  }
+
+  getConfig(Gamemode) {
+    return this.configs[Gamemode.name];
+  }
+
+  loadConfig() {
+    this.addGamemode(
+      KnockOff,
+      {
+        backgroundColor: 0x061639,
+        abilities: [
+          {
+            button: 0,
+            cooldown: 10,
+            duration: 3,
+            activateFunc: entity => {
+              entity.mass *= 50;
+              entity.graphic.tint ^= 0xffffff;
+            },
+            deactivateFunc: entity => {
+              entity.mass /= 50;
+              entity.graphic.tint ^= 0xffffff;
+            },
+          },
+        ],
+        kill: {
+          tag: {
+            tagTime: 1.5,
+          },
+        },
+        respawn: {
+          time: 1,
+          phase: 2,
+        },
+        highscore: {
+          order: HIGHSCORE_ORDER_DESCENDING,
+          scores: {
+            Kills: {
+              initial: 0,
+              primary: true,
+              events: [{ trigger: EVENT_TRIGGER_KILL, action: EVENT_ACTION_INCREMENT }],
+            },
+            Deaths: {
+              initial: 0,
+              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
+            },
+            Latency: { initial: '- ms', display: HIGHSCORE_DISPLAY_LATENCY },
+          },
+        },
+      },
+      [{ name: 'arena', path: 'knockoff/arena.png' }]
+    );
+    this.addGamemode(
+      Dodgebot,
+      {
+        backgroundColor: 0x061639,
+        moveWhilePhased: false,
+        respawn: {
+          time: 1,
+          phase: 1.5,
+        },
+        highscore: {
+          order: HIGHSCORE_ORDER_DESCENDING,
+          scores: {
+            Best_Time_Alive: {
+              initial: 0,
+              primary: true,
+            },
+            Time_Alive: {
+              initial: 0,
+              display: HIGHSCORE_DISPLAY_TIME,
+              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_RESET }],
+            },
+            Deaths: {
+              initial: 0,
+              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
+            },
+          },
+        },
+      },
+      [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
+    );
+    this.addGamemode(KnockOffRandom, {}, [], KnockOff);
+    this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
+    this.addGamemode(KnockOffWander, {}, [], KnockOff);
+    this.addGamemode(TestGamemode);
+  }
+
+  addGamemode(Gamemode, options = {}, resources = [], extending = []) {
+    let extendingArray = extending;
+    if (extending.constructor !== Array) {
+      extendingArray = [extending];
+    }
+    const { name } = Gamemode;
+    this.gamemodes[name] = Gamemode;
+    this.configs[name] = new GamemodeConfig(this, name, resources, options, extendingArray);
+  }
+}
+
+class GamemodeConfigHandler {
   constructor(game, gamemode, options) {
     this.game = game;
     this.binds = {};
@@ -34,6 +147,21 @@ class GamemodeEventHandler {
     this.onKillEvents = [];
 
     this.timeDisplays = [];
+
+    this.injectBinds();
+    this.setUpOptions();
+  }
+
+  static getGamemodes() {
+    return new GamemodeConfigList();
+  }
+
+  setUpOptions() {
+    this.setUpAbilities();
+    this.setUpKillSystem();
+    this.setUpHighscores();
+    this.setUpMisc();
+    this.setUpRespawn();
   }
 
   setUpAbilities() {
@@ -58,10 +186,10 @@ class GamemodeEventHandler {
   }
 
   setUpMisc() {
-    if (this.options.backgroundColor) {
+    if (this.options.backgroundColor !== undefined) {
       this.game.app.renderer.backgroundColor = this.options.backgroundColor;
     }
-    if (this.options.moveWhilePhased) {
+    if (this.options.moveWhilePhased !== undefined) {
       this.moveWhilePhased = this.options.moveWhilePhased;
     }
   }
@@ -288,4 +416,4 @@ class GamemodeEventHandler {
   }
 }
 
-export default GamemodeEventHandler;
+export default GamemodeConfigHandler;
