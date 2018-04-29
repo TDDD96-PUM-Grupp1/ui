@@ -4,7 +4,6 @@ import settings from '../config';
 import KnockOffRandom from './gamemodes/KnockOffRandom';
 import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 import KnockOffWander from './gamemodes/KnockOffWander';
-import buttonsUsed from './ButtonsUsed';
 
 /**
  * Singleton class for handling gamemode storage and selection
@@ -26,6 +25,17 @@ class GMHandlerClass {
       knockOffDynamic: [{ name: 'arena', path: 'knockoff/arena.png' }],
       knockOffWander: [{ name: 'arena', path: 'knockoff/arena.png' }],
       testGamemode: [],
+    };
+
+    /**
+       The name, amount and order of the buttons used by a gamemode
+     */
+    this.buttonsUsed = {
+      knockOff: ['Super Heavy'],
+      knockOffDynamic: ['Super Heavy'],
+      knockOffRandom: ['Super Heavy'],
+      knockOffWander: ['Super Heavy'],
+      testGamemode: ['Test Ability 1', 'Test Ability 2'],
     };
 
     if (settings.skipmenu) {
@@ -79,7 +89,7 @@ class GMHandlerClass {
    * Returns an array containing each buttons name for the selected game-mode
    */
   getButtons() {
-    return buttonsUsed[this.selected];
+    return this.buttonsUsed[this.selected];
   }
 }
 /**

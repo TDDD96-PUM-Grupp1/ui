@@ -45,9 +45,11 @@ class Game {
         this.basicResources = resources;
       });
 
-    // Create gamemode
+    // Create gamemode, gameButtons not currently used but still set
+    // to show that the functionality exists
     this.gamemodeLoaded = false;
     const gamemodeHandler = GamemodeHandler.getInstance();
+    this.gameButtons = gamemodeHandler.getButtons();
     const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
     this.resourceServer.requestResources(requestedResources).then(resources => {
       this.currentGamemode = new SelectedMode(this, resources);
