@@ -48,15 +48,20 @@ class GMHandlerClass {
           {
             button: 0,
             cooldown: 10,
-            active: 3,
-            func: entity => {
+            duration: 3,
+            activateFunc: entity => {
               entity.mass *= 50;
+              entity.graphic.tint ^= 0xffffff;
+            },
+            deactivateFunc: entity => {
+              entity.mass /= 50;
+              entity.graphic.tint ^= 0xffffff;
             },
           },
         ],
         kill: {
           tag: {
-            tagTime: 4,
+            tagTime: 1.5,
           },
         },
         respawn: {
@@ -85,10 +90,10 @@ class GMHandlerClass {
       Dodgebot,
       {
         backgroundColor: 0x061639,
+        moveWhilePhased: false,
         respawn: {
           time: 1,
           phase: 1.5,
-          moveWhilePhased: false,
         },
         highscore: {
           order: HIGHSCORE_ORDER_DESCENDING,

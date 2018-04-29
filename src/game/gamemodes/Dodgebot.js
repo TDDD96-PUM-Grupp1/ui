@@ -118,23 +118,13 @@ class Dodgebot extends Gamemode {
     circle.x = this.centerx;
     circle.y = this.centery;
 
-    this.game.register(circle);
-
     circle.collisionGroup = idTag;
 
     circle.moveWhilePhased = false;
-    circle.phase(3);
-
-    this.players[idTag] = circle;
-
-    circle.addEntityListener(this);
   }
 
   // Called when a player disconnects
-  onPlayerLeave(idTag) {
-    // Turn the players entity into a dummy, leaving it in the game until it dies
-    this.players[idTag].ownerLeft();
-  }
+  onPlayerLeave(idTag) {}
 
   onButtonPressed(id, button) {}
 

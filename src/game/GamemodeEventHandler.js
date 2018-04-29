@@ -22,14 +22,29 @@ class GamemodeEventHandler {
     this.gamemode = gamemode;
     this.options = options;
 
+    this.moveWhilePhased = true;
+
     this.tagging = false;
     this.tagTime = 0;
     this.tags = {};
+
+    this.abilities = {};
 
     this.onDeathEvents = [];
     this.onKillEvents = [];
 
     this.timeDisplays = [];
+  }
+
+  setUpAbilities() {
+    if (this.options.abilities) {
+      this.options.abilities.forEach(ability => {
+        const { button } = ability;
+        ability.timers = {};
+        this.abilities[button] = ability;
+      });
+    }
+    // Message Controller how many buttons there should be?
   }
 
   setUpKillSystem() {
@@ -45,6 +60,9 @@ class GamemodeEventHandler {
   setUpMisc() {
     if (this.options.backgroundColor) {
       this.game.app.renderer.backgroundColor = this.options.backgroundColor;
+    }
+    if (this.options.moveWhilePhased) {
+      this.moveWhilePhased = this.options.moveWhilePhased;
     }
   }
 
@@ -136,6 +154,7 @@ class GamemodeEventHandler {
     this.injectBind('onPlayerCreated');
     this.injectBind('onPlayerLeave');
     this.injectBind('onRespawn');
+    this.injectBind('onButtonPressed');
   }
 
   injectBind(func) {
@@ -145,6 +164,17 @@ class GamemodeEventHandler {
   }
 
   preUpdate(dt) {
+    Object.keys(this.abilities).forEach(button => {
+      const { cooldown, duration, deactivateFunc } = this.abilities[button];
+      Object.keys(this.abilities[button].timers).forEach(id => {
+        const timer = this.abilities[button].timers[id];
+        timer.time -= dt;
+        if (timer.active && timer.time <= cooldown - duration) {
+          deactivateFunc(this.gamemode.players[id]);
+          timer.active = false;
+        }
+      });
+    });
     if (this.tagging) {
       Object.keys(this.tags).forEach(id => {
         const list = this.tags[id];
@@ -206,8 +236,12 @@ class GamemodeEventHandler {
   }
 
   onPlayerCreated(playerObject, circle) {
+    const { id } = playerObject;
+    Object.keys(this.abilities).forEach(button => {
+      this.abilities[button].timers[id] = { active: false, time: 0 };
+    });
     if (this.tagging) {
-      this.tags[playerObject.id] = [];
+      this.tags[id] = [];
       circle.collision.addListener((player, victim) => {
         if (victim.isPlayer()) {
           const vid = victim.controller.id;
@@ -217,6 +251,10 @@ class GamemodeEventHandler {
         }
       });
     }
+    if (this.respawn) {
+      circle.addEntityListener(this.gamemode);
+    }
+    circle.moveWhilePhased = this.moveWhilePhased;
     this.binds.onPlayerCreated(playerObject, circle);
   }
 
@@ -234,6 +272,19 @@ class GamemodeEventHandler {
       }
     }
     this.binds.onRespawn(entity);
+  }
+
+  onButtonPressed(id, button) {
+    if (this.abilities[button]) {
+      const ability = this.abilities[button];
+      const playerEntity = this.gamemode.players[id];
+      if (ability.timers[id].time <= 0) {
+        ability.activateFunc(playerEntity);
+        ability.timers[id].time = ability.cooldown;
+        ability.timers[id].active = true;
+      }
+    }
+    this.binds.onButtonPressed(id, button);
   }
 }
 

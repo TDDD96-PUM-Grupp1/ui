@@ -1,18 +1,12 @@
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
 
-// Ability times
-const ABILITY_COOLDOWN = 10;
-const ABILITY_DURATION = 3;
-
 /*
   Knock off gamemode, get score by knocking other players off the arena.
 */
 class KnockOff extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
-
-    this.abilityTimer = {};
 
     this.arenaRadius = 490;
     this.respawnArea = 100;
@@ -42,20 +36,7 @@ class KnockOff extends Gamemode {
   /* eslint-disable no-unused-vars, class-methods-use-this */
 
   // Called before the game objects are updated.
-  preUpdate(dt) {
-    Object.keys(this.abilityTimer).forEach(id => {
-      this.abilityTimer[id].time -= dt;
-      if (
-        this.abilityTimer[id].active &&
-        this.abilityTimer[id].time <= ABILITY_COOLDOWN - ABILITY_DURATION
-      ) {
-        this.players[id].mass = 1;
-        // eslint-disable-next-line
-        this.players[id].setColor(0xffffff ^ this.players[id].graphic.tint);
-        this.abilityTimer[id].active = false;
-      }
-    }, this);
-  }
+  preUpdate(dt) {}
 
   /* eslint-enable no-unused-vars, class-methods-use-this */
 
@@ -84,30 +65,12 @@ class KnockOff extends Gamemode {
     // Place them in the middle of the arena for now
     circle.x = this.arenaCenterx;
     circle.y = this.arenaCentery;
-
-    this.game.register(circle);
-
-    this.abilityTimer[idTag] = { active: false, time: 0 };
-
-    circle.addEntityListener(this);
   }
 
   // Called when a player disconnects
-  onPlayerLeave(idTag) {
-    // Turn the players entity into a dummy, leaving it in the game until it dies
-    this.players[idTag].ownerLeft();
-  }
+  onPlayerLeave(idTag) {}
 
-  onButtonPressed(id, button) {
-    const playerEntity = this.players[id];
-    if (this.abilityTimer[id].time <= 0) {
-      playerEntity.mass *= 50;
-      /* eslint-disable-next-line */
-      this.players[id].setColor(0xffffff ^ this.players[id].graphic.tint);
-      this.abilityTimer[id].time = ABILITY_COOLDOWN;
-      this.abilityTimer[id].active = true;
-    }
-  }
+  onButtonPressed(id, button) {}
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
 

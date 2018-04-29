@@ -96,6 +96,7 @@ class Game {
     handler.setUpMisc();
     handler.setUpRespawn();
     handler.setUpKillSystem();
+    handler.setUpAbilities();
   }
 
   // Adds local players to the instance.

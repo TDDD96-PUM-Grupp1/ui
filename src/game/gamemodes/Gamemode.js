@@ -46,6 +46,7 @@ class Gamemode {
           circle.setColor(backgroundCol, iconCol);
 
           this.players[idTag] = circle;
+          this.game.register(circle);
 
           this.onPlayerCreated(playerObject, circle);
 
@@ -59,18 +60,8 @@ class Gamemode {
 
   // Called when a player disconnects
   onPlayerLeave(idTag) {
-    const entities = this.game.entityHandler.getEntities().slice();
-
-    for (let i = 0; i < entities.length; i += 1) {
-      const currentEntity = entities[i];
-      if (
-        typeof currentEntity.controller !== 'undefined' &&
-        currentEntity.controller.id === idTag
-      ) {
-        this.game.entityHandler.unregisterFully(currentEntity);
-        return;
-      }
-    }
+    // Turn the players entity into a dummy, leaving it in the game until it dies
+    this.players[idTag].ownerLeft();
   }
 
   onButtonPressed(id, button) {}
