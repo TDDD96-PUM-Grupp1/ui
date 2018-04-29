@@ -1,3 +1,5 @@
+import HighscoreList from './HighscoreList';
+
 /* eslint-disable no-unused-vars */
 const EVENT_TRIGGER_DEATH = 0;
 const EVENT_TRIGGER_KILL = 1;
@@ -20,10 +22,30 @@ class GamemodeEventHandler {
     this.gamemode = gamemode;
     this.options = options;
 
+    this.tagging = false;
+    this.tagTime = 0;
+    this.tags = {};
+
     this.onDeathEvents = [];
     this.onKillEvents = [];
 
     this.timeDisplays = [];
+  }
+
+  setUpKillSystem() {
+    if (this.options.kill) {
+      const { tag } = this.options.kill;
+      if (tag) {
+        this.tagTime = tag.tagTime;
+        this.tagging = true;
+      }
+    }
+  }
+
+  setUpMisc() {
+    if (this.options.backgroundColor) {
+      this.game.app.renderer.backgroundColor = this.options.backgroundColor;
+    }
   }
 
   setUpRespawn() {
@@ -38,6 +60,24 @@ class GamemodeEventHandler {
       this.respawnTime = time;
       this.respawnPhaseTime = phase;
       this.respawn = true;
+      this.game.respawnHandler.registerRespawnListener(this.gamemode);
+    }
+  }
+
+  setUpHighscores() {
+    if (this.options.highscore) {
+      if (this.options.highscore.order) {
+        this.game.scoreManager.setAscOrder(this.options.highscore.order);
+      }
+      Object.keys(this.options.highscore.scores).forEach(title => {
+        const score = this.options.highscore.scores[title];
+        const name = title.replace(/_/g, ' ');
+        const { initial, primary } = score;
+        this.game.scoreManager.addScoreType(name, initial, primary);
+      });
+      this.gamemode.hs_list = new HighscoreList(this.game.scoreManager, this.game);
+
+      this.setUpHighscoreEvents();
     }
   }
 
@@ -89,7 +129,6 @@ class GamemodeEventHandler {
     });
   }
 
-  // eslint-disable-next-line
   injectBinds() {
     this.injectBind('onDeath');
     this.injectBind('preUpdate');
@@ -106,6 +145,22 @@ class GamemodeEventHandler {
   }
 
   preUpdate(dt) {
+    if (this.tagging) {
+      Object.keys(this.tags).forEach(id => {
+        const list = this.tags[id];
+        while (list.length > 0) {
+          if (list[0].timer - dt <= 0) {
+            // Remove expired tag
+            list.shift();
+          } else {
+            break;
+          }
+        }
+        list.forEach(item => {
+          item.timer -= dt;
+        });
+      }, this);
+    }
     this.timeDisplays.forEach(display => {
       const { name } = display;
       this.game.entityHandler.getPlayers().forEach(entity => {
@@ -125,6 +180,16 @@ class GamemodeEventHandler {
         const { name, action } = event;
         this.game.scoreManager.mutateScore(name, id, action);
       });
+      if (this.tagging) {
+        this.tags[id].forEach(item => {
+          // console.log('%s killed %s', item.id, id);
+          this.onKillEvents.forEach(event => {
+            const { name, action } = event;
+            this.game.scoreManager.mutateScore(name, item.id, action);
+          });
+        });
+        this.tags[id] = [];
+      }
     }
     if (this.respawn) {
       if (entity.isPlayer() && entity.playerLeft) {
@@ -141,10 +206,24 @@ class GamemodeEventHandler {
   }
 
   onPlayerCreated(playerObject, circle) {
+    if (this.tagging) {
+      this.tags[playerObject.id] = [];
+      circle.collision.addListener((player, victim) => {
+        if (victim.isPlayer()) {
+          const vid = victim.controller.id;
+          const pid = player.controller.id;
+          this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
+          this.tags[vid].push({ id: pid, timer: this.tagTime });
+        }
+      });
+    }
     this.binds.onPlayerCreated(playerObject, circle);
   }
 
   onPlayerLeave(idTag) {
+    if (this.tagging) {
+      delete this.tags[idTag];
+    }
     this.binds.onPlayerLeave(idTag);
   }
 

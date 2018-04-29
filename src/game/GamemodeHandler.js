@@ -44,6 +44,16 @@ class GMHandlerClass {
       KnockOff,
       {
         backgroundColor: 0x061639,
+        abilities: [
+          {
+            button: 0,
+            cooldown: 10,
+            active: 3,
+            func: entity => {
+              entity.mass *= 50;
+            },
+          },
+        ],
         kill: {
           tag: {
             tagTime: 4,

@@ -1,9 +1,6 @@
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
 
-// The max time between a collision and a player dying in order to count as a kill.
-const TAG_TIME = 1;
-
 // Ability times
 const ABILITY_COOLDOWN = 10;
 const ABILITY_DURATION = 3;
@@ -15,11 +12,7 @@ class KnockOff extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
 
-    this.players = {};
-    this.tags = {};
     this.abilityTimer = {};
-
-    this.game.respawnHandler.registerRespawnListener(this);
 
     this.arenaRadius = 490;
     this.respawnArea = 100;
@@ -50,22 +43,6 @@ class KnockOff extends Gamemode {
 
   // Called before the game objects are updated.
   preUpdate(dt) {
-    // Update tags
-    Object.keys(this.tags).forEach(id => {
-      const list = this.tags[id];
-      while (list.length > 0) {
-        if (list[0].timer - dt <= 0) {
-          // Remove expired tag
-          list.shift();
-        } else {
-          break;
-        }
-      }
-      list.forEach(item => {
-        item.timer -= dt;
-      });
-    }, this);
-
     Object.keys(this.abilityTimer).forEach(id => {
       this.abilityTimer[id].time -= dt;
       if (
@@ -110,28 +87,9 @@ class KnockOff extends Gamemode {
 
     this.game.register(circle);
 
-    circle.phase(3);
-
-    this.players[idTag] = circle;
-    this.tags[idTag] = [];
     this.abilityTimer[idTag] = { active: false, time: 0 };
 
     circle.addEntityListener(this);
-
-    circle.collision.addListener((player, victim) => {
-      // Check if victim is a player
-      if (victim.isPlayer()) {
-        const vid = victim.controller.id;
-        const pid = player.controller.id;
-        this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
-        this.tags[vid].push({ id: pid, timer: TAG_TIME });
-        // Since this function is activated for both players
-        // we should only need to update tags on the victim
-        // and the "player" should be tagged by the twin call.
-        // this.tags[pid] = this.tags[pid].filter(e => e.id !== vid);
-        // this.tags[pid].push({ id: vid, timer: TAG_TIME });
-      }
-    });
   }
 
   // Called when a player disconnects
@@ -155,8 +113,7 @@ class KnockOff extends Gamemode {
 
   // Clean up after the gamemode is finished.
   cleanUp() {
-    this.game.entityHandler.clear();
-    this.game.respawnHandler.clean();
+    this.arenaGraphic.destroy();
   }
 
   // Called when an entity is respawned.
@@ -167,13 +124,8 @@ class KnockOff extends Gamemode {
   }
 
   // Called when an entity dies.
-  onDeath(entity) {
-    const { id } = entity.controller;
-    this.tags[id].forEach(item => {
-      // console.log("%s killed %s", item.id, id);
-      this.game.scoreManager.addScore('Kills', item.id, 1);
-    });
-  }
+  // eslint-disable-next-line
+  onDeath(entity) {}
 
   onWindowResize() {
     const newCenterX = Math.round(window.innerWidth / 2);

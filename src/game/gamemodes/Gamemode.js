@@ -13,6 +13,8 @@ class Gamemode {
     this.resources = resources;
     this.game.registerResizeListener(this);
     this.onButtonPressed = this.onButtonPressed.bind(this);
+
+    this.players = {};
   }
 
   init() {}
@@ -42,6 +44,9 @@ class Gamemode {
           const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
 
           circle.setColor(backgroundCol, iconCol);
+
+          this.players[idTag] = circle;
+
           this.onPlayerCreated(playerObject, circle);
 
           resolve(circle);
@@ -76,7 +81,10 @@ class Gamemode {
   }
 
   // Clean up after the gamemode is finished.
-  cleanUp() {}
+  cleanUp() {
+    this.game.entityHandler.clear();
+    this.game.respawnHandler.clean();
+  }
   /* eslint-enable class-methods-use-this, no-unused-vars */
 }
 

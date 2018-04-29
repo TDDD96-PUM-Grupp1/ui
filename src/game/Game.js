@@ -9,7 +9,6 @@ import RespawnHandler from './RespawnHandler';
 import settings from './../config';
 import LocalPlayerController from './entities/controllers/LocalPlayerController';
 import Instance from './Instance';
-import HighscoreList from './HighscoreList';
 import GamemodeEventHandler from './GamemodeEventHandler';
 
 /*
@@ -93,21 +92,10 @@ class Game {
   configure(options) {
     const handler = new GamemodeEventHandler(this, this.currentGamemode, options);
     handler.injectBinds();
-    if (options.highscore) {
-      if (options.highscore.order) {
-        this.scoreManager.setAscOrder(options.highscore.order);
-      }
-      Object.keys(options.highscore.scores).forEach(title => {
-        const score = options.highscore.scores[title];
-        const name = title.replace(/_/g, ' ');
-        const { initial, primary } = score;
-        // console.log(title, initial, primary);
-        this.scoreManager.addScoreType(name, initial, primary);
-      });
-      this.currentGamemode.hs_list = new HighscoreList(this.scoreManager, this);
-    }
-    handler.setUpHighscoreEvents();
+    handler.setUpHighscores();
+    handler.setUpMisc();
     handler.setUpRespawn();
+    handler.setUpKillSystem();
   }
 
   // Adds local players to the instance.
