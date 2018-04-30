@@ -31,19 +31,26 @@ class Gamemode {
     const { iconID } = playerObject;
     const idTag = playerObject.id;
 
+
+
     return new Promise((resolve, reject) => {
       this.game.resourceServer
         .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
         .then(resources => {
-          const circle = new PlayerCircle(this.game, resources[iconData[iconID].name]);
-          const controller = new PlayerController(this.game, idTag);
+          const circle = new PlayerCircle(
+            this.game,
+            resources[iconData[iconID].name],
+            playerObject.backgroundColor,
+            playerObject.iconColor,
+            playerObject.iconID
+          );
+          const controller = new PlayerController(this.game, idTag, playerObject.name);
           circle.setController(controller);
           const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
           const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
 
           circle.setColor(backgroundCol, iconCol);
           this.onPlayerCreated(playerObject, circle);
-
           resolve(circle);
         });
     });
