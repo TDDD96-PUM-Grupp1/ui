@@ -31,8 +31,6 @@ class Gamemode {
     const { iconID } = playerObject;
     const idTag = playerObject.id;
 
-
-
     return new Promise((resolve, reject) => {
       this.game.resourceServer
         .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
