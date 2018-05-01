@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import EntityController from './EntityController';
 
 const MAX_ANGLE = 40;
@@ -8,10 +9,11 @@ const MIN_SENSOR_THRESHOLD = 5;
 Player object controller, will handle taking input from player and modifying their objects.
 */
 class PlayerController extends EntityController {
-  constructor(game, id) {
+  constructor(game, id, username) {
     super();
     this.game = game;
     this.id = id;
+    this.username = username;
 
     this.active = true;
 

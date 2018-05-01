@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // import * as PIXI from 'pixi.js';
 import EntityHandler from './EntityHandler';
 import CollisionHandler from './CollisionHandler';
@@ -157,6 +158,31 @@ class Game {
 
   // Called when a new player joins.
   onPlayerJoin(playerObject) {
+    // Check if the joining player already exists
+    const entities = this.entityHandler.getEntities().slice();
+    for (let i = 0; i < entities.length; i += 1) {
+      const currentEntity = entities[i];
+      if (
+        typeof currentEntity.controller !== 'undefined' &&
+        currentEntity.controller.id === playerObject.id
+      ) {
+        // Check if the joining player has provided new information, if so kick their
+        // old character and create a new one
+        if (
+          playerObject.name !== currentEntity.username ||
+          playerObject.iconID !== currentEntity.sprite.Id ||
+          playerObject.backgroundColor !== currentEntity.backgroundColor ||
+          playerObject.iconColor !== currentEntity.iconColor
+        ) {
+          this.onPlayerLeave(playerObject.id);
+          break;
+        } else {
+          // The joining player already exists and doesn't want to change information, do nothing
+          return;
+        }
+      }
+    }
+    // Add the new player
     this.currentGamemode.onPlayerJoin(playerObject).then(() => {
       this.scoreManager.addPlayer(playerObject);
     });

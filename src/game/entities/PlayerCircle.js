@@ -10,7 +10,7 @@ const ICONSIZE = Math.floor(256 * SQUAREROOTOF2);
 Game object representing a player
 */
 class PlayerCircle extends BasicCircle {
-  constructor(game, resource) {
+  constructor(game, resource, backgroundCol, iconColor, iconID) {
     super(game, RADIUS, MASS, 0xffffff, true);
 
     this.sprite = new PIXI.Sprite(resource);
@@ -18,6 +18,11 @@ class PlayerCircle extends BasicCircle {
     this.sprite.height = ICONSIZE;
     // Center x,y
     this.sprite.anchor.set(0.5, 0.5);
+
+    // Store data regarding player
+    this.iconID = iconID;
+    this.backgroundColor = backgroundCol;
+    this.iconColor = iconColor;
 
     this.graphic.addChild(this.sprite);
 
