@@ -9,7 +9,7 @@ const multDec = 0.99;
 /*
   Knock off gamemode with a randomly changing arena, get score by knocking other players off the it.
 */
-class KnockOffDynamic extends KnockOff {
+class KODynamic extends KnockOff {
   constructor(game, resources) {
     super(game, resources);
     this.expanding = false;
@@ -56,4 +56,4 @@ class KnockOffDynamic extends KnockOff {
   }
 }
 
-export default KnockOffDynamic;
+export default KODynamic;

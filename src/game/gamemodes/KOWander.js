@@ -6,7 +6,7 @@ const moveSpeed = 100;
 /*
   Knock off gamemode with a randomly changing arena, get score by knocking other players off the it.
 */
-class KnockOffWander extends KnockOff {
+class KOWander extends KnockOff {
   constructor(game, resources) {
     super(game, resources);
     // Move everything to the up right corner
@@ -85,4 +85,4 @@ class KnockOffWander extends KnockOff {
   }
 }
 
-export default KnockOffWander;
+export default KOWander;
