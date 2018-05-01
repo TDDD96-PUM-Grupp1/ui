@@ -33,6 +33,10 @@ class Instance {
   addPlayer(playerObject) {
     const { id, name } = playerObject;
 
+    //console.log(this.instanceListener);
+    //console.log(playerObject);
+    //console.log(this.players);
+
     if (Object.keys(this.players).length >= this.maxPlayers) {
       return 'Instance is full';
     }
@@ -43,13 +47,81 @@ class Instance {
       return 'No name specified';
     }
 
-    this.players[id] = { name, sensor: { beta: 0, gamma: 0 } };
+    let joinState = 0;
 
-    if (this.instanceListener !== undefined) {
-      this.instanceListener.onPlayerJoin(playerObject);
+    for (let player in this.players) {
+      if (Object.prototype.hasOwnProperty.call(this.players, player)) {
+        console.log(player);
+        if (
+          player.name === name &&
+          player.backgroundColor === playerObject.backgroundColor &&
+          player.iconID === playerObject.iconID &&
+          player.iconColor === playerObject.iconColor
+        ) {
+          joinState = 1;
+          break;
+        } else {
+          joinState = 2;
+          break;
+        }
+      }
     }
-    // No error has occured
-    return '';
+
+    /* Check if the joining player:
+    0 - Does not currently exist
+    1 - Already exists
+    2 - Already exists and connects with different presets
+    Set joinState to the correct state of the connection
+     */
+
+    for (let i = 0; i < this.players.length; i += 1) {
+      console.log(this.players[i]);
+      if (this.players[i].id === id) {
+        if (
+          this.players[i].name === playerObject.name &&
+          this.players[i].backgroundColor === playerObject.backgroundColor &&
+          this.players[i].iconID === playerObject.iconID &&
+          this.players[i].iconColor === playerObject.iconColor
+        ) {
+          joinState = 1;
+          break;
+          // Do nothing
+        }
+        joinState = 2;
+        break;
+        // Remove old player
+        // Re add player
+      }
+    }
+
+    if (joinState === 0) {
+      console.log('State 0, Add');
+      // Add
+      //this.players[id] = { name, sensor: { beta: 0, gamma: 0 } };
+
+      this.players[id] = playerObject;
+      if (this.instanceListener !== undefined) {
+        this.instanceListener.onPlayerJoin(playerObject);
+      }
+      // No error has occured
+      return '';
+    } else if (joinState === 1) {
+      console.log('State 1, Nothing');
+      // Do nothing
+      return '';
+    } else if (joinState === 2) {
+      console.log('State 2, Remove and add');
+      // Kick and add
+      this.removePlayer(playerObject.id);
+      this.players[id] = playerObject;
+      if (this.instanceListener !== undefined) {
+        this.instanceListener.onPlayerLeave(id);
+        this.instanceListener.onPlayerJoin(playerObject);
+      }
+      // No error has occured
+      return '';
+      //KICK and add
+    }
   }
 
   /*
