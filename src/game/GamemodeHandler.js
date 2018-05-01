@@ -39,6 +39,7 @@ class GMHandlerClass {
       knockOffRandom: ['Super Heavy'],
       knockOffWander: ['Super Heavy'],
       testGamemode: ['Test Ability 1', 'Test Ability 2'],
+      dodgebot: [],
     };
 
     if (settings.skipmenu) {
