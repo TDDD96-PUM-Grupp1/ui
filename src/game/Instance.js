@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 class Instance {
   constructor(name, maxPlayers) {
     this.name = name;
@@ -32,11 +33,6 @@ class Instance {
    * @return String with error if one has occured */
   addPlayer(playerObject) {
     const { id, name } = playerObject;
-
-    //console.log(this.instanceListener);
-    //console.log(playerObject);
-    //console.log(this.players);
-
     if (Object.keys(this.players).length >= this.maxPlayers) {
       return 'Instance is full';
     }
@@ -48,57 +44,37 @@ class Instance {
     }
 
     let joinState = 0;
-
-    for (let player in this.players) {
-      if (Object.prototype.hasOwnProperty.call(this.players, player)) {
-        console.log(player);
+    /* Check if the joining player:
+      0 - Does not currently exist
+      1 - Already exists
+      2 - Already exists and connects with different presets,
+      Set joinState to the correct state of the connection
+       */
+    const playerIDs = Object.keys(this.players);
+    for (let i = 0; i < playerIDs.length; i += 1) {
+      if (playerIDs[i] === playerObject.id) {
+        const joiningPlayer = this.players[playerIDs[i]];
         if (
-          player.name === name &&
-          player.backgroundColor === playerObject.backgroundColor &&
-          player.iconID === playerObject.iconID &&
-          player.iconColor === playerObject.iconColor
+          joiningPlayer.name === playerObject.name &&
+          joiningPlayer.iconID === playerObject.iconID &&
+          joiningPlayer.iconColor === playerObject.iconColor &&
+          joiningPlayer.backgroundColor === playerObject.backgroundColor
         ) {
+          // Player already exists and does not want to change presets, do nothing
           joinState = 1;
           break;
         } else {
+          // Existing player wants to change presets, boot
+          // old character and add player as a new player
           joinState = 2;
           break;
         }
       }
     }
 
-    /* Check if the joining player:
-    0 - Does not currently exist
-    1 - Already exists
-    2 - Already exists and connects with different presets
-    Set joinState to the correct state of the connection
-     */
-
-    for (let i = 0; i < this.players.length; i += 1) {
-      console.log(this.players[i]);
-      if (this.players[i].id === id) {
-        if (
-          this.players[i].name === playerObject.name &&
-          this.players[i].backgroundColor === playerObject.backgroundColor &&
-          this.players[i].iconID === playerObject.iconID &&
-          this.players[i].iconColor === playerObject.iconColor
-        ) {
-          joinState = 1;
-          break;
-          // Do nothing
-        }
-        joinState = 2;
-        break;
-        // Remove old player
-        // Re add player
-      }
-    }
-
     if (joinState === 0) {
       console.log('State 0, Add');
       // Add
-      //this.players[id] = { name, sensor: { beta: 0, gamma: 0 } };
-
       this.players[id] = playerObject;
       if (this.instanceListener !== undefined) {
         this.instanceListener.onPlayerJoin(playerObject);
@@ -112,15 +88,13 @@ class Instance {
     } else if (joinState === 2) {
       console.log('State 2, Remove and add');
       // Kick and add
-      this.removePlayer(playerObject.id);
       this.players[id] = playerObject;
       if (this.instanceListener !== undefined) {
-        this.instanceListener.onPlayerLeave(id);
+        this.instanceListener.onPlayerLeave(playerObject.id);
         this.instanceListener.onPlayerJoin(playerObject);
       }
       // No error has occured
       return '';
-      //KICK and add
     }
   }
 
