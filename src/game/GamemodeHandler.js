@@ -12,18 +12,6 @@ class GMHandlerClass {
     // Map of the gamemodes configs
     this.configs = configs;
 
-    /**
-       The name, amount and order of the buttons used by a gamemode
-     */
-    this.buttonsUsed = {
-      knockOff: ['Super Heavy'],
-      knockOffDynamic: ['Super Heavy'],
-      knockOffRandom: ['Super Heavy'],
-      knockOffWander: ['Super Heavy'],
-      testGamemode: ['Test Ability 1', 'Test Ability 2'],
-      dodgebot: [],
-    };
-
     if (settings.skipmenu) {
       this.selected = settings.defaultGamemode;
     } else {
@@ -76,7 +64,11 @@ class GMHandlerClass {
    * Returns an array containing each buttons name for the selected game-mode
    */
   getButtons() {
-    return this.buttonsUsed[this.selected];
+    const names = [];
+    this.configs[this.selected].abilities.foreach(ability => {
+      names.push(ability.name);
+    });
+    return names;
   }
 }
 /**

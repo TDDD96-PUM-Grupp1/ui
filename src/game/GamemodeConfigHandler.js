@@ -41,7 +41,6 @@ class GamemodeConfigList {
         backgroundColor: 0x061639,
         abilities: [
           {
-            button: 0,
             name: 'Super Heavy',
             cooldown: 10,
             duration: 3,
@@ -168,12 +167,11 @@ class GamemodeConfigHandler {
   setUpAbilities() {
     if (this.options.abilities) {
       this.options.abilities.forEach(ability => {
-        const { button } = ability;
         ability.timers = {};
-        this.abilities[button] = ability;
       });
+      this.abilities = this.options.abilities;
+      this.game.setUpGameButtons(this.options.abilities);
     }
-    this.game.setUpGameButtons(this.options.abilities);
   }
 
   setUpKillSystem() {

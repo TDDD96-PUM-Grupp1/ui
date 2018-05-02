@@ -94,9 +94,9 @@ class Game {
   setUpGameButtons(abilities) {
     abilities.forEach(ability => {
       // eslint-disable-next-line
-      const {button, name} = ability;
-      // button is the index like 0, 1, 2
-      // TODO: Send this to controller
+      const { name } = ability;
+      // TODO: This info has been sent to controller when game was launched
+      // But we might want to update the buttons on the controller at some point.
     });
   }
 
