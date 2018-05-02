@@ -13,6 +13,8 @@ class Gamemode {
     this.resources = resources;
     this.game.registerResizeListener(this);
     this.onButtonPressed = this.onButtonPressed.bind(this);
+
+    this.players = {};
   }
 
   init() {}
@@ -42,6 +44,10 @@ class Gamemode {
           const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
 
           circle.setColor(backgroundCol, iconCol);
+
+          this.players[idTag] = circle;
+          this.game.register(circle);
+
           this.onPlayerCreated(playerObject, circle);
 
           resolve(circle);
@@ -54,18 +60,8 @@ class Gamemode {
 
   // Called when a player disconnects
   onPlayerLeave(idTag) {
-    const entities = this.game.entityHandler.getEntities().slice();
-
-    for (let i = 0; i < entities.length; i += 1) {
-      const currentEntity = entities[i];
-      if (
-        typeof currentEntity.controller !== 'undefined' &&
-        currentEntity.controller.id === idTag
-      ) {
-        this.game.entityHandler.unregisterFully(currentEntity);
-        return;
-      }
-    }
+    // Turn the players entity into a dummy, leaving it in the game until it dies
+    this.players[idTag].ownerLeft();
   }
 
   onButtonPressed(id, button) {}
@@ -76,7 +72,10 @@ class Gamemode {
   }
 
   // Clean up after the gamemode is finished.
-  cleanUp() {}
+  cleanUp() {
+    this.game.entityHandler.clear();
+    this.game.respawnHandler.clean();
+  }
   /* eslint-enable class-methods-use-this, no-unused-vars */
 }
 

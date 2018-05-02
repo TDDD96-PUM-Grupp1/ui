@@ -117,7 +117,6 @@ class RespawnHandler {
   }
 
   // Registers an entity to respawn in respawnDelay seconds
-  // If no delay is specified, it will not respawn automatically
   addRespawn(entity, respawnDelay) {
     // Kill entity
     this.entityHandler.unregister(entity);
@@ -129,7 +128,7 @@ class RespawnHandler {
       respawnTime = new Date();
       respawnTime.setSeconds(respawnTime.getSeconds() + respawnDelay);
     } else {
-      respawnTime = Infinity;
+      throw new Error('Undefined respawn time');
     }
 
     this.respawnList.push([respawnTime, entity]);
