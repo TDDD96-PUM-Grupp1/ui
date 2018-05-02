@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { PulseLoader } from 'react-spinners';
 import deepstream from 'deepstream.io-client-js';
+import { Button, SelectField, TextField } from 'react-md';
+
 import GamemodeHandler from '../game/GamemodeHandler';
 import getRandomInstanceName from './InstanceNameHandler';
 
@@ -124,9 +126,9 @@ class CreateMenu extends Component {
   }
 
   // Change the state if the textbox is changed.
-  handleNameChange(event) {
-    this.setState({ instanceName: event.target.value });
-    this.validateName(event.target.value);
+  handleNameChange(value) {
+    this.setState({ instanceName: value });
+    this.validateName(value);
   }
 
   render() {
@@ -134,9 +136,10 @@ class CreateMenu extends Component {
       <div className="create-menu">
         <h3 className="create-title">Create New Game</h3>
         <div className="menu-setting">
-          <h4 className="menu-descriptor">Instance Name</h4>
-          <input
+          <TextField
             className="create-input"
+            label="Instance Name"
+            placeholder="Type a name..."
             value={this.state.instanceName}
             onChange={this.handleNameChange}
           />
@@ -170,15 +173,15 @@ class CreateMenu extends Component {
         <div className="spinner">
           <PulseLoader color="#ffa000" loading={this.state.loading} />
         </div>
-        <button onClick={this.randomName} className="menu-button">
+        <Button raised primary onClick={this.randomName} className="menu-button">
           Random Name
-        </button>
-        <button onClick={this.startGame} className="menu-button">
+        </Button>
+        <Button raised primary onClick={this.startGame} className="menu-button">
           Create
-        </button>
-        <button onClick={this.props.onBack} className="menu-button">
-          {'\u2B05'} Back
-        </button>
+        </Button>
+        <Button raised primary onClick={this.props.onBack} className="menu-button">
+          Back
+        </Button>
       </div>
     );
   }
@@ -188,7 +191,7 @@ CreateMenu.propTypes = {
   onBack: PropTypes.func.isRequired,
   onStart: PropTypes.func.isRequired,
   /* eslint-disable */
-  communication: PropTypes.object.isRequired
+  communication: PropTypes.object.isRequired,
   /* eslint-enable */
 };
 

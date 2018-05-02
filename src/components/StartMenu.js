@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Paper, Button } from 'react-md';
 
 import CreateMenu from './CreateMenu';
 import FirstMenu from './FirstMenu';
@@ -12,7 +13,7 @@ class StartMenu extends Component {
     super(props);
 
     this.state = {
-      menu: 'first'
+      menu: 'first',
     };
 
     this.showCreate = this.showCreate.bind(this);
@@ -56,9 +57,9 @@ class StartMenu extends Component {
       // TODO add actual about page
       about: (
         <div>
-          <button onClick={this.showFirst} className="menu-button">
-            {'\u2B05'} Back
-          </button>
+          <Button raised primary onClick={this.showFirst} className="menu-button">
+            Back
+          </Button>
         </div>
       ),
     };
@@ -66,7 +67,7 @@ class StartMenu extends Component {
     return (
       <div className="center-menu">
         <h1 className="game-title">Ball Game</h1>
-        <div className="menu-button-holder">{menus[this.state.menu]}</div>
+        <Paper className="menu-button-holder">{menus[this.state.menu]}</Paper>
       </div>
     );
   }
