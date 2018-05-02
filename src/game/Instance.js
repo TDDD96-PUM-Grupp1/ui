@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 class Instance {
   constructor(name, maxPlayers) {
     this.name = name;
@@ -43,59 +42,32 @@ class Instance {
       return 'No name specified';
     }
 
-    let joinState = 0;
-    /* Check if the joining player:
-      0 - Does not currently exist
-      1 - Already exists
-      2 - Already exists and connects with different presets,
-      Set joinState to the correct state of the connection
-       */
-    const playerIDs = Object.keys(this.players);
-    for (let i = 0; i < playerIDs.length; i += 1) {
-      if (playerIDs[i] === playerObject.id) {
-        const joiningPlayer = this.players[playerIDs[i]];
-        if (
-          joiningPlayer.name === playerObject.name &&
-          joiningPlayer.iconID === playerObject.iconID &&
-          joiningPlayer.iconColor === playerObject.iconColor &&
-          joiningPlayer.backgroundColor === playerObject.backgroundColor
-        ) {
-          // Player already exists and does not want to change presets, do nothing
-          joinState = 1;
-          break;
-        } else {
-          // Existing player wants to change presets, boot
-          // old character and add player as a new player
-          joinState = 2;
-          break;
-        }
-      }
-    }
-
-    if (joinState === 0) {
-      // Add
-      this.players[id] = playerObject;
+    // Checks if the joining player already exists, and if they do whether they have reconnected
+    // with new presets or not.
+    const joiningPlayer = this.players[playerObject.id];
+    if (joiningPlayer === undefined) {
+      // Joining player does not already exist
       if (this.instanceListener !== undefined) {
-        this.instanceListener.onPlayerJoin(playerObject);
-      }
-      // No error has occured
-      return '';
-    } else if (joinState === 1) {
-      // Do nothing
-      return 'Already in game';
-    } else if (joinState === 2) {
-      // Kick and add
-      this.players[id] = playerObject;
-      if (this.instanceListener !== undefined) {
-        this.instanceListener.onPlayerLeave(playerObject.id);
-        this.instanceListener.communication.removePlayer(playerObject.id);
         this.players[playerObject.id] = playerObject;
         this.instanceListener.onPlayerJoin(playerObject);
       }
-      // No error has occured
+      // New player, add him
       return '';
+    } else if (
+      joiningPlayer.name === playerObject.name &&
+      joiningPlayer.iconID === playerObject.iconID &&
+      joiningPlayer.iconColor === playerObject.iconColor &&
+      joiningPlayer.backgroundColor === playerObject.backgroundColor
+    ) {
+      // Player connects with the same information
+      return 'no comm add';
+    } else {
+      // New changes, kick and add player
+      this.removePlayer(playerObject.id);
+      this.players[id] = playerObject;
+      this.instanceListener.onPlayerJoin(playerObject);
+      return 'no comm add';
     }
-    throw Error('Unexpected behavior by addPlayer');
   }
 
   /*

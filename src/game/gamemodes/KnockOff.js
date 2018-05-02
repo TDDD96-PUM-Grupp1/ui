@@ -63,9 +63,6 @@ class KnockOff extends Gamemode {
     circle.y = this.arenaCentery;
   }
 
-  // Called when a player disconnects
-  onPlayerLeave(idTag) {}
-
   onButtonPressed(id, button) {}
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
