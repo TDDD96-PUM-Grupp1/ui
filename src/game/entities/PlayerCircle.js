@@ -26,6 +26,9 @@ class PlayerCircle extends BasicCircle {
     // Flag for if the player has left the game.
     this.playerLeft = false;
 
+    // Flag that entity can respawn.
+    this.respawnable = true;
+
     // default player collision group is random so they will be able to collide
     this.collisionGroup = Math.random();
   }
