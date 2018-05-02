@@ -17,6 +17,8 @@ class PlayerController extends EntityController {
     this.game = game;
     this.id = id;
 
+    this.active = true;
+
     this.accelerationScale = 1000;
   }
 
@@ -27,7 +29,7 @@ class PlayerController extends EntityController {
   update(dt) {
     let xacc = 0;
     let yacc = 0;
-    if (this.game.instance) {
+    if (this.active && this.game.instance) {
       const playerData = this.game.instance.getPlayer(this.id);
       if (playerData !== undefined) {
         let { beta, gamma } = playerData.sensor;

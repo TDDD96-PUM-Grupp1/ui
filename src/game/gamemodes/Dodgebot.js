@@ -2,10 +2,6 @@ import Gamemode from './Gamemode';
 import Dangerbot from '../entities/Dangerbot';
 import DangerbotController from '../entities/controllers/DangerbotController';
 import BasicRectangle from '../entities/BasicRectangle';
-import HighscoreList from '../HighscoreList';
-
-// Respawn time in seconds
-const RESPAWN_TIME = 1;
 
 // How many walls the arena should have.
 const WALLS = 4;
@@ -18,19 +14,11 @@ class Dodgebot extends Gamemode {
     super(game, resources);
     this.game.respawnHandler.registerRespawnListener(this);
 
-    game.scoreManager.addScoreType('Time Alive', 0, true);
-    game.scoreManager.addScoreType('Deaths', 0);
-    game.scoreManager.setAscOrder(false);
-    this.hs_list = new HighscoreList(game.scoreManager, game);
-
-    this.players = {};
-    this.respawn = {};
-
     this.time = 0;
 
     // Create the dangerbots
-    this.createDangerbot(500, 500);
-    this.createDangerbot(0, 0);
+    this.createDangerbot(700, 700);
+    this.createDangerbot(200, 200);
 
     // Create the arena
     this.arenaSize = 700;
@@ -58,8 +46,6 @@ class Dodgebot extends Gamemode {
       wall.y = this.centery + Math.sin(angle) * this.arenaSize * 0.5;
     }
   }
-
-  /* eslint-disable no-unused-vars, class-methods-use-this */
 
   createDangerbot(x, y) {
     const dangerbot = new Dangerbot(this.game, 25, Infinity, this.resources);
@@ -94,8 +80,6 @@ class Dodgebot extends Gamemode {
     }
   }
 
-  /* eslint-enable no-unused-vars, class-methods-use-this */
-
   /* eslint-disable class-methods-use-this, no-unused-vars */
 
   // Called after the game objects are updated.
@@ -103,10 +87,13 @@ class Dodgebot extends Gamemode {
     Object.keys(this.players).forEach(id => {
       const entity = this.players[id];
 
-      // Increase score if player is alive
-      // TODO: Better way to determine this
-      if (!entity.phasing && !entity.dead) {
-        this.game.scoreManager.addScore('Time Alive', id, dt);
+      // Increase best score if time alive is higher
+      if (!entity.dead) {
+        const bestScore = this.game.scoreManager.getScore('Best Time Alive', id);
+        const score = this.game.scoreManager.getScore('Time Alive', id);
+        if (score > bestScore) {
+          this.game.scoreManager.setScore('Best Time Alive', id, score);
+        }
       }
     });
   }
@@ -120,25 +107,11 @@ class Dodgebot extends Gamemode {
     circle.x = this.centerx;
     circle.y = this.centery;
 
-    this.game.register(circle);
-
     circle.collisionGroup = idTag;
-
-    circle.moveWhilePhased = false;
-    circle.phase(3);
-
-    this.players[idTag] = circle;
-    this.respawn[idTag] = true;
-
-    circle.addEntityListener(this);
   }
 
   // Called when a player disconnects
-  onPlayerLeave(idTag) {
-    // When a player leaves, just leave their entity on the map.
-    // But stop them from respawning.
-    this.respawn[idTag] = false;
-  }
+  onPlayerLeave(idTag) {}
 
   onButtonPressed(id, button) {}
 
@@ -147,10 +120,6 @@ class Dodgebot extends Gamemode {
     // Move the entity close to the center
     entity.x = this.centerx;
     entity.y = this.centery;
-
-    // Phase the entity for a bit
-    entity.dead = false;
-    entity.phase(1.5);
   }
 
   /* eslint-enable class-methods-use-this, no-unused-vars */
@@ -162,20 +131,10 @@ class Dodgebot extends Gamemode {
   }
 
   // Called when an entity dies.
-  onDeath(entity) {
-    const { id } = entity.controller;
+  // eslint-disable-next-line
+  onDeath(entity) {}
 
-    this.game.scoreManager.setScore('Time Alive', id, 0);
-    this.game.scoreManager.addScore('Deaths', id, 1);
-
-    if (this.respawn[id]) {
-      this.game.respawnHandler.addRespawn(entity, RESPAWN_TIME);
-    } else {
-      this.game.entityHandler.unregisterFully(entity);
-    }
-  }
-
-  /* eslint-disable class-methods-use-this */
+  /* eslint-disable-next-line */
   onWindowResize() {}
 }
 

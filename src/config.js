@@ -4,9 +4,12 @@ Configuration file for different project parameters.
 
 const settings = {
   skipmenu: false,
-  defaultGamemode: 'dodgebot',
+  defaultGamemode: 'Dodgebot',
   game: {
     localPlayer: false,
+    testLeave: false,
+    testRejoin: false,
+    testMove: false,
     forceCanvas: true,
     antialias: false,
   },

@@ -28,6 +28,7 @@
     "no-param-reassign": ["error", { "props": false}],
     "arrow-parens": "off",
     "prettier/prettier": "error",
-    "jsx-a11y/click-events-have-key-events": "off"
+    "jsx-a11y/click-events-have-key-events": "off",
+    "no-bitwise": ["error", { "allow": ["^="] }] 
   }
 }

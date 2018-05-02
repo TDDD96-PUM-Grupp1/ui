@@ -196,6 +196,27 @@ class ScoreManager {
   setScore(scoreType, idTag, n) {
     this.mutateScore(scoreType, idTag, () => n);
   }
+
+  /*
+  Get the given score.
+  */
+  getScore(scoreType, idTag) {
+    if (!(scoreType in this.defaultScores)) {
+      throw new Error(`${scoreType} not a valid scoretype`);
+    }
+
+    let searchVal = null;
+
+    this.highscoreList.some((val, index) => {
+      if (val.id === idTag) {
+        searchVal = this.highscoreList[index][scoreType];
+        return true;
+      }
+      return false;
+    });
+
+    return searchVal;
+  }
 }
 
 export default ScoreManager;

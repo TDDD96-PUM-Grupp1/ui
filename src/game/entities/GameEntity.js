@@ -40,6 +40,7 @@ class GameEntity {
 
     // Death
     this.dead = false;
+    this.respawnable = false;
 
     // Phasing
     this.phaseTimer = 2;
@@ -112,7 +113,7 @@ class GameEntity {
       this.phaseTimer -= dt;
       this.graphic.alpha = 0.6 + 0.4 * Math.cos(this.phaseTimer * this.blinkSpeed);
       if (this.phaseTimer < 0) {
-        this.alpha = 1;
+        this.graphic.alpha = 1;
         this.phasing = false;
         this.colliding = true;
       }
