@@ -44,6 +44,7 @@ class PlayerController extends EntityController {
         if (sqlength > MAX_ANGLE_SQ) {
           length = Math.sqrt(sqlength);
         }
+        // console.log(`Tilt: b:${beta} g:${gamma}, effective b:${beta/length} g:${gamma/length}`);
         beta /= length;
         gamma /= length;
 
@@ -68,9 +69,9 @@ class PlayerController extends EntityController {
 
     const sqlength = pax * pax + pay * pay;
     if (sqlength > MAX_ACC_SQ) {
-      const length = Math.sqrt(sqlength);
-      pax /= length;
-      pay /= length;
+      const norm = MAX_ACC / Math.sqrt(sqlength);
+      pax *= norm;
+      pay *= norm;
     }
 
     this.entity.ax = pax;
