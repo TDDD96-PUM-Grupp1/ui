@@ -17,7 +17,7 @@ class KnockOff extends Gamemode {
 
     // Set up arena graphic
     const graphic = new PIXI.Sprite(resources.arena);
-    game.app.stage.addChildAt(graphic, 0);
+    game.gameStage.addChildAt(graphic, 0);
     this.arenaGraphic = graphic;
 
     const border = new PIXI.Graphics();

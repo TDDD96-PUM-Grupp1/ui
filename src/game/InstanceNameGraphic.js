@@ -17,7 +17,7 @@ class InstanceNameGraphic {
     this.graphic.anchor.set(1, 0);
     this.graphic.y = 0;
     this.reposition();
-    game.app.stage.addChild(this.graphic);
+    game.staticStage.addChild(this.graphic);
   }
 
   reposition() {

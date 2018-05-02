@@ -163,7 +163,7 @@ class Game {
 
   // Register an entity with the entityhandler
   register(entity) {
-    this.app.stage.addChild(entity.graphic);
+    this.gameStage.addChild(entity.graphic);
     this.entityHandler.register(entity);
   }
 
