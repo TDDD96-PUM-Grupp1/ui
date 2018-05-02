@@ -64,13 +64,9 @@
 }
 
 .error-box{
-  background-color: #EF5350;
   padding: 3px;
-  border: 2px #E57373 solid;
-
-  color: #FFFFFF;
+  color: $md-red-500;
   font-size: 15px;
-
   width: 100%;
 }
 

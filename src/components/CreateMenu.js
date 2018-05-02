@@ -54,10 +54,10 @@ class CreateMenu extends Component {
 
       // Set game mode
       this.state.gamemodeHandler.selectGameMode(this.state.gamemode);
-
+      
       const gameInfo = {
         name: this.state.instanceName,
-        maxPlayers: this.state.maxPlayers,
+        maxPlayers: parseInt(this.state.maxPlayers),
         gamemode: GamemodeHandler.getInstance().getSelectedId(),
         buttons: GamemodeHandler.getInstance().getButtons(),
       };
@@ -116,7 +116,7 @@ class CreateMenu extends Component {
       });
     }
 
-    this.setState({ serviceError: false, instanceName: name });
+    this.setState({ serviceError: false, errors: [], instanceName: name });
   }
 
   /*
@@ -124,7 +124,14 @@ class CreateMenu extends Component {
   Event handler for an input field.
   */
   validatePlayers(value) {
-    if (value < 1) {
+    if(parseFloat(value) !== parseInt(value) && !isNaN(parseFloat(value)))
+    {
+      this.setState({
+        numberError: true,
+        numberErrorMessage: 'Decimal numbers are not allowed.',
+      });
+    }
+    else if (value <= 0) {
       this.setState({
         numberError: true,
         numberErrorMessage: 'Please enter a number larger than 0',
@@ -141,7 +148,7 @@ class CreateMenu extends Component {
       });
     }
 
-    this.setState({ maxPlayers: value, serviceError: false });
+    this.setState({ maxPlayers: value, errors: [], serviceError: false });
   }
 
   // Change the state if the textbox is changed.
@@ -187,8 +194,8 @@ class CreateMenu extends Component {
             id="2" // Required
             className="create-input"
             label="Max players"
-            type="number"
             onChange={this.validatePlayers}
+            type="number"
             value={this.state.maxPlayers}
             error={this.state.numberError}
             errorText={this.state.numberErrorMessage}
@@ -202,7 +209,7 @@ class CreateMenu extends Component {
           ))}
         </div>
         <div className="spinner">
-          <PulseLoader color="#ffa000" loading={this.state.loading} />
+          <PulseLoader color="#2196F3" loading={this.state.loading} />
         </div>
         <Button raised primary onClick={this.randomName} className="menu-button">
           Random Name

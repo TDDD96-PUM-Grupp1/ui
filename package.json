@@ -16,8 +16,8 @@
     "webfontloader": "^1.6.28"
   },
   "scripts": {
-    "start-js": "PORT=3001 react-scripts start",
-    "start-js-local": "PORT=3001 REACT_APP_LOCAL=1 react-scripts start",
+    "start-js": "PORT=3000 react-scripts start",
+    "start-js-local": "PORT=3000 REACT_APP_LOCAL=1 react-scripts start",
     "start-js-pc": "react-scripts start",
     "build-css": "node-sass-chokidar --include-path ./node_modules src/ -o src/",
     "watch-css": "npm run build-css && npm run build-css -- --watch --recursive",
