@@ -42,6 +42,7 @@ class GamemodeConfigList {
         abilities: [
           {
             button: 0,
+            name: 'Super Heavy',
             cooldown: 10,
             duration: 3,
             activateFunc: entity => {
@@ -172,7 +173,7 @@ class GamemodeConfigHandler {
         this.abilities[button] = ability;
       });
     }
-    // Message Controller how many buttons there should be?
+    this.game.setUpGameButtons(this.options.abilities);
   }
 
   setUpKillSystem() {

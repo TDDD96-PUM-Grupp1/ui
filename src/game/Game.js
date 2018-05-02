@@ -71,18 +71,6 @@ class Game {
           }
         });
       });
-
-    // Create gamemode, gameButtons not currently used but still set
-    // to show that the functionality exists
-    this.gamemodeLoaded = false;
-    const gamemodeHandler = GamemodeHandler.getInstance();
-    this.gameButtons = gamemodeHandler.getButtons();
-    const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
-    this.resourceServer.requestResources(requestedResources).then(resources => {
-      this.currentGamemode = new SelectedMode(this, resources);
-      this.currentGamemode.init();
-      this.gamemodeLoaded = true;
-    });
   }
 
   // Main game loop
@@ -99,6 +87,17 @@ class Game {
       this.respawnHandler.checkRespawns();
       this.entityHandler.updateGraphics(dt);
     }
+  }
+
+  // Set up game buttons
+  // eslint-disable-next-line
+  setUpGameButtons(abilities) {
+    abilities.forEach(ability => {
+      // eslint-disable-next-line
+      const {button, name} = ability;
+      // button is the index like 0, 1, 2
+      // TODO: Send this to controller
+    });
   }
 
   // Adds local players to the instance.
