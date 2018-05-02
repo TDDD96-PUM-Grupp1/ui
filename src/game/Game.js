@@ -5,6 +5,7 @@ import ResourceServer from './ResourceServer';
 import GamemodeHandler from './GamemodeHandler';
 import ScoreManager from './ScoreManager';
 import RespawnHandler from './RespawnHandler';
+import InstanceNameGraphic from './InstanceNameGraphic';
 
 import settings from './../config';
 import LocalPlayerController from './entities/controllers/LocalPlayerController';
@@ -76,6 +77,9 @@ class Game {
           }
         });
       });
+
+    // Add instance name
+    this.nameGraphic = new InstanceNameGraphic(this);
   }
 
   // Main game loop
@@ -203,6 +207,7 @@ class Game {
   }
 
   onWindowResize() {
+    this.nameGraphic.reposition();
     this.app.renderer.resize(window.innerWidth, window.innerHeight);
   }
 }
