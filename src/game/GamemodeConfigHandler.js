@@ -387,7 +387,7 @@ class GamemodeConfigHandler {
 
   onPlayerLeave(idTag) {
     if (this.tagging) {
-      delete this.tags[idTag];
+      this.tags[idTag] = [];
     }
     this.binds.onPlayerLeave(idTag);
   }
