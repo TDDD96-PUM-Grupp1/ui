@@ -71,6 +71,7 @@ class GMHandlerClass {
           name: ability.name,
           cooldown: ability.cooldown,
           duration: ability.duration,
+          color: ability.color,
         });
       });
     }

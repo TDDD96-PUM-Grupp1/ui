@@ -44,6 +44,7 @@ class GamemodeConfigList {
             name: 'Super Heavy',
             cooldown: 10,
             duration: 3,
+            color: '#ff0000',
             activateFunc: entity => {
               entity.mass *= 50;
               entity.graphic.tint ^= 0xffffff;
