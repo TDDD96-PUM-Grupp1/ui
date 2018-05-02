@@ -5,6 +5,7 @@ import KnockOffRandom from './gamemodes/KnockOffRandom';
 import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 import KnockOffWander from './gamemodes/KnockOffWander';
 import Dodgebot from './gamemodes/Dodgebot';
+import Passthebomb from './gamemodes/Passthebomb';
 
 import HighscoreList from './HighscoreList';
 
@@ -114,6 +115,7 @@ class GamemodeConfigList {
     this.addGamemode(KnockOffRandom, {}, [], KnockOff);
     this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
     this.addGamemode(KnockOffWander, {}, [], KnockOff);
+    this.addGamemode(Passthebomb, {}, [], KnockOff);
     this.addGamemode(TestGamemode);
   }
 
