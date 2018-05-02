@@ -79,7 +79,10 @@ class GamemodeConfigList {
           },
         },
       },
-      [{ name: 'arena', path: 'knockoff/arena.png' }]
+      [
+        { name: 'arena', path: 'knockoff/arena.png' },
+        { name: 'activate', path: 'knockoff/circle_activate.png' },
+      ]
     );
     this.addGamemode(
       Dodgebot,
