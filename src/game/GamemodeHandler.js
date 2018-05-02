@@ -1,46 +1,16 @@
-import TestGamemode from './gamemodes/TestGamemode';
-import KnockOff from './gamemodes/KnockOff';
 import settings from '../config';
-import KnockOffRandom from './gamemodes/KnockOffRandom';
-import KnockOffDynamic from './gamemodes/KnockOffDynamic';
-import KnockOffWander from './gamemodes/KnockOffWander';
-import Dodgebot from './gamemodes/Dodgebot';
+import GamemodeConfigHandler from './GamemodeConfigHandler';
 
 /**
  * Singleton class for handling gamemode storage and selection
  */
 class GMHandlerClass {
   constructor() {
-    // List of all available gamemodes
-    this.gamemodes = {
-      knockOff: KnockOff,
-      knockOffRandom: KnockOffRandom,
-      knockOffDynamic: KnockOffDynamic,
-      knockOffWander: KnockOffWander,
-      dodgebot: Dodgebot,
-      testGamemode: TestGamemode,
-    };
-
-    this.gamemodeResources = {
-      knockOff: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      knockOffRandom: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      knockOffDynamic: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      knockOffWander: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      dodgebot: [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }],
-      testGamemode: [],
-    };
-
-    /**
-       The name, amount and order of the buttons used by a gamemode
-     */
-    this.buttonsUsed = {
-      knockOff: ['Super Heavy'],
-      knockOffDynamic: ['Super Heavy'],
-      knockOffRandom: ['Super Heavy'],
-      knockOffWander: ['Super Heavy'],
-      testGamemode: ['Test Ability 1', 'Test Ability 2'],
-      dodgebot: [],
-    };
+    const { gamemodes, configs } = GamemodeConfigHandler.getGamemodes();
+    // Map of all available gamemodes
+    this.gamemodes = gamemodes;
+    // Map of the gamemodes configs
+    this.configs = configs;
 
     if (settings.skipmenu) {
       this.selected = settings.defaultGamemode;
@@ -77,7 +47,8 @@ class GMHandlerClass {
 
     return {
       SelectedMode: this.gamemodes[this.selected],
-      requestedResources: this.gamemodeResources[this.selected],
+      requestedResources: this.configs[this.selected].resources,
+      options: this.configs[this.selected].options,
     };
   }
 
@@ -93,7 +64,13 @@ class GMHandlerClass {
    * Returns an array containing each buttons name for the selected game-mode
    */
   getButtons() {
-    return this.buttonsUsed[this.selected];
+    const names = [];
+    if (this.configs[this.selected].options.abilities) {
+      this.configs[this.selected].options.abilities.forEach(ability => {
+        names.push(ability.name);
+      });
+    }
+    return names;
   }
 }
 /**
