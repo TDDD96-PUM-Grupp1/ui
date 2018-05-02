@@ -210,7 +210,11 @@ class Game {
   }
 
   onWindowResize() {
-    const scale = window.innerHeight / BASE_HEIGHT;
+    let targetHeight = BASE_HEIGHT;
+    if (this.currentGamemode && this.currentGamemode.scaleHeight) {
+      targetHeight = this.currentGamemode.scaleHeight;
+    }
+    const scale = window.innerHeight / targetHeight;
     const centerx = window.innerWidth / 2;
     const centery = window.innerHeight / 2;
     this.gameStage.scale.x = scale;

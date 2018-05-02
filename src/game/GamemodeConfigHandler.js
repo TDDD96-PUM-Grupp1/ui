@@ -7,6 +7,9 @@ import KnockOffWander from './gamemodes/KnockOffWander';
 import Dodgebot from './gamemodes/Dodgebot';
 
 import HighscoreList from './HighscoreList';
+import PlayerCircle from './entities/PlayerCircle';
+import PlayerController from './entities/controllers/PlayerController';
+import iconData from './iconData';
 
 /* eslint-disable no-unused-vars */
 const EVENT_TRIGGER_DEATH = 0;
@@ -38,6 +41,8 @@ class GamemodeConfigList {
     this.addGamemode(
       KnockOff,
       {
+        joinPhase: 2,
+        playerRadius: 32,
         backgroundColor: 0x061639,
         abilities: [
           {
@@ -84,6 +89,7 @@ class GamemodeConfigList {
     this.addGamemode(
       Dodgebot,
       {
+        joinPhase: 2,
         backgroundColor: 0x061639,
         moveWhilePhased: false,
         respawn: {
@@ -134,6 +140,9 @@ class GamemodeConfigHandler {
     this.binds = {};
     this.gamemode = gamemode;
     this.options = options;
+
+    this.playerRadius = 32;
+    this.joinPhase = 0;
 
     this.moveWhilePhased = true;
 
@@ -190,6 +199,12 @@ class GamemodeConfigHandler {
     }
     if (this.options.moveWhilePhased !== undefined) {
       this.moveWhilePhased = this.options.moveWhilePhased;
+    }
+    if (this.options.playerRadius !== undefined) {
+      this.playerRadius = this.options.playerRadius;
+    }
+    if (this.options.joinPhase !== undefined) {
+      this.joinPhase = this.options.joinPhase;
     }
   }
 
@@ -278,6 +293,7 @@ class GamemodeConfigHandler {
     this.injectBind('onDeath');
     this.injectBind('preUpdate');
     this.injectBind('postUpdate');
+    this.injectBind('onPlayerJoin');
     this.injectBind('onPlayerCreated');
     this.injectBind('onPlayerLeave');
     this.injectBind('onRespawn');
@@ -362,6 +378,36 @@ class GamemodeConfigHandler {
     this.binds.postUpdate(dt);
   }
 
+  onPlayerJoin(playerObject) {
+    const { iconID, id } = playerObject;
+
+    return new Promise(resolve => {
+      this.game.resourceServer
+        .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
+        .then(resources => {
+          const circle = new PlayerCircle(
+            this.game,
+            resources[iconData[iconID].name],
+            this.playerRadius
+          );
+          const controller = new PlayerController(this.game, id);
+          circle.setController(controller);
+          const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
+          const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
+
+          circle.setColor(backgroundCol, iconCol);
+
+          this.gamemode.players[id] = circle;
+          this.game.register(circle);
+
+          this.gamemode.onPlayerCreated(playerObject, circle);
+
+          resolve(circle);
+        });
+    });
+    // this.binds.onPlayerJoin(playerObject);
+  }
+
   onPlayerCreated(playerObject, circle) {
     const { id } = playerObject;
     Object.keys(this.abilities).forEach(button => {
@@ -381,6 +427,7 @@ class GamemodeConfigHandler {
     if (this.respawn) {
       circle.addEntityListener(this.gamemode);
     }
+    circle.phase(this.joinPhase);
     circle.moveWhilePhased = this.moveWhilePhased;
     this.binds.onPlayerCreated(playerObject, circle);
   }

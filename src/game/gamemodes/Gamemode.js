@@ -1,7 +1,3 @@
-import PlayerCircle from '../entities/PlayerCircle';
-import PlayerController from '../entities/controllers/PlayerController';
-import iconData from '../iconData';
-
 /*
 Gamemode base class.
 */
@@ -13,6 +9,8 @@ class Gamemode {
     this.resources = resources;
     this.game.registerResizeListener(this);
     this.onButtonPressed = this.onButtonPressed.bind(this);
+
+    this.scaleHeight = 1000;
 
     this.players = {};
   }
@@ -29,31 +27,7 @@ class Gamemode {
   postUpdate(dt) {}
 
   // Called when a new player connects
-  onPlayerJoin(playerObject) {
-    const { iconID } = playerObject;
-    const idTag = playerObject.id;
-
-    return new Promise((resolve, reject) => {
-      this.game.resourceServer
-        .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
-        .then(resources => {
-          const circle = new PlayerCircle(this.game, resources[iconData[iconID].name]);
-          const controller = new PlayerController(this.game, idTag);
-          circle.setController(controller);
-          const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
-          const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
-
-          circle.setColor(backgroundCol, iconCol);
-
-          this.players[idTag] = circle;
-          this.game.register(circle);
-
-          this.onPlayerCreated(playerObject, circle);
-
-          resolve(circle);
-        });
-    });
-  }
+  onPlayerJoin(playerObject) {}
 
   // Called after a player has joined and their circle has been created.
   onPlayerCreated(playerObject, circle) {}

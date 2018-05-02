@@ -8,8 +8,10 @@ class KnockOff extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
 
-    this.arenaRadius = 490;
+    this.arenaRadius = 400;
     this.respawnArea = 100;
+
+    this.scaleHeight = this.arenaRadius * 2 + 50;
 
     // Set up arena graphic
     const graphic = new PIXI.Sprite(resources.arena);
@@ -55,8 +57,8 @@ class KnockOff extends Gamemode {
     const idTag = playerObject.id;
 
     // Place them in the middle of the arena for now
-    circle.x = 0;
-    circle.y = 0;
+    circle.x = this.arenaGraphic.x;
+    circle.y = this.arenaGraphic.y;
   }
 
   // Called when a player disconnects
@@ -74,33 +76,16 @@ class KnockOff extends Gamemode {
   // Called when an entity is respawned.
   onRespawn(entity) {
     // Move the entity close to the center
-    entity.x = Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
-    entity.y = Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
+    entity.x = this.arenaGraphic.x + Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
+    entity.y = this.arenaGraphic.y + Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
   }
 
   // Called when an entity dies.
   // eslint-disable-next-line
   onDeath(entity) {}
 
-  onWindowResize() {
-    /* const newCenterX = Math.round(window.innerWidth / 2);
-    const newCenterY = Math.round(window.innerHeight / 2);
-
-    // Calculate diff in x and y before moving everything
-    const dx = this.arenaGraphic.x - newCenterX;
-    const dy = this.arenaGraphic.y - newCenterY;
-
-    this.arenaGraphic.x = newCenterX;
-    this.arenaGraphic.y = newCenterY;
-
-    this.arenaCenterx = newCenterX;
-    this.arenaCentery = newCenterY;
-
-    this.game.entityHandler.getEntities().forEach(entity => {
-      entity.x -= dx;
-      entity.y -= dy;
-    }); */
-  }
+  // eslint-disable-next-line
+  onWindowResize() {}
 }
 
 export default KnockOff;
