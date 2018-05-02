@@ -54,10 +54,10 @@ class CreateMenu extends Component {
 
       // Set game mode
       this.state.gamemodeHandler.selectGameMode(this.state.gamemode);
-      
+
       const gameInfo = {
         name: this.state.instanceName,
-        maxPlayers: parseInt(this.state.maxPlayers),
+        maxPlayers: parseInt(this.state.maxPlayers, 10),
         gamemode: GamemodeHandler.getInstance().getSelectedId(),
         buttons: GamemodeHandler.getInstance().getButtons(),
       };
@@ -124,14 +124,12 @@ class CreateMenu extends Component {
   Event handler for an input field.
   */
   validatePlayers(value) {
-    if(parseFloat(value) !== parseInt(value) && !isNaN(parseFloat(value)))
-    {
+    if (parseFloat(value, 10) !== parseInt(value, 10) && !Number.isNaN(parseFloat(value, 10))) {
       this.setState({
         numberError: true,
         numberErrorMessage: 'Decimal numbers are not allowed.',
       });
-    }
-    else if (value <= 0) {
+    } else if (value <= 0) {
       this.setState({
         numberError: true,
         numberErrorMessage: 'Please enter a number larger than 0',
