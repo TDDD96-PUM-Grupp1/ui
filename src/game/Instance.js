@@ -73,7 +73,6 @@ class Instance {
     }
 
     if (joinState === 0) {
-      console.log('State 0, Add');
       // Add
       this.players[id] = playerObject;
       if (this.instanceListener !== undefined) {
@@ -82,20 +81,21 @@ class Instance {
       // No error has occured
       return '';
     } else if (joinState === 1) {
-      console.log('State 1, Nothing');
       // Do nothing
-      return '';
+      return 'Already in game';
     } else if (joinState === 2) {
-      console.log('State 2, Remove and add');
       // Kick and add
       this.players[id] = playerObject;
       if (this.instanceListener !== undefined) {
         this.instanceListener.onPlayerLeave(playerObject.id);
+        this.instanceListener.communication.removePlayer(playerObject.id);
+        this.players[playerObject.id] = playerObject;
         this.instanceListener.onPlayerJoin(playerObject);
       }
       // No error has occured
       return '';
     }
+    throw Error('Unexpected behavior by addPlayer');
   }
 
   /*
