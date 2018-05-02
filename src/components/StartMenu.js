@@ -43,7 +43,6 @@ class StartMenu extends Component {
   }
 
   render() {
-    console.log(this.state.menu);
     const menus = {
       first: <FirstMenu showCreate={this.showCreate} showAbout={this.showAbout} />,
 
