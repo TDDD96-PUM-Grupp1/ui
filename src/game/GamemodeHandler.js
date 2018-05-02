@@ -1,9 +1,9 @@
 import settings from '../config';
 import GamemodeConfigHandler from './GamemodeConfigHandler';
 
-/*
-Singleton class for handling gamemode storage and selection
-*/
+/**
+ * Singleton class for handling gamemode storage and selection
+ */
 class GMHandlerClass {
   constructor() {
     const { gamemodes, configs } = GamemodeConfigHandler.getGamemodes();
@@ -12,6 +12,18 @@ class GMHandlerClass {
     // Map of the gamemodes configs
     this.configs = configs;
 
+    /**
+       The name, amount and order of the buttons used by a gamemode
+     */
+    this.buttonsUsed = {
+      knockOff: ['Super Heavy'],
+      knockOffDynamic: ['Super Heavy'],
+      knockOffRandom: ['Super Heavy'],
+      knockOffWander: ['Super Heavy'],
+      testGamemode: ['Test Ability 1', 'Test Ability 2'],
+      dodgebot: [],
+    };
+
     if (settings.skipmenu) {
       this.selected = settings.defaultGamemode;
     } else {
@@ -19,16 +31,16 @@ class GMHandlerClass {
     }
   }
 
-  /*
-    Get list of all names of available gamemodes
-  */
+  /**
+   Get list of all names of available gamemodes
+   */
   getGamemodes() {
     return Object.keys(this.gamemodes);
   }
 
-  /*
-  Set the selected gamemode
-  */
+  /**
+   Set the selected gamemode
+   */
   selectGameMode(name) {
     if (name in this.gamemodes) {
       this.selected = name;
@@ -37,9 +49,9 @@ class GMHandlerClass {
     }
   }
 
-  /*
-  Get which gamemode has been selected
-  */
+  /**
+   Get which gamemode has been selected
+   */
   getSelected() {
     if (!this.selected) {
       throw new Error('Gamemode has not been selected');
@@ -52,18 +64,24 @@ class GMHandlerClass {
     };
   }
 
-  /*
+  /**
    * Get the selected mode identifier, this will return the name
    * of the current gamemode.
    */
   getSelectedId() {
     return this.selected;
   }
-}
 
-/*
-Singleton Pattern from http://www.dofactory.com/javascript/singleton-design-pattern
-*/
+  /**
+   * Returns an array containing each buttons name for the selected game-mode
+   */
+  getButtons() {
+    return this.buttonsUsed[this.selected];
+  }
+}
+/**
+ * Singleton Pattern from http://www.dofactory.com/javascript/singleton-design-pattern
+ */
 const GamemodeHandler = (() => {
   let instance;
 

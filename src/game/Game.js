@@ -71,6 +71,18 @@ class Game {
           }
         });
       });
+
+    // Create gamemode, gameButtons not currently used but still set
+    // to show that the functionality exists
+    this.gamemodeLoaded = false;
+    const gamemodeHandler = GamemodeHandler.getInstance();
+    this.gameButtons = gamemodeHandler.getButtons();
+    const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
+    this.resourceServer.requestResources(requestedResources).then(resources => {
+      this.currentGamemode = new SelectedMode(this, resources);
+      this.currentGamemode.init();
+      this.gamemodeLoaded = true;
+    });
   }
 
   // Main game loop
