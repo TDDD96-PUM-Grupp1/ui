@@ -61,13 +61,12 @@ class Instance {
     ) {
       // Player connects with the same information
       return 'no comm add';
-    } else {
-      // New changes, kick and add player
-      this.removePlayer(playerObject.id);
-      this.players[id] = playerObject;
-      this.instanceListener.onPlayerJoin(playerObject);
-      return 'no comm add';
     }
+    // New changes, kick and add player
+    this.removePlayer(playerObject.id);
+    this.players[id] = playerObject;
+    this.instanceListener.onPlayerJoin(playerObject);
+    return 'no comm add';
   }
 
   /*
