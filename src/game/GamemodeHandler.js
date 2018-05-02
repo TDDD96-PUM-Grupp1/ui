@@ -65,9 +65,11 @@ class GMHandlerClass {
    */
   getButtons() {
     const names = [];
-    this.configs[this.selected].abilities.foreach(ability => {
-      names.push(ability.name);
-    });
+    if (this.configs[this.selected.abilities]) {
+      this.configs[this.selected].abilities.foreach(ability => {
+        names.push(ability.name);
+      });
+    }
     return names;
   }
 }
