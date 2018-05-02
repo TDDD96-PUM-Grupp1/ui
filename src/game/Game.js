@@ -44,8 +44,8 @@ class Game {
     this.resourceServer = new ResourceServer();
     this.scoreManager = new ScoreManager();
 
-    this.dynamicStage = new PIXI.Container();
-    this.app.stage.addChild(this.dynamicStage);
+    this.gameStage = new PIXI.Container();
+    this.app.stage.addChild(this.gameStage);
     this.staticStage = new PIXI.Container();
     this.app.stage.addChild(this.staticStage);
 
