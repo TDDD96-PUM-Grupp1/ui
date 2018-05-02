@@ -17,15 +17,15 @@ class Dodgebot extends Gamemode {
     this.time = 0;
 
     // Create the dangerbots
-    this.createDangerbot(700, 700);
     this.createDangerbot(200, 200);
+    this.createDangerbot(-200, -200);
 
     // Create the arena
     this.arenaSize = 700;
     this.arenaWidth = 30;
     this.wallLength = this.arenaSize + this.arenaWidth;
-    this.centerx = 500;
-    this.centery = 500;
+    this.centerx = 0;
+    this.centery = 0;
     // rads / sec
     this.rv = 0.1;
     this.rotation = 0;
@@ -64,7 +64,7 @@ class Dodgebot extends Gamemode {
     this.rv = 0.3 * rvo * Math.sin(this.time * 0.1);
     this.rotation += this.rv * dt;
 
-    this.centerx += 15 * Math.sin(this.time * 0.05) * dt;
+    this.centerx += 15 * Math.cos(this.time * 0.05) * dt;
 
     for (let i = 0; i < WALLS; i += 1) {
       const wall = this.walls[i];
