@@ -1,4 +1,4 @@
-// import * as PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js';
 import EntityHandler from './EntityHandler';
 import CollisionHandler from './CollisionHandler';
 import ResourceServer from './ResourceServer';
@@ -42,6 +42,11 @@ class Game {
     this.respawnHandler = new RespawnHandler(this.entityHandler);
     this.resourceServer = new ResourceServer();
     this.scoreManager = new ScoreManager();
+
+    this.dynamicStage = new PIXI.Container();
+    this.app.stage.addChild(this.dynamicStage);
+    this.staticStage = new PIXI.Container();
+    this.app.stage.addChild(this.staticStage);
 
     this.gamemodeLoaded = false;
 
