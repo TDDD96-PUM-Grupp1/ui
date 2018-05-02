@@ -9,6 +9,7 @@ import RespawnHandler from './RespawnHandler';
 import settings from './../config';
 import LocalPlayerController from './entities/controllers/LocalPlayerController';
 import Instance from './Instance';
+import GamemodeConfigHandler from './GamemodeConfigHandler';
 
 /*
 Game.
@@ -56,10 +57,13 @@ class Game {
         // Create gamemode
 
         const gamemodeHandler = GamemodeHandler.getInstance();
-        const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
+        const { SelectedMode, requestedResources, options } = gamemodeHandler.getSelected();
         this.resourceServer.requestResources(requestedResources).then(gamemodeResources => {
           this.currentGamemode = new SelectedMode(this, gamemodeResources);
           this.currentGamemode.init();
+
+          this.handler = new GamemodeConfigHandler(this, this.currentGamemode, options);
+
           this.gamemodeLoaded = true;
 
           if (settings.game.localPlayer) {
@@ -67,18 +71,6 @@ class Game {
           }
         });
       });
-
-    // Create gamemode, gameButtons not currently used but still set
-    // to show that the functionality exists
-    this.gamemodeLoaded = false;
-    const gamemodeHandler = GamemodeHandler.getInstance();
-    this.gameButtons = gamemodeHandler.getButtons();
-    const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
-    this.resourceServer.requestResources(requestedResources).then(resources => {
-      this.currentGamemode = new SelectedMode(this, resources);
-      this.currentGamemode.init();
-      this.gamemodeLoaded = true;
-    });
   }
 
   // Main game loop
@@ -95,6 +87,17 @@ class Game {
       this.respawnHandler.checkRespawns();
       this.entityHandler.updateGraphics(dt);
     }
+  }
+
+  // Set up game buttons
+  // eslint-disable-next-line
+  setUpGameButtons(abilities) {
+    abilities.forEach(ability => {
+      // eslint-disable-next-line
+      const { name } = ability;
+      // TODO: This info has been sent to controller when game was launched
+      // But we might want to update the buttons on the controller at some point.
+    });
   }
 
   // Adds local players to the instance.
@@ -121,7 +124,7 @@ class Game {
         localPlayer.setController(new LocalPlayerController(this, 'local'));
       }
     }, 500);
-    if (settings.game.testLeave) {
+    if (settings.game.testMove) {
       setTimeout(() => {
         instance.sensorMoved('local2', { beta: 30, gamma: 0 });
       }, 3 * 1000);
@@ -131,7 +134,7 @@ class Game {
         instance.removePlayer('local2');
       }, 10 * 1000);
     }
-    if (settings.game.testLeave) {
+    if (settings.game.testRejoin) {
       setTimeout(() => {
         instance.addPlayer({
           iconID: 2,
@@ -142,7 +145,7 @@ class Game {
         });
       }, 13 * 1000);
     }
-    if (settings.game.testLeave) {
+    if (settings.game.testMove) {
       setTimeout(() => {
         instance.sensorMoved('local2', { beta: 30, gamma: 0 });
       }, 16 * 1000);
