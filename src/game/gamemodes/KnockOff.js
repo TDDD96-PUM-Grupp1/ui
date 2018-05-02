@@ -11,10 +11,6 @@ class KnockOff extends Gamemode {
     this.arenaRadius = 490;
     this.respawnArea = 100;
 
-    // Center arena
-    this.arenaCenterx = Math.round(window.innerWidth / 2);
-    this.arenaCentery = Math.round(window.innerHeight / 2);
-
     // Set up arena graphic
     const graphic = new PIXI.Sprite(resources.arena);
     game.gameStage.addChildAt(graphic, 0);
@@ -29,8 +25,8 @@ class KnockOff extends Gamemode {
     graphic.width = this.arenaRadius * 2;
     graphic.height = this.arenaRadius * 2;
     graphic.anchor.set(0.5, 0.5);
-    graphic.x = this.arenaCenterx;
-    graphic.y = this.arenaCentery;
+    graphic.x = 0;
+    graphic.y = 0;
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
@@ -59,8 +55,8 @@ class KnockOff extends Gamemode {
     const idTag = playerObject.id;
 
     // Place them in the middle of the arena for now
-    circle.x = this.arenaCenterx;
-    circle.y = this.arenaCentery;
+    circle.x = 0;
+    circle.y = 0;
   }
 
   // Called when a player disconnects
@@ -78,8 +74,8 @@ class KnockOff extends Gamemode {
   // Called when an entity is respawned.
   onRespawn(entity) {
     // Move the entity close to the center
-    entity.x = this.arenaCenterx + Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
-    entity.y = this.arenaCentery + Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
+    entity.x = Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
+    entity.y = Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
   }
 
   // Called when an entity dies.
@@ -87,7 +83,7 @@ class KnockOff extends Gamemode {
   onDeath(entity) {}
 
   onWindowResize() {
-    const newCenterX = Math.round(window.innerWidth / 2);
+    /* const newCenterX = Math.round(window.innerWidth / 2);
     const newCenterY = Math.round(window.innerHeight / 2);
 
     // Calculate diff in x and y before moving everything
@@ -103,7 +99,7 @@ class KnockOff extends Gamemode {
     this.game.entityHandler.getEntities().forEach(entity => {
       entity.x -= dx;
       entity.y -= dy;
-    });
+    }); */
   }
 }
 

@@ -6,11 +6,13 @@ import GamemodeHandler from './GamemodeHandler';
 import ScoreManager from './ScoreManager';
 import RespawnHandler from './RespawnHandler';
 import InstanceNameGraphic from './InstanceNameGraphic';
-
 import settings from './../config';
 import LocalPlayerController from './entities/controllers/LocalPlayerController';
 import Instance from './Instance';
 import GamemodeConfigHandler from './GamemodeConfigHandler';
+
+// Graphics scaling
+const BASE_HEIGHT = 1000;
 
 /*
 Game.
@@ -71,6 +73,7 @@ class Game {
           this.handler = new GamemodeConfigHandler(this, this.currentGamemode, options);
 
           this.gamemodeLoaded = true;
+          this.onWindowResize();
 
           if (settings.game.localPlayer) {
             this.addLocalPlayers();
@@ -207,6 +210,15 @@ class Game {
   }
 
   onWindowResize() {
+    const scale = window.innerHeight / BASE_HEIGHT;
+    const centerx = window.innerWidth / 2;
+    const centery = window.innerHeight / 2;
+    this.gameStage.scale.x = scale;
+    this.gameStage.scale.y = scale;
+    // Keep 0, 0 in gameStage in the center of the screen
+    this.gameStage.x = centerx;
+    this.gameStage.y = centery;
+
     this.nameGraphic.reposition();
     this.app.renderer.resize(window.innerWidth, window.innerHeight);
   }
