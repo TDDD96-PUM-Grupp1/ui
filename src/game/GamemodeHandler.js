@@ -64,13 +64,17 @@ class GMHandlerClass {
    * Returns an array containing each buttons name for the selected game-mode
    */
   getButtons() {
-    const names = [];
+    const buttons = [];
     if (this.configs[this.selected].options.abilities) {
       this.configs[this.selected].options.abilities.forEach(ability => {
-        names.push(ability.name);
+        buttons.push({
+          name: ability.name,
+          cooldown: ability.cooldown,
+          duration: ability.duration,
+        });
       });
     }
-    return names;
+    return buttons;
   }
 }
 /**
