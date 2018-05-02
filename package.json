@@ -26,7 +26,7 @@
     "start-pc": "set PORT=3000 && npm-run-all -p watch-css start-js-pc",
     "start-pc-local": "set PORT=3001 && set REACT_APP_LOCAL=1 && npm-run-all -p watch-css start-js-pc",
     "build": "npm run build-css && react-scripts build",
-    "test": "react-scripts test --forceExit --env=jsdom && npm run lint",
+    "test": "npm run build-css && react-scripts test --forceExit --env=jsdom && npm run lint",
     "eject": "react-scripts eject",
     "lint": "eslint src/",
     "lintfix": "eslint src/ --fix"
