@@ -38,14 +38,19 @@ class GameEntity {
 
     this.listeners = [];
 
+    // Death
+    this.dead = false;
+    this.respawnable = false;
+
     // Phasing
     this.phaseTimer = 2;
     this.blinkSpeed = Math.PI * 7;
     this.phasing = false;
-    this.phaseGroup = 0;
+    this.moveWhilePhased = true;
   }
 
   die() {
+    this.dead = true;
     this.listeners.forEach(listener => {
       listener.onDeath(this);
     });
@@ -71,10 +76,17 @@ class GameEntity {
 
   // Update this entity
   update(dt) {
+    if (this.dead) {
+      return;
+    }
     if (this.controller != null) {
       this.controller.update(dt);
     }
     const frictionMultiplier = 1 - this.floorFriction;
+    if (this.phasing && !this.moveWhilePhased) {
+      this.ax = 0;
+      this.ay = 0;
+    }
     this.vx *= frictionMultiplier;
     this.vy *= frictionMultiplier;
     this.vx += this.ax * dt;
@@ -86,6 +98,9 @@ class GameEntity {
 
   // Update this entity's graphics
   graphicUpdate(dt) {
+    if (this.dead) {
+      return;
+    }
     this.x += this.vx * dt;
     this.y += this.vy * dt;
 
@@ -98,9 +113,8 @@ class GameEntity {
       this.phaseTimer -= dt;
       this.graphic.alpha = 0.6 + 0.4 * Math.cos(this.phaseTimer * this.blinkSpeed);
       if (this.phaseTimer < 0) {
-        this.alpha = 1;
+        this.graphic.alpha = 1;
         this.phasing = false;
-        // this.collisionGroup = this.phaseGroup;
         this.colliding = true;
       }
     }
@@ -139,8 +153,6 @@ class GameEntity {
   phase(time) {
     this.phasing = true;
     this.phaseTimer = time;
-    // this.phaseGroup = this.collisionGroup;
-    // this.collisionGroup = -1;
     this.colliding = false;
   }
 

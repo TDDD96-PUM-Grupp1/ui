@@ -1,10 +1,6 @@
-import PlayerCircle from '../entities/PlayerCircle';
 import Gamemode from './Gamemode';
-// import TestController from '../entities/controllers/TestController';
-import PlayerController from '../entities/controllers/PlayerController';
 import BasicRectangle from '../entities/BasicRectangle';
 import BasicLine from '../entities/BasicLine';
-import iconData from '../iconData';
 
 /*
 Test gamemode.
@@ -24,7 +20,7 @@ class TestGamemode extends Gamemode {
     rect.rv = 1;
     rect.mass = Infinity;
     rect.floorFriction = 0;
-    this.game.entityHandler.register(rect);
+    this.game.register(rect);
 
     this.addLine(0, 0, this.game.app.screen.width, 0);
     this.addLine(
@@ -48,7 +44,7 @@ class TestGamemode extends Gamemode {
     line.dynamicFriction = 0;
     line.restitution = 1;
     line.collisionGroup = 1;
-    this.game.entityHandler.register(line);
+    this.game.register(line);
   }
 
   // Called before the game objects are updated.
@@ -69,25 +65,12 @@ class TestGamemode extends Gamemode {
   // eslint-disable-next-line
   postUpdate(dt) {}
 
-  // Called when a new player connects
-  onPlayerJoin(playerObject) {
-    const { idTag, iconID } = playerObject;
-    // eslint-disable-next-line
-    return new Promise((resolve, reject) => {
-      this.game.resourceServer
-        .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
-        .then(resources => {
-          const circle = new PlayerCircle(this.game, resources[iconData[iconID].name]);
-          const controller = new PlayerController(this.game, idTag);
-          circle.setController(controller);
-          circle.x = 400;
-          circle.y = 400;
-          circle.setColor(0xff3333);
-          this.game.entityHandler.register(circle);
+  // Called when a new player has been created
+  onPlayerCreated(playerObject, circle) {
+    const idTag = playerObject.id;
 
-          resolve(circle);
-        });
-    });
+    this.game.register(circle);
+    circle.collisionGroup = idTag;
   }
 
   // Called when a player disconnects
@@ -100,6 +83,10 @@ class TestGamemode extends Gamemode {
   cleanUp() {
     this.game.entityHandler.clear();
   }
+
+  // Has to be overridden
+  // eslint-disable-next-line class-methods-use-this
+  onWindowResize() {}
 }
 
 export default TestGamemode;

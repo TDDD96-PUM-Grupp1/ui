@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { PulseLoader } from 'react-spinners';
 import deepstream from 'deepstream.io-client-js';
+import { Button, SelectField, TextField } from 'react-md';
+
 import GamemodeHandler from '../game/GamemodeHandler';
 import getRandomInstanceName from './InstanceNameHandler';
 
 const DEFAULT_MAX_PLAYERS = 8;
 const MAX_ALLOWED_PLAYERS = 100;
+const MAX_INSTANCE_NAME_LENGTH = 21;
 
 /*
 Component showing a menu for setting up a new game
@@ -19,10 +22,14 @@ class CreateMenu extends Component {
     const gamemodeList = gamemodeHandler.getGamemodes();
 
     this.state = {
-      instanceName: '',
+      instanceName: getRandomInstanceName(),
       errors: [],
       serviceError: false,
       maxPlayers: DEFAULT_MAX_PLAYERS,
+      numberError: false,
+      numberErrorMessage: '',
+      nameLengthError: false,
+      nameLengthErrorMessage: '',
       loading: false,
       gamemodeHandler,
       gamemodeList,
@@ -31,6 +38,7 @@ class CreateMenu extends Component {
 
     this.startGame = this.startGame.bind(this);
     this.validatePlayers = this.validatePlayers.bind(this);
+    this.validateName = this.validateName.bind(this);
     this.updateGameMode = this.updateGameMode.bind(this);
     this.randomName = this.randomName.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
@@ -49,22 +57,22 @@ class CreateMenu extends Component {
 
       const gameInfo = {
         name: this.state.instanceName,
-        maxPlayers: this.state.maxPlayers,
+        maxPlayers: parseInt(this.state.maxPlayers, 10),
         gamemode: GamemodeHandler.getInstance().getSelectedId(),
+        buttons: GamemodeHandler.getInstance().getButtons(),
       };
       // Try to create an instance (as the service if the instance name is unique).
-      this.props.communication.createInstance(gameInfo, (err, data) => {
+      this.props.communication.createInstance(gameInfo, err => {
         this.setState({ loading: false });
         if (err) {
           if (err === deepstream.CONSTANTS.EVENT.NO_RPC_PROVIDER) {
-            this.setState({ errors: ['Service server is not running.'], serviceError: true });
+            this.setState({ errors: ['Service is not responding.'], serviceError: true });
+          } else {
+            this.setState({ errors: [err], serviceError: true });
           }
-        } else if (data.error) {
-          // Instance is not valid
-          this.setState({ errors: [data.error], serviceError: true });
         } else {
-          this.props.onStart();
           // Instance is valid
+          this.props.onStart();
         }
       });
     }
@@ -74,76 +82,121 @@ class CreateMenu extends Component {
    Request random name from the service.
    */
   randomName() {
-    this.setState({ instanceName: getRandomInstanceName() });
+    const randomName = getRandomInstanceName();
+    this.setState({ instanceName: randomName });
+    this.validateName(randomName);
   }
 
   /*
   Update the selected game mode.
   Event handler for a dropdown list.
   */
-  updateGameMode(event) {
-    const modeIndex = event.target.selectedIndex;
-    const newMode = this.state.gamemodeList[modeIndex];
+  updateGameMode(value, index) {
+    const newMode = this.state.gamemodeList[index];
     this.setState({ gamemode: newMode });
+  }
+
+  validateName(name) {
+    if (name.length > MAX_INSTANCE_NAME_LENGTH) {
+      this.setState({
+        nameLengthError: true,
+        nameLengthErrorMessage: `Please enter a shorter name. ${
+          name.length
+        }/${MAX_INSTANCE_NAME_LENGTH}`,
+      });
+    } else if (name.length === 0) {
+      this.setState({
+        nameLengthError: true,
+        nameLengthErrorMessage: `Please enter a name. ${name.length}/${MAX_INSTANCE_NAME_LENGTH}`,
+      });
+    } else {
+      this.setState({
+        nameLengthError: false,
+        nameLengthErrorMessage: '',
+      });
+    }
+
+    this.setState({ serviceError: false, errors: [], instanceName: name });
   }
 
   /*
   Validate the selected player count,
   Event handler for an input field.
   */
-  validatePlayers(event) {
-    const newErrors = [];
-    let newMax = this.state.maxPlayers;
-
-    const maxVal = parseInt(event.target.value, 10);
-
-    if (Number.isNaN(maxVal)) {
-      newErrors.push('Unvalid max player limit');
-    } else if (maxVal < 1) {
-      newErrors.push('Max players has to be more than 1');
-    } else if (maxVal > MAX_ALLOWED_PLAYERS) {
-      newErrors.push(`Max players has to be less than ${MAX_ALLOWED_PLAYERS}`);
+  validatePlayers(value) {
+    if (parseFloat(value, 10) !== parseInt(value, 10) && !Number.isNaN(parseFloat(value, 10))) {
+      this.setState({
+        numberError: true,
+        numberErrorMessage: 'Decimal numbers are not allowed.',
+      });
+    } else if (value <= 0) {
+      this.setState({
+        numberError: true,
+        numberErrorMessage: 'Please enter a number larger than 0',
+      });
+    } else if (value > MAX_ALLOWED_PLAYERS) {
+      this.setState({
+        numberError: true,
+        numberErrorMessage: `Please enter a number less than ${MAX_ALLOWED_PLAYERS}`,
+      });
     } else {
-      newMax = maxVal;
+      this.setState({
+        numberError: false,
+        numberErrorMessage: '',
+      });
     }
 
-    this.setState({ errors: newErrors, maxPlayers: newMax, serviceError: false });
+    this.setState({ maxPlayers: value, errors: [], serviceError: false });
   }
 
   // Change the state if the textbox is changed.
-  handleNameChange(event) {
-    this.setState({ instanceName: event.target.value });
+  handleNameChange(value) {
+    this.setState({ instanceName: value });
+    this.validateName(value);
   }
 
   render() {
     return (
       <div className="create-menu">
-        <h3 className="create-title">Create New Game</h3>
+        <div className="create-title">Create New Game</div>
         <div className="menu-setting">
-          <h4 className="menu-descriptor">Instance Name</h4>
-          <input
+          <TextField
+            id="0" // Required
             className="create-input"
+            label="Instance Name"
+            placeholder="Type a name..."
             value={this.state.instanceName}
             onChange={this.handleNameChange}
+            type="text"
+            helpText={`${this.state.instanceName.length}/${MAX_INSTANCE_NAME_LENGTH}`}
+            error={this.state.nameLengthError}
+            errorText={this.state.nameLengthErrorMessage}
           />
         </div>
+        <SelectField
+          id="1" // Required
+          label="Pick a gamemode"
+          className="create-input"
+          menuItems={this.state.gamemodeList}
+          onChange={this.updateGameMode}
+          value={this.state.gamemode}
+          style={{
+            textAlign: 'left',
+            width: '100%',
+          }}
+          type="switch"
+          position={SelectField.Positions.BOTTOM_RIGHT}
+        />
         <div className="menu-setting">
-          <h4 className="menu-descriptor">Game Mode</h4>
-          <select className="create-input" onChange={this.updateGameMode}>
-            {this.state.gamemodeList.map(val => (
-              <option key={val} value={val}>
-                {val}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="menu-setting">
-          <h4 className="menu-descriptor">Max Players</h4>
-          <input
+          <TextField
+            id="2" // Required
             className="create-input"
-            defaultValue={DEFAULT_MAX_PLAYERS}
-            type="number"
+            label="Max players"
             onChange={this.validatePlayers}
+            type="number"
+            value={this.state.maxPlayers}
+            error={this.state.numberError}
+            errorText={this.state.numberErrorMessage}
           />
         </div>
         <div className="error-list">
@@ -154,17 +207,23 @@ class CreateMenu extends Component {
           ))}
         </div>
         <div className="spinner">
-          <PulseLoader color="#ffa000" loading={this.state.loading} />
+          <PulseLoader color="#2196F3" loading={this.state.loading} />
         </div>
-        <button onClick={this.randomName} className="menu-button">
+        <Button raised primary onClick={this.randomName} className="menu-button">
           Random Name
-        </button>
-        <button onClick={this.startGame} className="menu-button">
+        </Button>
+        <Button
+          disabled={this.state.nameLengthError || this.state.numberError}
+          raised
+          primary
+          onClick={this.startGame}
+          className="menu-button"
+        >
           Create
-        </button>
-        <button onClick={this.props.onBack} className="menu-button">
-          {'\u2B05'} Back
-        </button>
+        </Button>
+        <Button raised primary onClick={this.props.onBack} className="menu-button">
+          Back
+        </Button>
       </div>
     );
   }

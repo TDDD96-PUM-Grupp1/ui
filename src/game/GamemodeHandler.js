@@ -1,31 +1,16 @@
-import TestGamemode from './gamemodes/TestGamemode';
-import KnockOff from './gamemodes/KnockOff';
 import settings from '../config';
-import KnockOffRandom from './gamemodes/KnockOffRandom';
-import KnockOffDynamic from './gamemodes/KnockOffDynamic';
-import KnockOffWander from './gamemodes/KnockOffWander';
+import GamemodeConfigHandler from './GamemodeConfigHandler';
 
-/*
-Singleton class for handling gamemode storage and selection
-*/
+/**
+ * Singleton class for handling gamemode storage and selection
+ */
 class GMHandlerClass {
   constructor() {
-    // List of all available gamemodes
-    this.gamemodes = {
-      knockOff: KnockOff,
-      knockOffRandom: KnockOffRandom,
-      knockOffDynamic: KnockOffDynamic,
-      knockOffWander: KnockOffWander,
-      testGamemode: TestGamemode,
-    };
-
-    this.gamemodeResources = {
-      knockOff: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      knockOffRandom: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      knockOffDynamic: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      knockOffWander: [{ name: 'arena', path: 'knockoff/arena.png' }],
-      testGamemode: [],
-    };
+    const { gamemodes, configs } = GamemodeConfigHandler.getGamemodes();
+    // Map of all available gamemodes
+    this.gamemodes = gamemodes;
+    // Map of the gamemodes configs
+    this.configs = configs;
 
     if (settings.skipmenu) {
       this.selected = settings.defaultGamemode;
@@ -34,16 +19,16 @@ class GMHandlerClass {
     }
   }
 
-  /*
-    Get list of all names of available gamemodes
-  */
+  /**
+   Get list of all names of available gamemodes
+   */
   getGamemodes() {
     return Object.keys(this.gamemodes);
   }
 
-  /*
-  Set the selected gamemode
-  */
+  /**
+   Set the selected gamemode
+   */
   selectGameMode(name) {
     if (name in this.gamemodes) {
       this.selected = name;
@@ -52,9 +37,9 @@ class GMHandlerClass {
     }
   }
 
-  /*
-  Get which gamemode has been selected
-  */
+  /**
+   Get which gamemode has been selected
+   */
   getSelected() {
     if (!this.selected) {
       throw new Error('Gamemode has not been selected');
@@ -62,22 +47,35 @@ class GMHandlerClass {
 
     return {
       SelectedMode: this.gamemodes[this.selected],
-      requestedResources: this.gamemodeResources[this.selected],
+      requestedResources: this.configs[this.selected].resources,
+      options: this.configs[this.selected].options,
     };
   }
 
-  /*
+  /**
    * Get the selected mode identifier, this will return the name
    * of the current gamemode.
    */
   getSelectedId() {
     return this.selected;
   }
-}
 
-/*
-Singleton Pattern from http://www.dofactory.com/javascript/singleton-design-pattern
-*/
+  /**
+   * Returns an array containing each buttons name for the selected game-mode
+   */
+  getButtons() {
+    const names = [];
+    if (this.configs[this.selected].options.abilities) {
+      this.configs[this.selected].options.abilities.forEach(ability => {
+        names.push(ability.name);
+      });
+    }
+    return names;
+  }
+}
+/**
+ * Singleton Pattern from http://www.dofactory.com/javascript/singleton-design-pattern
+ */
 const GamemodeHandler = (() => {
   let instance;
 

@@ -1,10 +1,15 @@
-// import * as PIXI from 'pixi.js';
 import EntityHandler from './EntityHandler';
 import CollisionHandler from './CollisionHandler';
 import ResourceServer from './ResourceServer';
 import GamemodeHandler from './GamemodeHandler';
 import ScoreManager from './ScoreManager';
 import RespawnHandler from './RespawnHandler';
+import InstanceNameGraphic from './InstanceNameGraphic';
+
+import settings from './../config';
+import LocalPlayerController from './entities/controllers/LocalPlayerController';
+import Instance from './Instance';
+import GamemodeConfigHandler from './GamemodeConfigHandler';
 
 /*
 Game.
@@ -15,9 +20,13 @@ class Game {
     this.communication = communication;
     this.instance = this.communication.getInstance();
 
-    // This will be undefined when running tests since we havn't
+    // This will be undefined when running tests since we haven't
     // started an instance.
     if (this.instance !== undefined) {
+      this.instance.addInstanceListener(this);
+    } else {
+      // Test instance
+      this.instance = new Instance('Test', 8);
       this.instance.addInstanceListener(this);
     }
 
@@ -34,26 +43,37 @@ class Game {
     this.resourceServer = new ResourceServer();
     this.scoreManager = new ScoreManager();
 
+    this.gamemodeLoaded = false;
+
     // Load in basic resources
     this.basicResources = {};
     this.resourceServer
       .requestResources([
         { name: 'circle', path: 'circle.png' },
-        { name: 'circle_outline', path: 'circle_outline.png' },
+        { name: 'circle_outline', path: 'circle_outline_good.png' },
       ])
       .then(resources => {
         this.basicResources = resources;
+        // Create gamemode
+
+        const gamemodeHandler = GamemodeHandler.getInstance();
+        const { SelectedMode, requestedResources, options } = gamemodeHandler.getSelected();
+        this.resourceServer.requestResources(requestedResources).then(gamemodeResources => {
+          this.currentGamemode = new SelectedMode(this, gamemodeResources);
+          this.currentGamemode.init();
+
+          this.handler = new GamemodeConfigHandler(this, this.currentGamemode, options);
+
+          this.gamemodeLoaded = true;
+
+          if (settings.game.localPlayer) {
+            this.addLocalPlayers();
+          }
+        });
       });
 
-    // Create gamemode
-    this.gamemodeLoaded = false;
-    const gamemodeHandler = GamemodeHandler.getInstance();
-    const { SelectedMode, requestedResources } = gamemodeHandler.getSelected();
-    this.resourceServer.requestResources(requestedResources).then(resources => {
-      this.currentGamemode = new SelectedMode(this, resources);
-      this.currentGamemode.init();
-      this.gamemodeLoaded = true;
-    });
+    // Add instance name
+    this.nameGraphic = new InstanceNameGraphic(this);
   }
 
   // Main game loop
@@ -70,8 +90,75 @@ class Game {
       this.respawnHandler.checkRespawns();
       this.entityHandler.updateGraphics(dt);
     }
+  }
 
-    this.communication.update(dt);
+  // Set up game buttons
+  // eslint-disable-next-line
+  setUpGameButtons(abilities) {
+    abilities.forEach(ability => {
+      // eslint-disable-next-line
+      const { name } = ability;
+      // TODO: This info has been sent to controller when game was launched
+      // But we might want to update the buttons on the controller at some point.
+    });
+  }
+
+  // Adds local players to the instance.
+  addLocalPlayers() {
+    const { instance } = this;
+    instance.addPlayer({
+      iconID: 1,
+      id: 'local',
+      name: 'local',
+      backgroundColor: '#EE6666',
+      iconColor: '#00ffff',
+    });
+    instance.addPlayer({
+      iconID: 2,
+      id: 'local2',
+      name: 'local2',
+      backgroundColor: '#EEFFF66',
+      iconColor: '#4422ff',
+    });
+    setTimeout(() => {
+      const localPlayer = this.currentGamemode.players.local;
+      if (localPlayer) {
+        // TODO: Make local player work through a normal player controller
+        localPlayer.setController(new LocalPlayerController(this, 'local'));
+      }
+    }, 500);
+    if (settings.game.testMove) {
+      setTimeout(() => {
+        instance.sensorMoved('local2', { beta: 30, gamma: 0 });
+      }, 3 * 1000);
+    }
+    if (settings.game.testLeave) {
+      setTimeout(() => {
+        instance.removePlayer('local2');
+      }, 10 * 1000);
+    }
+    if (settings.game.testRejoin) {
+      setTimeout(() => {
+        instance.addPlayer({
+          iconID: 2,
+          id: 'local2',
+          name: 'local2',
+          backgroundColor: '#EEFFF66',
+          iconColor: '#4422ff',
+        });
+      }, 13 * 1000);
+    }
+    if (settings.game.testMove) {
+      setTimeout(() => {
+        instance.sensorMoved('local2', { beta: 30, gamma: 0 });
+      }, 16 * 1000);
+    }
+  }
+
+  // Register an entity with the entityhandler
+  register(entity) {
+    this.app.stage.addChild(entity.graphic);
+    this.entityHandler.register(entity);
   }
 
   // Called when a new player joins.
@@ -97,6 +184,12 @@ class Game {
   // eslint-disable-next-line
   onButtonPressed(id, button) {}
 
+  onPingUpdated(id, ping) {
+    if (this.scoreManager.hasScoreType('Latency')) {
+      this.scoreManager.setScore('Latency', id, `${ping} ms`);
+    }
+  }
+
   registerResizeListener(listener) {
     this.resizeListeners.push(listener);
   }
@@ -108,6 +201,7 @@ class Game {
   }
 
   onWindowResize() {
+    this.nameGraphic.reposition();
     this.app.renderer.resize(window.innerWidth, window.innerHeight);
   }
 }
