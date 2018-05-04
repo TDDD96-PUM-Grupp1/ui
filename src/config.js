@@ -12,6 +12,7 @@ const settings = {
     testMove: false,
     forceCanvas: true,
     antialias: false,
+    scaleUI: false,
   },
   communication: {
     pingrate: 1,
