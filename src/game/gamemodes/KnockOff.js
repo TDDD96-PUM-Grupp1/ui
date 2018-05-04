@@ -33,9 +33,6 @@ class KnockOff extends Gamemode {
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
 
-  // Called before the game objects are updated.
-  preUpdate(dt) {}
-
   // Called after the game objects are updated.
   postUpdate(dt) {
     this.game.entityHandler.getPlayers().forEach(entity => {
@@ -51,22 +48,14 @@ class KnockOff extends Gamemode {
     });
   }
 
+  /* eslint-enable no-unused-vars, class-methods-use-this */
+
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
-    const { iconID } = playerObject;
-    const idTag = playerObject.id;
-
     // Place them in the middle of the arena for now
     circle.x = this.arenaGraphic.x;
     circle.y = this.arenaGraphic.y;
   }
-
-  // Called when a player disconnects
-  onPlayerLeave(idTag) {}
-
-  onButtonPressed(id, button) {}
-
-  /* eslint-enable class-methods-use-this, no-unused-vars */
 
   // Clean up after the gamemode is finished.
   cleanUp() {
@@ -79,13 +68,6 @@ class KnockOff extends Gamemode {
     entity.x = this.arenaGraphic.x + Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
     entity.y = this.arenaGraphic.y + Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
   }
-
-  // Called when an entity dies.
-  // eslint-disable-next-line
-  onDeath(entity) {}
-
-  // eslint-disable-next-line
-  onWindowResize() {}
 }
 
 export default KnockOff;

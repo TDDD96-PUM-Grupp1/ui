@@ -38,6 +38,8 @@ class Game {
     this.resizeListeners = [];
     this.registerResizeListener(this);
     window.onresize = this.notifyResizeListeners;
+    this.gameStageWidth = BASE_HEIGHT;
+    this.gameStageHeight = BASE_HEIGHT;
 
     // Create all handlers
     this.entityHandler = new EntityHandler();
@@ -73,7 +75,7 @@ class Game {
           this.handler = new GamemodeConfigHandler(this, this.currentGamemode, options);
 
           this.gamemodeLoaded = true;
-          this.onWindowResize();
+          this.notifyResizeListeners();
 
           if (settings.game.localPlayer) {
             this.addLocalPlayers();
@@ -215,6 +217,8 @@ class Game {
       targetHeight = this.currentGamemode.scaleHeight;
     }
     const scale = window.innerHeight / targetHeight;
+    this.gameStageWidth = window.innerWidth / scale;
+    this.gameStageHeight = targetHeight;
     const centerx = window.innerWidth / 2;
     const centery = window.innerHeight / 2;
     this.gameStage.scale.x = scale;

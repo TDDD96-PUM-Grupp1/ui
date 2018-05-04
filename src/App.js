@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 import './css/App.css';
 
 import GameComponent from './components/GameComponent';
-
-// TODO: Uncomment and use the components below:
-// import PlayerList from './components/PlayerList';
 import Communication from './components/Communication';
 import StartMenu from './components/StartMenu';
 import settings from './config';

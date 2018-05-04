@@ -33,17 +33,12 @@ class Gamemode {
   onPlayerCreated(playerObject, circle) {}
 
   // Called when a player disconnects
-  onPlayerLeave(idTag) {
-    // Turn the players entity into a dummy, leaving it in the game until it dies
-    this.players[idTag].ownerLeft();
-  }
+  onPlayerLeave(idTag) {}
 
   onButtonPressed(id, button) {}
 
-  // Force all gamemmodes to implement this
-  onWindowResize() {
-    throw new Error('Override onWindowResize');
-  }
+  // Called when the window is resized
+  onWindowResize() {}
 
   // Clean up after the gamemode is finished.
   cleanUp() {

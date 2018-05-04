@@ -141,6 +141,8 @@ class GamemodeConfigHandler {
     this.gamemode = gamemode;
     this.options = options;
 
+    this.onDeath = this.onDeath.bind(this);
+
     this.playerRadius = 32;
     this.joinPhase = 0;
 
@@ -221,6 +223,7 @@ class GamemodeConfigHandler {
       this.respawnPhaseTime = phase;
       this.respawn = true;
       this.game.respawnHandler.registerRespawnListener(this.gamemode);
+      this.injectBind('onRespawn');
     }
   }
 
@@ -290,20 +293,23 @@ class GamemodeConfigHandler {
   }
 
   injectBinds() {
-    this.injectBind('onDeath');
     this.injectBind('preUpdate');
     this.injectBind('postUpdate');
     this.injectBind('onPlayerJoin');
     this.injectBind('onPlayerCreated');
     this.injectBind('onPlayerLeave');
-    this.injectBind('onRespawn');
     this.injectBind('onButtonPressed');
   }
 
   injectBind(func) {
     const temp = this.gamemode[func];
+
     this.gamemode[func] = this[func].bind(this);
-    this.binds[func] = temp.bind(this.gamemode);
+    if (temp === undefined) {
+      this.binds[func] = () => {};
+    } else {
+      this.binds[func] = temp.bind(this.gamemode);
+    }
   }
 
   preUpdate(dt) {
@@ -371,7 +377,6 @@ class GamemodeConfigHandler {
         this.game.respawnHandler.addRespawn(entity, this.respawnTime);
       }
     }
-    this.binds.onDeath(entity);
   }
 
   postUpdate(dt) {
@@ -405,7 +410,6 @@ class GamemodeConfigHandler {
           resolve(circle);
         });
     });
-    // this.binds.onPlayerJoin(playerObject);
   }
 
   onPlayerCreated(playerObject, circle) {
@@ -425,7 +429,7 @@ class GamemodeConfigHandler {
       });
     }
     if (this.respawn) {
-      circle.addEntityListener(this.gamemode);
+      circle.addDeathListener(this.onDeath);
     }
     circle.phase(this.joinPhase);
     circle.moveWhilePhased = this.moveWhilePhased;
@@ -436,14 +440,15 @@ class GamemodeConfigHandler {
     if (this.tagging) {
       this.tags[idTag] = [];
     }
+    // Turn the players entity into a dummy, leaving it in the game until it dies
+    this.players[idTag].ownerLeft();
+
     this.binds.onPlayerLeave(idTag);
   }
 
   onRespawn(entity) {
-    if (this.respawn) {
-      if (this.respawnPhaseTime > 0) {
-        entity.phase(this.respawnPhaseTime);
-      }
+    if (this.respawnPhaseTime > 0) {
+      entity.phase(this.respawnPhaseTime);
     }
     this.binds.onRespawn(entity);
   }
