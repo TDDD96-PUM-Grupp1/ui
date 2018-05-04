@@ -44,13 +44,16 @@ class GamemodeConfigList {
             name: 'Super Heavy',
             cooldown: 10,
             duration: 3,
-            activateFunc: entity => {
+            activateFunc: (entity, resources) => {
               entity.mass *= 50;
-              entity.graphic.tint ^= 0xffffff;
+              resources.baseCircle = entity.graphic.texture;
+              entity.graphic.texture = resources.ability;
+              // entity.graphic.tint ^= 0xffffff;
             },
-            deactivateFunc: entity => {
+            deactivateFunc: (entity, resources) => {
               entity.mass /= 50;
-              entity.graphic.tint ^= 0xffffff;
+              entity.graphic.texture = resources.baseCircle;
+              // entity.graphic.tint ^= 0xffffff;
             },
           },
         ],
@@ -81,7 +84,7 @@ class GamemodeConfigList {
       },
       [
         { name: 'arena', path: 'knockoff/arena.png' },
-        { name: 'activate', path: 'knockoff/circle_activate.png' },
+        { name: 'ability', path: 'knockoff/circle_activate5.png' },
       ]
     );
     this.addGamemode(
@@ -300,7 +303,7 @@ class GamemodeConfigHandler {
         const timer = this.abilities[button].timers[id];
         timer.time -= dt;
         if (timer.active && timer.time <= cooldown - duration) {
-          deactivateFunc(this.gamemode.players[id]);
+          deactivateFunc(this.gamemode.players[id], this.gamemode.resources, this.game);
           timer.active = false;
         }
       });
@@ -409,7 +412,7 @@ class GamemodeConfigHandler {
       const ability = this.abilities[button];
       const playerEntity = this.gamemode.players[id];
       if (ability.timers[id].time <= 0) {
-        ability.activateFunc(playerEntity);
+        ability.activateFunc(playerEntity, this.gamemode.resources, this.game);
         ability.timers[id].time = ability.cooldown;
         ability.timers[id].active = true;
       }
