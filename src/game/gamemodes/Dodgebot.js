@@ -17,15 +17,15 @@ class Dodgebot extends Gamemode {
     this.time = 0;
 
     // Create the dangerbots
-    this.createDangerbot(700, 700);
     this.createDangerbot(200, 200);
+    this.createDangerbot(-200, -200);
 
     // Create the arena
     this.arenaSize = 700;
     this.arenaWidth = 30;
     this.wallLength = this.arenaSize + this.arenaWidth;
-    this.centerx = 500;
-    this.centery = 500;
+    this.centerx = 0;
+    this.centery = 0;
     // rads / sec
     this.rv = 0.1;
     this.rotation = 0;
@@ -64,7 +64,7 @@ class Dodgebot extends Gamemode {
     this.rv = 0.3 * rvo * Math.sin(this.time * 0.1);
     this.rotation += this.rv * dt;
 
-    this.centerx += 15 * Math.sin(this.time * 0.05) * dt;
+    this.centerx += 15 * Math.cos(this.time * 0.05) * dt;
 
     for (let i = 0; i < WALLS; i += 1) {
       const wall = this.walls[i];
@@ -98,22 +98,16 @@ class Dodgebot extends Gamemode {
     });
   }
 
+  /* eslint-enable class-methods-use-this, no-unused-vars */
+
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
-    const { iconID } = playerObject;
-    const idTag = playerObject.id;
-
     // Place them in the middle of the arena for now
     circle.x = this.centerx;
     circle.y = this.centery;
 
-    circle.collisionGroup = idTag;
+    circle.collisionGroup = playerObject.id;
   }
-
-  // Called when a player disconnects
-  onPlayerLeave(idTag) {}
-
-  onButtonPressed(id, button) {}
 
   // Called when an entity is respawned.
   onRespawn(entity) {
@@ -122,20 +116,11 @@ class Dodgebot extends Gamemode {
     entity.y = this.centery;
   }
 
-  /* eslint-enable class-methods-use-this, no-unused-vars */
-
   // Clean up after the gamemode is finished.
   cleanUp() {
     this.game.entityHandler.clear();
     this.game.respawnHandler.clean();
   }
-
-  // Called when an entity dies.
-  // eslint-disable-next-line
-  onDeath(entity) {}
-
-  /* eslint-disable-next-line */
-  onWindowResize() {}
 }
 
 export default Dodgebot;

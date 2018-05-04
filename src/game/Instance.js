@@ -50,9 +50,11 @@ class Instance {
       if (this.instanceListener !== undefined) {
         this.players[playerObject.id] = playerObject;
         this.instanceListener.onPlayerJoin(playerObject);
+        // New player, add him
+        return '';
       }
-      // New player, add him
-      return '';
+      // Player trying to connect to uninitialized game
+      return 'Game is not running';
     } else if (
       joiningPlayer.name === playerObject.name &&
       joiningPlayer.iconID === playerObject.iconID &&
