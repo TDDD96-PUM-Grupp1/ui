@@ -56,7 +56,6 @@ class KnockOff extends Gamemode {
     circle.x = this.arenaGraphic.x;
     circle.y = this.arenaGraphic.y;
   }
-  /* eslint-enable class-methods-use-this, no-unused-vars */
 
   // Clean up after the gamemode is finished.
   cleanUp() {
