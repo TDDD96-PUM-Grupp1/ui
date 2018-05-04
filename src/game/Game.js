@@ -7,9 +7,9 @@ import ScoreManager from './ScoreManager';
 import RespawnHandler from './RespawnHandler';
 import InstanceNameGraphic from './InstanceNameGraphic';
 import settings from './../config';
-import LocalPlayerController from './entities/controllers/LocalPlayerController';
 import Instance from './Instance';
 import GamemodeConfigHandler from './GamemodeConfigHandler';
+import KeyboardManager from './KeyboardManager';
 
 // Graphics scaling
 const BASE_HEIGHT = 1000;
@@ -131,13 +131,15 @@ class Game {
       backgroundColor: '#EEFFF66',
       iconColor: '#4422ff',
     });
-    setTimeout(() => {
-      const localPlayer = this.currentGamemode.players.local;
-      if (localPlayer) {
-        // TODO: Make local player work through a normal player controller
-        localPlayer.setController(new LocalPlayerController(this, 'local'));
+    this.localPlayerInputManager = new KeyboardManager(
+      (beta, gamma) => {
+        instance.sensorMoved('local', { beta, gamma });
+      },
+      button => {
+        this.onButtonPressed('local', button);
       }
-    }, 500);
+    );
+    this.localPlayerInputManager.bindEventListener();
     if (settings.game.testMove) {
       setTimeout(() => {
         instance.sensorMoved('local2', { beta: 30, gamma: 0 });

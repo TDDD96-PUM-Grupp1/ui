@@ -2,7 +2,7 @@ import KnockOff from './KnockOff';
 import BasicRectangle from '../entities/BasicRectangle';
 
 /*
-  Knock off gamemode with a randomly changing arena, get score by knocking other players off the it.
+  Knock off gamemode with a spinner, making the middle dangerous!
 */
 class KnockOffSpinner extends KnockOff {
   constructor(game, resources) {

@@ -11,6 +11,7 @@ import PlayerCircle from './entities/PlayerCircle';
 import PlayerController from './entities/controllers/PlayerController';
 import iconData from './iconData';
 import KnockOffSpinner from './gamemodes/KnockOffSpinner';
+import DodgebotBumper from './gamemodes/DodgebotBumper';
 
 /* eslint-disable no-unused-vars */
 const EVENT_TRIGGER_DEATH = 0;
@@ -122,6 +123,7 @@ class GamemodeConfigList {
     this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
     this.addGamemode(KnockOffWander, {}, [], KnockOff);
     this.addGamemode(KnockOffSpinner, {}, [], KnockOff);
+    this.addGamemode(DodgebotBumper, {}, [], Dodgebot);
     this.addGamemode(TestGamemode);
   }
 
