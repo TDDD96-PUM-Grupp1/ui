@@ -227,6 +227,11 @@ class Game {
     this.gameStage.x = centerx;
     this.gameStage.y = centery;
 
+    if (settings.game.scaleUI) {
+      this.staticStage.scale.x = scale;
+      this.staticStage.scale.y = scale;
+    }
+
     this.nameGraphic.reposition();
     this.app.renderer.resize(window.innerWidth, window.innerHeight);
   }

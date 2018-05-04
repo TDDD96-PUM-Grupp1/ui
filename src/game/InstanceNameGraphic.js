@@ -4,6 +4,7 @@ const NAME_MARGIN = 5;
 
 class InstanceNameGraphic {
   constructor(game) {
+    this.game = game;
     this.graphic = new PIXI.Text(
       game.instance.getName(),
       new PIXI.TextStyle({
@@ -21,7 +22,7 @@ class InstanceNameGraphic {
   }
 
   reposition() {
-    this.graphic.x = window.innerWidth - NAME_MARGIN;
+    this.graphic.x = window.innerWidth / this.game.staticStage.scale.x - NAME_MARGIN;
   }
 }
 
