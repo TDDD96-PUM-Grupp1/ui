@@ -41,6 +41,10 @@ class Instance {
     } else if (name.length === 0) {
       return 'No name specified';
     }
+    
+    if (playerObject.sensor === undefined) {
+      playerObject.sensor = { beta: 0, gamma: 0 };
+    }
 
     // Checks if the joining player already exists, and if they do whether they have reconnected
     // with new presets or not.
