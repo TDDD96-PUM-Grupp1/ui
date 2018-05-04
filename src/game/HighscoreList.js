@@ -40,7 +40,7 @@ class HighscoreList {
     this.widths = [];
 
     this.game = game;
-    game.app.stage.addChild(this.container);
+    game.staticStage.addChild(this.container);
 
     this.paintHeading();
     this.update();
