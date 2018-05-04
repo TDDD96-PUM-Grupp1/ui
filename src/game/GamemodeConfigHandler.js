@@ -10,6 +10,7 @@ import HighscoreList from './HighscoreList';
 import PlayerCircle from './entities/PlayerCircle';
 import PlayerController from './entities/controllers/PlayerController';
 import iconData from './iconData';
+import KnockOffSpinner from './gamemodes/KnockOffSpinner';
 
 /* eslint-disable no-unused-vars */
 const EVENT_TRIGGER_DEATH = 0;
@@ -120,6 +121,7 @@ class GamemodeConfigList {
     this.addGamemode(KnockOffRandom, {}, [], KnockOff);
     this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
     this.addGamemode(KnockOffWander, {}, [], KnockOff);
+    this.addGamemode(KnockOffSpinner, {}, [], KnockOff);
     this.addGamemode(TestGamemode);
   }
 
@@ -375,6 +377,8 @@ class GamemodeConfigHandler {
         this.game.entityHandler.unregisterFully(entity);
       } else if (entity.respawnable) {
         this.game.respawnHandler.addRespawn(entity, this.respawnTime);
+      } else {
+        this.game.entityHandler.unregisterFully(entity);
       }
     }
   }
