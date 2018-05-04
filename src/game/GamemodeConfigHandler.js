@@ -359,7 +359,7 @@ class GamemodeConfigHandler {
   }
 
   onDeath(entity) {
-    if (entity.isPlayer()) {
+    if (entity.isPlayer() && !entity.playerLeft) {
       const { id } = entity.controller;
       this.onDeathEvents.forEach(event => {
         const { name, action } = event;
@@ -447,7 +447,7 @@ class GamemodeConfigHandler {
       this.tags[idTag] = [];
     }
     // Turn the players entity into a dummy, leaving it in the game until it dies
-    this.players[idTag].ownerLeft();
+    this.gamemode.players[idTag].ownerLeft();
 
     this.binds.onPlayerLeave(idTag);
   }
