@@ -29,7 +29,7 @@ class Game {
       this.instance.addInstanceListener(this);
     } else {
       // Test instance
-      this.instance = new Instance('Test', 8);
+      this.instance = new Instance('Test \ud83e\udd14', 8);
       this.instance.addInstanceListener(this);
     }
 
@@ -50,6 +50,8 @@ class Game {
 
     this.gameStage = new PIXI.Container();
     this.app.stage.addChild(this.gameStage);
+    // this.playerContainer = new PIXI.Container();
+    // this.gameStage.addChild(this.playerContainer);
     this.staticStage = new PIXI.Container();
     this.app.stage.addChild(this.staticStage);
 
@@ -64,8 +66,8 @@ class Game {
       ])
       .then(resources => {
         this.basicResources = resources;
-        // Create gamemode
 
+        // Create gamemode
         const gamemodeHandler = GamemodeHandler.getInstance();
         const { SelectedMode, requestedResources, options } = gamemodeHandler.getSelected();
         this.resourceServer.requestResources(requestedResources).then(gamemodeResources => {
@@ -186,6 +188,7 @@ class Game {
     this.scoreManager.removePlayer(idTag);
     this.currentGamemode.onPlayerLeave(idTag);
   }
+
   // eslint-disable-next-line
   onSensorMoved(id, sensor) {}
 

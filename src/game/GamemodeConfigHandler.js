@@ -12,6 +12,7 @@ import PlayerController from './entities/controllers/PlayerController';
 import iconData from './iconData';
 import KnockOffSpinner from './gamemodes/KnockOffSpinner';
 import DodgebotBumper from './gamemodes/DodgebotBumper';
+import Hockey from './gamemodes/Hockey';
 
 /* eslint-disable no-unused-vars */
 const EVENT_TRIGGER_DEATH = 0;
@@ -124,6 +125,7 @@ class GamemodeConfigList {
     this.addGamemode(KnockOffWander, {}, [], KnockOff);
     this.addGamemode(KnockOffSpinner, {}, [], KnockOff);
     this.addGamemode(DodgebotBumper, {}, [], Dodgebot);
+    this.addGamemode(Hockey, { joinPhase: 2, moveWhilePhased: false }, []);
     this.addGamemode(TestGamemode);
   }
 
