@@ -29,7 +29,7 @@ class Game {
       this.instance.addInstanceListener(this);
     } else {
       // Test instance
-      this.instance = new Instance('Test \ud83e\udd14', 8);
+      this.instance = new Instance('Test \ud83e\udd14', 50);
       this.instance.addInstanceListener(this);
     }
 
@@ -50,8 +50,6 @@ class Game {
 
     this.gameStage = new PIXI.Container();
     this.app.stage.addChild(this.gameStage);
-    // this.playerContainer = new PIXI.Container();
-    // this.gameStage.addChild(this.playerContainer);
     this.staticStage = new PIXI.Container();
     this.app.stage.addChild(this.staticStage);
 
@@ -119,6 +117,7 @@ class Game {
   // Adds local players to the instance.
   addLocalPlayers() {
     const { instance } = this;
+
     instance.addPlayer({
       iconID: 1,
       id: 'local',
@@ -126,13 +125,16 @@ class Game {
       backgroundColor: '#EE6666',
       iconColor: '#00ffff',
     });
-    instance.addPlayer({
-      iconID: 2,
-      id: 'local2',
-      name: 'local2',
-      backgroundColor: '#EEFFF66',
-      iconColor: '#4422ff',
-    });
+    for (let i = 1; i < settings.game.dummyCount; i += 1) {
+      instance.addPlayer({
+        iconID: i + 1,
+        id: `local${i}`,
+        name: `local${i}`,
+        backgroundColor: '#EEFFF66',
+        iconColor: `#${Math.floor(Math.random() * 0xffffff).toString(16)}`,
+        // iconColor: '#4422ff',
+      });
+    }
     this.localPlayerInputManager = new KeyboardManager(
       (beta, gamma) => {
         instance.sensorMoved('local', { beta, gamma });

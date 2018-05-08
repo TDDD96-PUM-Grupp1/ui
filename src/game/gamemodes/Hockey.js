@@ -7,6 +7,17 @@ import BasicLine from '../entities/BasicLine';
 const FONT_RESOLUTION = 400;
 const SCALE = 300 / FONT_RESOLUTION;
 
+// Shuffle a list
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i -= 1) {
+    const j = Math.ceil(Math.random() * i);
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
+}
+
 /*
   Hockey gamemode, get the ball into the other teams goal!
 */
@@ -78,27 +89,44 @@ class Hockey extends Gamemode {
   }
 
   resetPlayers() {
-    // TODO: Spread out players
+    this.team1 = shuffle(this.team1);
+    this.team2 = shuffle(this.team2);
+
+    let counter = 0.5;
+    const dist = -250;
+    const angleStart = Math.atan2(-this.scaleHeight + 50, dist);
+    const angleEnd = Math.atan2(this.scaleHeight - 50, dist);
+    const angleSpan = Math.atan2(Math.sin(angleEnd - angleStart), Math.cos(angleEnd - angleStart));
+    let angleSlice = angleSpan / this.team1.length;
     this.team1.forEach(player => {
       const entity = this.players[player];
       entity.resetPhysics();
       entity.phase(2);
-      entity.x = -200;
-      entity.y = 0;
+
+      const angle = angleStart + angleSlice * counter;
+      entity.x = -dist * Math.cos(angle);
+      entity.y = dist * Math.sin(angle);
+
+      counter += 1;
     });
 
+    counter = 0.5;
+    angleSlice = angleSpan / this.team2.length;
     this.team2.forEach(player => {
       const entity = this.players[player];
       entity.resetPhysics();
       entity.phase(2);
-      entity.x = 200;
-      entity.y = 0;
+
+      const angle = angleStart + angleSlice * counter;
+      entity.x = dist * Math.cos(angle);
+      entity.y = dist * Math.sin(angle);
+
+      counter += 1;
     });
   }
 
   // Called after the game objects are updated.
-  // eslint-disable-next-line
-  postUpdate(dt) {
+  postUpdate() {
     if (this.ball.x < -this.game.gameStageWidth * 0.5) {
       // Team 2 scored!
       this.team2Score += 1;
@@ -115,8 +143,6 @@ class Hockey extends Gamemode {
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
     const { id } = playerObject;
-
-    // circle.graphic.blendMode = PIXI.BLEND_MODES.EXCLUSION;
 
     if (this.team2.length >= this.team1.length) {
       // join team 1
