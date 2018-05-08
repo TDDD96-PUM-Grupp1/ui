@@ -24,6 +24,7 @@ const HIGHSCORE_ORDER_DESCENDING = false;
 
 const HIGHSCORE_DISPLAY_TIME = 0;
 const HIGHSCORE_DISPLAY_LATENCY = 1;
+const HIGHSCORE_DISPLAY_BEST = name => ({ type: 'best', target: name });
 /* eslint-enable no-unused-vars */
 
 class GamemodeConfigList {
@@ -108,6 +109,7 @@ class GamemodeConfigList {
             Best_Time_Alive: {
               initial: 0,
               primary: true,
+              display: HIGHSCORE_DISPLAY_BEST('Time Alive'),
             },
             Time_Alive: {
               initial: 0,
@@ -163,6 +165,7 @@ class GamemodeConfigHandler {
     this.onDeathEvents = [];
     this.onKillEvents = [];
 
+    this.advancedDisplays = [];
     this.timeDisplays = [];
 
     this.injectBinds();
@@ -252,18 +255,36 @@ class GamemodeConfigHandler {
 
   setUpHighscoreEvents() {
     Object.keys(this.options.highscore.scores).forEach(title => {
-      const score = this.options.highscore.scores[title];
+      const highscore = this.options.highscore.scores[title];
       const name = title.replace(/_/g, ' ');
-      const { initial, display, events } = score;
+      const { initial, display, events } = highscore;
       if (display !== undefined) {
         switch (display) {
           case HIGHSCORE_DISPLAY_TIME:
             this.timeDisplays.push({ name });
             break;
           case HIGHSCORE_DISPLAY_LATENCY:
+            // Displayed through event from instance by game core.
             break;
           default:
-            throw new Error(`Invalid display type '${display}'.`);
+            if (display.type) {
+              const { type, target } = display;
+              let cond;
+              let update;
+              switch (type) {
+                case 'best':
+                  cond = (stored, comp) => comp > stored;
+                  update = (stored, comp) => comp;
+                  break;
+                default:
+                  throw new Error(`Invalid advanced display type '${type}'.`);
+              }
+              // Prettier wants this line on 1 row but eslint wants it spread out...
+              // eslint-disable-next-line
+              this.advancedDisplays.push({ name, target, cond, update });
+            } else {
+              throw new Error(`Invalid display type '${display}'.`);
+            }
         }
       }
       if (events !== undefined) {
@@ -386,6 +407,19 @@ class GamemodeConfigHandler {
   }
 
   postUpdate(dt) {
+    const players = Object.keys(this.gamemode.players);
+    this.advancedDisplays.forEach(display => {
+      // Prettier wants this line on 1 row but eslint wants it spread out...
+      // eslint-disable-next-line
+      const { name, target, cond, update } = display;
+      players.forEach(id => {
+        const current = this.game.scoreManager.getScore(name, id);
+        const score = this.game.scoreManager.getScore(target, id);
+        if (cond(current, score)) {
+          this.game.scoreManager.setScore(name, id, update(current, score));
+        }
+      });
+    });
     this.binds.postUpdate(dt);
   }
 

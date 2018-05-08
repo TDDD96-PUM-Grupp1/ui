@@ -80,26 +80,6 @@ class Dodgebot extends Gamemode {
     }
   }
 
-  /* eslint-disable class-methods-use-this, no-unused-vars */
-
-  // Called after the game objects are updated.
-  postUpdate(dt) {
-    Object.keys(this.players).forEach(id => {
-      const entity = this.players[id];
-
-      // Increase best score if time alive is higher
-      if (!entity.dead) {
-        const bestScore = this.game.scoreManager.getScore('Best Time Alive', id);
-        const score = this.game.scoreManager.getScore('Time Alive', id);
-        if (score > bestScore) {
-          this.game.scoreManager.setScore('Best Time Alive', id, score);
-        }
-      }
-    });
-  }
-
-  /* eslint-enable class-methods-use-this, no-unused-vars */
-
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
     // Place them in the middle of the arena for now
