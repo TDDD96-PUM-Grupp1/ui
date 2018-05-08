@@ -41,7 +41,7 @@ class Dodgebot extends Gamemode {
       wall.floorFriction = 0;
       wall.restitution = 0;
       wall.rv = this.rv;
-      game.register(wall);
+      game.registerWall(wall);
       wall.x = this.centerx + Math.cos(angle) * this.arenaSize * 0.5;
       wall.y = this.centery + Math.sin(angle) * this.arenaSize * 0.5;
     }
