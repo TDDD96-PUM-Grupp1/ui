@@ -98,7 +98,7 @@ class GamemodeConfigList {
       {
         joinPhase: 2,
         backgroundColor: 0x061639,
-        moveWhilePhased: false,
+        moveWhilePhased: true,
         respawn: {
           time: 1,
           phase: 1.5,
