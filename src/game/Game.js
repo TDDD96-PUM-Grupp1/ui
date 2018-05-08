@@ -178,6 +178,12 @@ class Game {
     this.entityHandler.register(entity);
   }
 
+  // Register a wall entity with the entityhandler
+  registerWall(entity) {
+    this.gameStage.addChild(entity.graphic);
+    this.entityHandler.registerWall(entity);
+  }
+
   // Called when a new player joins.
   onPlayerJoin(playerObject) {
     this.currentGamemode.onPlayerJoin(playerObject).then(() => {
