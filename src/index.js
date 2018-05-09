@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import WebFont from 'webfontloader';
+import WebFontLoader from 'webfontloader';
 
 import './css/reset.css';
 import './css/index.css';
@@ -9,9 +9,9 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
 // Font Loading
-WebFont.load({
+WebFontLoader.load({
   google: {
-    families: ['Amatic SC', 'Roboto'],
+    families: ['Roboto:300,400,500,700', 'Material Icons'],
   },
 });
 

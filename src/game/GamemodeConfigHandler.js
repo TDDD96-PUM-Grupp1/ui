@@ -7,6 +7,9 @@ import KnockOffWander from './gamemodes/KnockOffWander';
 import Dodgebot from './gamemodes/Dodgebot';
 
 import HighscoreList from './HighscoreList';
+import PlayerCircle from './entities/PlayerCircle';
+import PlayerController from './entities/controllers/PlayerController';
+import iconData from './iconData';
 
 /* eslint-disable no-unused-vars */
 const EVENT_TRIGGER_DEATH = 0;
@@ -21,6 +24,7 @@ const HIGHSCORE_ORDER_DESCENDING = false;
 
 const HIGHSCORE_DISPLAY_TIME = 0;
 const HIGHSCORE_DISPLAY_LATENCY = 1;
+const HIGHSCORE_DISPLAY_BEST = name => ({ type: 'best', target: name });
 /* eslint-enable no-unused-vars */
 
 class GamemodeConfigList {
@@ -38,6 +42,8 @@ class GamemodeConfigList {
     this.addGamemode(
       KnockOff,
       {
+        joinPhase: 2,
+        playerRadius: 32,
         backgroundColor: 0x061639,
         abilities: [
           {
@@ -45,13 +51,16 @@ class GamemodeConfigList {
             cooldown: 10,
             duration: 3,
             color: '#ff0000',
-            activateFunc: entity => {
+            activateFunc: (entity, resources) => {
               entity.mass *= 50;
-              entity.graphic.tint ^= 0xffffff;
+              resources.baseCircle = entity.graphic.texture;
+              entity.graphic.texture = resources.ability;
+              // entity.graphic.tint ^= 0xffffff;
             },
-            deactivateFunc: entity => {
+            deactivateFunc: (entity, resources) => {
               entity.mass /= 50;
-              entity.graphic.tint ^= 0xffffff;
+              entity.graphic.texture = resources.baseCircle;
+              // entity.graphic.tint ^= 0xffffff;
             },
           },
         ],
@@ -80,13 +89,17 @@ class GamemodeConfigList {
           },
         },
       },
-      [{ name: 'arena', path: 'knockoff/arena.png' }]
+      [
+        { name: 'arena', path: 'knockoff/arena.png' },
+        { name: 'ability', path: 'knockoff/circle_activate5.png' },
+      ]
     );
     this.addGamemode(
       Dodgebot,
       {
+        joinPhase: 2,
         backgroundColor: 0x061639,
-        moveWhilePhased: false,
+        moveWhilePhased: true,
         respawn: {
           time: 1,
           phase: 1.5,
@@ -97,6 +110,7 @@ class GamemodeConfigList {
             Best_Time_Alive: {
               initial: 0,
               primary: true,
+              display: HIGHSCORE_DISPLAY_BEST('Time Alive'),
             },
             Time_Alive: {
               initial: 0,
@@ -136,6 +150,11 @@ class GamemodeConfigHandler {
     this.gamemode = gamemode;
     this.options = options;
 
+    this.onDeath = this.onDeath.bind(this);
+
+    this.playerRadius = 32;
+    this.joinPhase = 0;
+
     this.moveWhilePhased = true;
 
     this.tagging = false;
@@ -147,6 +166,7 @@ class GamemodeConfigHandler {
     this.onDeathEvents = [];
     this.onKillEvents = [];
 
+    this.advancedDisplays = [];
     this.timeDisplays = [];
 
     this.injectBinds();
@@ -192,6 +212,12 @@ class GamemodeConfigHandler {
     if (this.options.moveWhilePhased !== undefined) {
       this.moveWhilePhased = this.options.moveWhilePhased;
     }
+    if (this.options.playerRadius !== undefined) {
+      this.playerRadius = this.options.playerRadius;
+    }
+    if (this.options.joinPhase !== undefined) {
+      this.joinPhase = this.options.joinPhase;
+    }
   }
 
   setUpRespawn() {
@@ -207,6 +233,7 @@ class GamemodeConfigHandler {
       this.respawnPhaseTime = phase;
       this.respawn = true;
       this.game.respawnHandler.registerRespawnListener(this.gamemode);
+      this.injectBind('onRespawn');
     }
   }
 
@@ -229,18 +256,36 @@ class GamemodeConfigHandler {
 
   setUpHighscoreEvents() {
     Object.keys(this.options.highscore.scores).forEach(title => {
-      const score = this.options.highscore.scores[title];
+      const highscore = this.options.highscore.scores[title];
       const name = title.replace(/_/g, ' ');
-      const { initial, display, events } = score;
+      const { initial, display, events } = highscore;
       if (display !== undefined) {
         switch (display) {
           case HIGHSCORE_DISPLAY_TIME:
             this.timeDisplays.push({ name });
             break;
           case HIGHSCORE_DISPLAY_LATENCY:
+            // Displayed through event from instance by game core.
             break;
           default:
-            throw new Error(`Invalid display type '${display}'.`);
+            if (display.type) {
+              const { type, target } = display;
+              let cond;
+              let update;
+              switch (type) {
+                case 'best':
+                  cond = (stored, comp) => comp > stored;
+                  update = (stored, comp) => comp;
+                  break;
+                default:
+                  throw new Error(`Invalid advanced display type '${type}'.`);
+              }
+              // Prettier wants this line on 1 row but eslint wants it spread out...
+              // eslint-disable-next-line
+              this.advancedDisplays.push({ name, target, cond, update });
+            } else {
+              throw new Error(`Invalid display type '${display}'.`);
+            }
         }
       }
       if (events !== undefined) {
@@ -276,19 +321,23 @@ class GamemodeConfigHandler {
   }
 
   injectBinds() {
-    this.injectBind('onDeath');
     this.injectBind('preUpdate');
     this.injectBind('postUpdate');
+    this.injectBind('onPlayerJoin');
     this.injectBind('onPlayerCreated');
     this.injectBind('onPlayerLeave');
-    this.injectBind('onRespawn');
     this.injectBind('onButtonPressed');
   }
 
   injectBind(func) {
     const temp = this.gamemode[func];
+
     this.gamemode[func] = this[func].bind(this);
-    this.binds[func] = temp.bind(this.gamemode);
+    if (temp === undefined) {
+      this.binds[func] = () => {};
+    } else {
+      this.binds[func] = temp.bind(this.gamemode);
+    }
   }
 
   preUpdate(dt) {
@@ -298,7 +347,7 @@ class GamemodeConfigHandler {
         const timer = this.abilities[button].timers[id];
         timer.time -= dt;
         if (timer.active && timer.time <= cooldown - duration) {
-          deactivateFunc(this.gamemode.players[id]);
+          deactivateFunc(this.gamemode.players[id], this.gamemode.resources, this.game);
           timer.active = false;
         }
       });
@@ -332,7 +381,7 @@ class GamemodeConfigHandler {
   }
 
   onDeath(entity) {
-    if (entity.isPlayer()) {
+    if (entity.isPlayer() && !entity.playerLeft) {
       const { id } = entity.controller;
       this.onDeathEvents.forEach(event => {
         const { name, action } = event;
@@ -356,11 +405,52 @@ class GamemodeConfigHandler {
         this.game.respawnHandler.addRespawn(entity, this.respawnTime);
       }
     }
-    this.binds.onDeath(entity);
   }
 
   postUpdate(dt) {
+    const players = Object.keys(this.gamemode.players);
+    this.advancedDisplays.forEach(display => {
+      // Prettier wants this line on 1 row but eslint wants it spread out...
+      // eslint-disable-next-line
+      const { name, target, cond, update } = display;
+      players.forEach(id => {
+        const current = this.game.scoreManager.getScore(name, id);
+        const score = this.game.scoreManager.getScore(target, id);
+        if (cond(current, score)) {
+          this.game.scoreManager.setScore(name, id, update(current, score));
+        }
+      });
+    });
     this.binds.postUpdate(dt);
+  }
+
+  onPlayerJoin(playerObject) {
+    const { iconID, id } = playerObject;
+
+    return new Promise(resolve => {
+      this.game.resourceServer
+        .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
+        .then(resources => {
+          const circle = new PlayerCircle(
+            this.game,
+            resources[iconData[iconID].name],
+            this.playerRadius
+          );
+          const controller = new PlayerController(this.game, id);
+          circle.setController(controller);
+          const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
+          const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
+
+          circle.setColor(backgroundCol, iconCol);
+
+          this.gamemode.players[id] = circle;
+          this.game.register(circle);
+
+          this.gamemode.onPlayerCreated(playerObject, circle);
+
+          resolve(circle);
+        });
+    });
   }
 
   onPlayerCreated(playerObject, circle) {
@@ -380,8 +470,9 @@ class GamemodeConfigHandler {
       });
     }
     if (this.respawn) {
-      circle.addEntityListener(this.gamemode);
+      circle.addDeathListener(this.onDeath);
     }
+    circle.phase(this.joinPhase);
     circle.moveWhilePhased = this.moveWhilePhased;
     this.binds.onPlayerCreated(playerObject, circle);
   }
@@ -390,14 +481,15 @@ class GamemodeConfigHandler {
     if (this.tagging) {
       this.tags[idTag] = [];
     }
+    // Turn the players entity into a dummy, leaving it in the game until it dies
+    this.gamemode.players[idTag].ownerLeft();
+
     this.binds.onPlayerLeave(idTag);
   }
 
   onRespawn(entity) {
-    if (this.respawn) {
-      if (this.respawnPhaseTime > 0) {
-        entity.phase(this.respawnPhaseTime);
-      }
+    if (this.respawnPhaseTime > 0) {
+      entity.phase(this.respawnPhaseTime);
     }
     this.binds.onRespawn(entity);
   }
@@ -407,7 +499,7 @@ class GamemodeConfigHandler {
       const ability = this.abilities[button];
       const playerEntity = this.gamemode.players[id];
       if (ability.timers[id].time <= 0) {
-        ability.activateFunc(playerEntity);
+        ability.activateFunc(playerEntity, this.gamemode.resources, this.game);
         ability.timers[id].time = ability.cooldown;
         ability.timers[id].active = true;
       }

@@ -1,3 +1,4 @@
+import * as PIXI from 'pixi.js';
 import EntityHandler from './EntityHandler';
 import CollisionHandler from './CollisionHandler';
 import ResourceServer from './ResourceServer';
@@ -5,11 +6,13 @@ import GamemodeHandler from './GamemodeHandler';
 import ScoreManager from './ScoreManager';
 import RespawnHandler from './RespawnHandler';
 import InstanceNameGraphic from './InstanceNameGraphic';
-
 import settings from './../config';
 import LocalPlayerController from './entities/controllers/LocalPlayerController';
 import Instance from './Instance';
 import GamemodeConfigHandler from './GamemodeConfigHandler';
+
+// Graphics scaling
+const BASE_HEIGHT = 1000;
 
 /*
 Game.
@@ -35,6 +38,8 @@ class Game {
     this.resizeListeners = [];
     this.registerResizeListener(this);
     window.onresize = this.notifyResizeListeners;
+    this.gameStageWidth = BASE_HEIGHT;
+    this.gameStageHeight = BASE_HEIGHT;
 
     // Create all handlers
     this.entityHandler = new EntityHandler();
@@ -42,6 +47,11 @@ class Game {
     this.respawnHandler = new RespawnHandler(this.entityHandler);
     this.resourceServer = new ResourceServer();
     this.scoreManager = new ScoreManager();
+
+    this.gameStage = new PIXI.Container();
+    this.app.stage.addChild(this.gameStage);
+    this.staticStage = new PIXI.Container();
+    this.app.stage.addChild(this.staticStage);
 
     this.gamemodeLoaded = false;
 
@@ -65,6 +75,7 @@ class Game {
           this.handler = new GamemodeConfigHandler(this, this.currentGamemode, options);
 
           this.gamemodeLoaded = true;
+          this.notifyResizeListeners();
 
           if (settings.game.localPlayer) {
             this.addLocalPlayers();
@@ -157,8 +168,14 @@ class Game {
 
   // Register an entity with the entityhandler
   register(entity) {
-    this.app.stage.addChild(entity.graphic);
+    this.gameStage.addChild(entity.graphic);
     this.entityHandler.register(entity);
+  }
+
+  // Register a wall entity with the entityhandler
+  registerWall(entity) {
+    this.gameStage.addChild(entity.graphic);
+    this.entityHandler.registerWall(entity);
   }
 
   // Called when a new player joins.
@@ -201,6 +218,26 @@ class Game {
   }
 
   onWindowResize() {
+    let targetHeight = BASE_HEIGHT;
+    if (this.currentGamemode && this.currentGamemode.scaleHeight) {
+      targetHeight = this.currentGamemode.scaleHeight;
+    }
+    const scale = window.innerHeight / targetHeight;
+    this.gameStageWidth = window.innerWidth / scale;
+    this.gameStageHeight = targetHeight;
+    const centerx = window.innerWidth / 2;
+    const centery = window.innerHeight / 2;
+    this.gameStage.scale.x = scale;
+    this.gameStage.scale.y = scale;
+    // Keep 0, 0 in gameStage in the center of the screen
+    this.gameStage.x = centerx;
+    this.gameStage.y = centery;
+
+    if (settings.game.scaleUI) {
+      this.staticStage.scale.x = scale;
+      this.staticStage.scale.y = scale;
+    }
+
     this.nameGraphic.reposition();
     this.app.renderer.resize(window.innerWidth, window.innerHeight);
   }

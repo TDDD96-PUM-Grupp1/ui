@@ -28,15 +28,12 @@ class GameEntity {
     this.I = 1; // rotational inertia, super important to calculate from the shape of the object!
     this.floorFriction = 0.005;
 
-    // Not implemented
-    // this.maxVelocity = 100; // Maybe do max kinetic energy?
-
     // Collision group
     // The entity will not collide with entities in the same group.
     this.collisionGroup = 0;
     this.colliding = true;
 
-    this.listeners = [];
+    this.deathListeners = [];
 
     // Death
     this.dead = false;
@@ -51,8 +48,8 @@ class GameEntity {
 
   die() {
     this.dead = true;
-    this.listeners.forEach(listener => {
-      listener.onDeath(this);
+    this.deathListeners.forEach(listener => {
+      listener(this);
     });
   }
 
@@ -145,8 +142,8 @@ class GameEntity {
     this.graphic.tint = color;
   }
 
-  addEntityListener(listener) {
-    this.listeners.push(listener);
+  addDeathListener(listener) {
+    this.deathListeners.push(listener);
   }
 
   // Activate phasing

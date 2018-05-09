@@ -3,15 +3,45 @@
 exports[`FirstMenu matches the snapshot 1`] = `
 <div>
   <button
-    className="menu-button"
+    className="md-btn md-btn--raised md-btn--text md-pointer--hover md-background--primary md-background--primary-hover md-inline-block menu-button"
+    disabled={undefined}
+    href={undefined}
     onClick={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onMouseDown={[Function]}
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchEnd={[Function]}
+    onTouchStart={[Function]}
+    type="button"
   >
+    <div
+      className="md-ink-container"
+      style={undefined}
+    />
     Create Game
   </button>
   <button
-    className="menu-button"
+    className="md-btn md-btn--raised md-btn--text md-pointer--hover md-background--primary md-background--primary-hover md-inline-block menu-button"
+    disabled={undefined}
+    href={undefined}
     onClick={[Function]}
+    onKeyDown={[Function]}
+    onKeyUp={[Function]}
+    onMouseDown={[Function]}
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchEnd={[Function]}
+    onTouchStart={[Function]}
+    type="button"
   >
+    <div
+      className="md-ink-container"
+      style={undefined}
+    />
     About
   </button>
 </div>
