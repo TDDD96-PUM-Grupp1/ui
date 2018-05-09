@@ -28,26 +28,28 @@ class GameEntity {
     this.I = 1; // rotational inertia, super important to calculate from the shape of the object!
     this.floorFriction = 0.005;
 
-    // Not implemented
-    // this.maxVelocity = 100; // Maybe do max kinetic energy?
-
     // Collision group
     // The entity will not collide with entities in the same group.
     this.collisionGroup = 0;
     this.colliding = true;
 
-    this.listeners = [];
+    this.deathListeners = [];
+
+    // Death
+    this.dead = false;
+    this.respawnable = false;
 
     // Phasing
     this.phaseTimer = 2;
     this.blinkSpeed = Math.PI * 7;
     this.phasing = false;
-    this.phaseGroup = 0;
+    this.moveWhilePhased = true;
   }
 
   die() {
-    this.listeners.forEach(listener => {
-      listener.onDeath(this);
+    this.dead = true;
+    this.deathListeners.forEach(listener => {
+      listener(this);
     });
   }
 
@@ -71,10 +73,17 @@ class GameEntity {
 
   // Update this entity
   update(dt) {
+    if (this.dead) {
+      return;
+    }
     if (this.controller != null) {
       this.controller.update(dt);
     }
     const frictionMultiplier = 1 - this.floorFriction;
+    if (this.phasing && !this.moveWhilePhased) {
+      this.ax = 0;
+      this.ay = 0;
+    }
     this.vx *= frictionMultiplier;
     this.vy *= frictionMultiplier;
     this.vx += this.ax * dt;
@@ -86,6 +95,9 @@ class GameEntity {
 
   // Update this entity's graphics
   graphicUpdate(dt) {
+    if (this.dead) {
+      return;
+    }
     this.x += this.vx * dt;
     this.y += this.vy * dt;
 
@@ -98,9 +110,8 @@ class GameEntity {
       this.phaseTimer -= dt;
       this.graphic.alpha = 0.6 + 0.4 * Math.cos(this.phaseTimer * this.blinkSpeed);
       if (this.phaseTimer < 0) {
-        this.alpha = 1;
+        this.graphic.alpha = 1;
         this.phasing = false;
-        // this.collisionGroup = this.phaseGroup;
         this.colliding = true;
       }
     }
@@ -131,16 +142,14 @@ class GameEntity {
     this.graphic.tint = color;
   }
 
-  addEntityListener(listener) {
-    this.listeners.push(listener);
+  addDeathListener(listener) {
+    this.deathListeners.push(listener);
   }
 
   // Activate phasing
   phase(time) {
     this.phasing = true;
     this.phaseTimer = time;
-    // this.phaseGroup = this.collisionGroup;
-    // this.collisionGroup = -1;
     this.colliding = false;
   }
 

@@ -5,56 +5,78 @@ class EntityHandler {
   constructor() {
     // List of entites handled by this handler.
     this.entities = [];
+    this.walls = [];
   }
 
   // Update all entities.
   update(dt) {
-    for (let i = 0; i < this.entities.length; i += 1) {
-      this.entities[i].update(dt);
-    }
+    this.entities.forEach(entity => {
+      entity.update(dt);
+    });
+    this.walls.forEach(entity => {
+      entity.update(dt);
+    });
   }
 
   // Update all the entities graphics.
   updateGraphics(dt) {
-    for (let i = 0; i < this.entities.length; i += 1) {
-      this.entities[i].graphicUpdate(dt);
-    }
+    this.entities.forEach(entity => {
+      entity.graphicUpdate(dt);
+    });
+    this.walls.forEach(entity => {
+      entity.graphicUpdate(dt);
+    });
   }
 
   // Add an entity to this entity handler.
-  register(obj) {
-    this.entities.push(obj);
+  register(entity) {
+    this.entities.push(entity);
+  }
+
+  // Add a wall entity to this entity handler.
+  // A wall will always collide with an entity
+  registerWall(entity) {
+    this.walls.push(entity);
   }
 
   // Removes an entity from this entity handler.
-  unregister(obj) {
-    const index = this.entities.indexOf(obj);
+  unregister(entity) {
+    const index = this.entities.indexOf(entity);
     this.entities.splice(index, 1);
   }
 
   // Removes an entity from this entity handler.
   // Also destroys its graphics.
-  unregisterFully(obj) {
-    this.unregister(obj);
-    obj.destroy();
+  unregisterFully(entity) {
+    this.unregister(entity);
+    entity.destroy();
   }
 
   // Returns an array containing all entities.
   getEntities() {
-    /* const copy = [];
-    for (let i = 0; i < this.entities.length; i += 1) {
-      copy.push(this.entities[i]);
-    } */
-    // return this.entities.slice();
     return this.entities;
+  }
+
+  // Returns an array containing all wall entities.
+  getWalls() {
+    return this.walls;
+  }
+
+  // Returns an array containing all player entities.
+  getPlayers() {
+    return this.entities.filter(ent => ent.isPlayer());
   }
 
   // Destroy all entities and clear the entity list.
   clear() {
-    for (let i = 0; i < this.entities.length; i += 1) {
-      this.entities[i].destroy();
-    }
+    this.entities.forEach(entity => {
+      entity.destroy();
+    });
+    this.walls.forEach(entity => {
+      entity.destroy();
+    });
     this.entities = [];
+    this.walls = [];
   }
 }
 

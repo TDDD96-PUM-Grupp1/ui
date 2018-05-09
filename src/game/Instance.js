@@ -29,21 +29,50 @@ class Instance {
    * Adds a player to the instance.
    * @param String id Id of the player.
    * @param String name Name of the player.
-   * @return true if the player was added and false otherwise.
-   */
+   * @return String with error if one has occured */
   addPlayer(playerObject) {
     const { id, name } = playerObject;
-
     if (Object.keys(this.players).length >= this.maxPlayers) {
-      return false;
-    }
-    this.players[id] = { name, sensor: { beta: 0, gamma: 0 } };
-
-    if (this.instanceListener !== undefined) {
-      this.instanceListener.onPlayerJoin(playerObject);
+      return 'Instance is full';
     }
 
-    return true;
+    if (name.length > 21) {
+      return 'Name is too long.';
+    } else if (name.length === 0) {
+      return 'No name specified';
+    }
+
+    if (playerObject.sensor === undefined) {
+      playerObject.sensor = { beta: 0, gamma: 0 };
+    }
+
+    // Checks if the joining player already exists, and if they do whether they have reconnected
+    // with new presets or not.
+    const joiningPlayer = this.players[playerObject.id];
+    if (joiningPlayer === undefined) {
+      // Joining player does not already exist
+      if (this.instanceListener !== undefined) {
+        this.players[playerObject.id] = playerObject;
+        this.instanceListener.onPlayerJoin(playerObject);
+        // New player, add him
+        return '';
+      }
+      // Player trying to connect to uninitialized game
+      return 'Game is not running';
+    } else if (
+      joiningPlayer.name === playerObject.name &&
+      joiningPlayer.iconID === playerObject.iconID &&
+      joiningPlayer.iconColor === playerObject.iconColor &&
+      joiningPlayer.backgroundColor === playerObject.backgroundColor
+    ) {
+      // Player connects with the same information
+      return 'no comm add';
+    }
+    // New changes, kick and add player
+    this.removePlayer(playerObject.id);
+    this.players[id] = playerObject;
+    this.instanceListener.onPlayerJoin(playerObject);
+    return 'no comm add';
   }
 
   /*

@@ -99,6 +99,7 @@ class Communication {
   addPlayer(playerObject, response) {
     if (
       playerObject.id === undefined ||
+      playerObject.name === undefined ||
       playerObject.backgroundColor === undefined ||
       playerObject.iconColor === undefined ||
       playerObject.iconID === undefined
@@ -107,22 +108,28 @@ class Communication {
       return;
     }
 
-    // If false this usually means the instance is full.
-    if (!this.instance.addPlayer(playerObject)) {
-      response.error('cannot add player.');
-      return;
+    /* Error is a string showing one of the following:
+      1: Empty string means add the new player
+      2: 'no comm add' means an already existing player is connecting,
+      do not send anything to services
+      3: Any other string is an error message
+     */
+    const error = this.instance.addPlayer(playerObject);
+    if (error === 'no comm add') {
+      this.players[playerObject.id] = { ping: this.timeoutCount };
+      response.send(playerObject.id);
+    } else if (error) {
+      response.error(error);
+    } else {
+      // Initialize the communication players, keeping count of the timeout.
+      this.players[playerObject.id] = { ping: this.timeoutCount };
+      // Tell the service that another player has joined this instance.
+      this.client.event.emit(`${this.serviceName}/playerAdded`, {
+        instanceName: this.instance.getName(),
+        playerName: playerObject.name,
+      });
+      response.send(playerObject.id);
     }
-
-    // Initialize the communication players, keeping count of the timeout.
-    this.players[playerObject.id] = { ping: this.timeoutCount };
-
-    // Tell the service that another player has joined this instance.
-    this.client.event.emit(`${this.serviceName}/playerAdded`, {
-      instanceName: this.instance.getName(),
-      playerName: playerObject.name,
-    });
-
-    response.send(playerObject.id);
   }
 
   /*
