@@ -231,7 +231,7 @@ class Communication {
   * @param button the button that can be used again
   */
   resetCooldown(playerId, button) {
-    this.client.event.emit(`${this.serviceName}/${playerId}/resetCooldown`, { button });
+    this.client.event.emit(`${this.serviceName}/resetCooldown/${playerId}`, { button });
   }
 }
 
