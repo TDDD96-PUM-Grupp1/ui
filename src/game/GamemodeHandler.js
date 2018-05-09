@@ -61,7 +61,7 @@ class GMHandlerClass {
   }
 
   /**
-   * Returns an array containing each buttons name for the selected game-mode
+   * Returns an array containing button information for the selected game-mode
    */
   getButtons() {
     const buttons = [];
