@@ -115,7 +115,31 @@ class GamemodeConfigList {
     this.addGamemode(KnockOffRandom, {}, [], KnockOff);
     this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
     this.addGamemode(KnockOffWander, {}, [], KnockOff);
-    this.addGamemode(Passthebomb, {}, [], KnockOff);
+    this.addGamemode(
+      Passthebomb,
+      {
+        backgroundColor: 0x061639,
+        moveWhilePhased: true,
+        respawn: {
+          time: 1,
+          phase: 1.5,
+        },
+        highscore: {
+          order: HIGHSCORE_ORDER_DESCENDING,
+          scores: {
+            Times_Avoided_Death: {
+              initial: 0,
+              primary: true,
+            },
+              Deaths: {
+                initial: 0,
+                events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
+              },
+          },
+        },
+      },
+      []
+    );
     this.addGamemode(TestGamemode);
   }
 
