@@ -224,6 +224,15 @@ class Communication {
   getInstance() {
     return this.instance;
   }
+
+  /*
+  * Tell controller of player with playerId that cooldown for button is over
+  * @param playerId id of the player to tell
+  * @param button the button that can be used again
+  */
+  resetCooldown(playerId, button) {
+    this.client.event.emit(`${this.serviceName}/${playerId}/resetCooldown`, { button });
+  }
 }
 
 export default Communication;
