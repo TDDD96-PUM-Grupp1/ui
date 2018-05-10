@@ -15,8 +15,14 @@ class Passthebomb extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
 
-    this.bombtext = new PIXI.Text(bombTimer,{fontFamily : 'Arial', fontSize: 30, fill : 0xffffff, align : 'center', strokeThickness: 5});
-    this.bombtext.scale.set(10,10);
+    this.bombtext = new PIXI.Text(bombTimer, {
+      fontFamily: 'Arial',
+      fontSize: 30,
+      fill: 0xffffff,
+      align: 'center',
+      strokeThickness: 5,
+    });
+    this.bombtext.scale.set(10, 10);
 
     this.arenaRadius = 490;
     this.respawnArea = 100;
@@ -32,17 +38,14 @@ class Passthebomb extends Gamemode {
     this.wallLength = 600;
     this.centerx = 500;
     this.centery = 500;
-    //Create arena
-    this.createborder(window.innerWidth,0,0,window.innerHeight*2);
-    this.createborder(0,0,0,window.innerHeight*2);
-    this.createborder(0,0,window.innerWidth*2,0);
-    this.createborder(0,window.innerHeight,window.innerWidth*2,0);
-
-
+    // Create arena
+    this.createborder(window.innerWidth, 0, 0, window.innerHeight * 2);
+    this.createborder(0, 0, 0, window.innerHeight * 2);
+    this.createborder(0, 0, window.innerWidth * 2, 0);
+    this.createborder(0, window.innerHeight, window.innerWidth * 2, 0);
   }
 
-  createborder(x,y,width,height)
-  {
+  createborder(x, y, width, height) {
     const wall = new BasicRectangle(this.game, width, height, Infinity, 0x44ff66);
     wall.x = x;
     wall.y = y;
@@ -54,44 +57,33 @@ class Passthebomb extends Gamemode {
   // Called before the game objects are updated.
   preUpdate(dt) {
     this.time += dt;
-    this.resttime +=dt;
-    let player;
+    this.resttime += dt;
 
-    if(BOMB === null)
-    {
+    if (BOMB === null) {
       const players = this.game.entityHandler.getPlayers();
       const eligible = [];
       players.forEach(player => {
-        if (!player.phasing && !player.dead)
-        {
+        if (!player.phasing && !player.dead) {
           eligible.push(player);
         }
       });
-      if (eligible.length > 1 && this.time > 5)
-      {
+      let player;
+      if (eligible.length > 1 && this.time > 5) {
         player = eligible[Math.floor(Math.random() * eligible.length)];
         BOMB = player;
         this.time = 0;
-
+      }
     }
-
-
-    }
-    if(BOMB != null && !Bombset)
-    {
+    if (BOMB !== null && !Bombset) {
       BOMB.graphic.addChild(this.bombtext);
       this.bombtext.x = -100;
       this.bombtext.y = -100;
       Bombset = true;
-
-
     }
-    if(Bombset)
-    {
+    if (Bombset) {
       bombTimer -= dt;
-      this.bombtext.text = (Math.ceil(bombTimer));
-      if(bombTimer <0)
-      {
+      this.bombtext.text = Math.ceil(bombTimer);
+      if (bombTimer < 0) {
         BOMB.graphic.removeChild(this.bombtext);
         BOMB.die();
         Bombset = false;
@@ -99,42 +91,32 @@ class Passthebomb extends Gamemode {
         this.time = 0;
         bombTimer = 5;
         bombExploded = true;
-
       }
     }
-
-
   }
-
 
   // Called after the game objects are updated.
   postUpdate(dt) {
-    Object.keys(this.players).forEach(id => {
-      const entity = this.players[id];
-
-      // Increase best score if time alive is higher
-      if (entity.dead && bombExploded) {
-        Object.keys(this.players).forEach(id => {
-          const entity2 = this.players[id];
-          if(!entity2.dead){
-            const score = this.game.scoreManager.getScore('Times Avoided Death', id);
-            this.game.scoreManager.setScore('Times Avoided Death', id, score + 1);
-          }
-        });
-        bombExploded = false;
-      }
-    });
+    if (bombExploded) {
+      Object.keys(this.players).forEach(id => {
+        const entity = this.players[id];
+        if (!entity.dead) {
+          const score = this.game.scoreManager.getScore('Times Avoided Death', id);
+          this.game.scoreManager.setScore('Times Avoided Death', id, score + 1);
+        }
+      });
+      bombExploded = false;
+    }
   }
-    //this.collision.setEntity(this);
-    //
+  // this.collision.setEntity(this);
+  //
 
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
     const { iconID } = playerObject;
     const idTag = playerObject.id;
     circle.collision.addListener((player, victim) => {
-      if(player === BOMB && victim.isPlayer() && this.resttime > .5)
-      {
+      if (player === BOMB && victim.isPlayer() && this.resttime > 0.5) {
         BOMB.graphic.removeChild(this.bombtext);
         BOMB = victim;
         BOMB.graphic.addChild(this.bombtext);
@@ -142,13 +124,12 @@ class Passthebomb extends Gamemode {
         bombTimer = Math.ceil(bombTimer);
         const score = this.game.scoreManager.getScore('Bomb Passes', idTag);
         this.game.scoreManager.setScore('Bomb Passes', idTag, score + 1);
-      } else if(victim === BOMB && this.resttime > .5)
-      {
+      } else if (victim === BOMB && this.resttime > 0.5) {
         BOMB.graphic.removeChild(this.bombtext);
         BOMB = player;
         BOMB.graphic.addChild(this.bombtext);
         this.resttime = 0;
-        bombTimer =Math.ceil(bombTimer);
+        bombTimer = Math.ceil(bombTimer);
         const score = this.game.scoreManager.getScore('Bomb Passes', victim.controller.id);
         this.game.scoreManager.setScore('Bomb Passes', victim.controller.id, score + 1);
       }
@@ -157,7 +138,6 @@ class Passthebomb extends Gamemode {
     // Place them in the middle of the arena for now
     circle.x = this.arenaCenterx;
     circle.y = this.arenaCentery;
-
   }
 
   // Called when a player disconnects
@@ -183,6 +163,7 @@ class Passthebomb extends Gamemode {
   // eslint-disable-next-line
   onDeath(entity) {}
 
+  // eslint-disable-next-line
   onWindowResize() {}
 }
 

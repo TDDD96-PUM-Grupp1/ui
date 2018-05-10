@@ -145,33 +145,33 @@ class GamemodeConfigList {
       []
     );
     this.addGamemode(
-          Passthebombv2,
-          {
-            backgroundColor: 0x061639,
-            moveWhilePhased: true,
-            respawn: {
-              time: 1,
-              phase: 1.5,
+      Passthebombv2,
+      {
+        backgroundColor: 0x061639,
+        moveWhilePhased: true,
+        respawn: {
+          time: 1,
+          phase: 1.5,
+        },
+        highscore: {
+          order: HIGHSCORE_ORDER_DESCENDING,
+          scores: {
+            Times_Avoided_Death: {
+              initial: 0,
+              primary: true,
             },
-            highscore: {
-              order: HIGHSCORE_ORDER_DESCENDING,
-              scores: {
-                Times_Avoided_Death: {
-                  initial: 0,
-                  primary: true,
-                },
-                Bomb_Passes: {
-                  initial: 0,
-                },
-                Deaths: {
-                  initial: 0,
-                  events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
-                },
-              },
+            Bomb_Passes: {
+              initial: 0,
+            },
+            Deaths: {
+              initial: 0,
+              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
             },
           },
-          []
-        );
+        },
+      },
+      []
+    );
     this.addGamemode(TestGamemode);
   }
 
