@@ -1,0 +1,88 @@
+@import 'globals';
+
+.game-title{
+  font-size: 70px;
+
+  margin-bottom: 20px;
+}
+
+.center-menu{
+  margin-top: 0px;
+}
+
+.menu-button{
+  display:block;
+  margin: auto;
+
+  margin-top: 20px;
+  width: 250px;
+}
+
+.menu-button:hover{
+  background-color: $md-blue-400;
+}
+.menu-button-holder{
+  display: inline-block;
+  width: 400px;
+
+  padding: 10px 30px 30px 30px;
+
+  margin:auto;
+  margin-bottom: 20px;
+}
+
+.create-title{
+  font-size: 30px;
+
+  margin:auto;
+  margin-top: 8px;
+}
+
+.menu-descriptor{
+  font-size: 20px;
+
+  margin-bottom: 10px;
+}
+
+.create-menu{
+
+  width: 100%;
+}
+
+.create-input{
+  font-size: 20px;
+  width: 100%;
+  text-align: right;
+}
+
+.menu-setting{
+  margin: 0 auto;
+}
+
+.error-list{
+  margin: 10px 0px;
+}
+
+.error-box{
+  padding: 3px;
+  color: $md-red-500;
+  font-size: 15px;
+  width: 100%;
+}
+
+.spinner{
+  width: 57px;
+  height: 19px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.aboutText{
+  margin-top: 10px;
+  margin-left: 10px;
+  text-align: left;
+}
+
+.aboutHeader{
+  font-size: 30px;
+}

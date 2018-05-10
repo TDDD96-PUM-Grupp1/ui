@@ -18,7 +18,8 @@ class DangerbotController extends EntityController {
     this.desty = 0;
 
     this.idleTime = 0.05;
-    this.stareTime = 0.5;
+    this.baseStareTime = 0.55;
+    this.stareTime = this.baseStareTime;
     this.timer = this.idleTime;
     this.state = 'idle';
   }
@@ -44,6 +45,7 @@ class DangerbotController extends EntityController {
           const player = eligible[Math.floor(Math.random() * eligible.length)];
           this.target = player;
           this.state = 'stare';
+          this.stareTime = this.baseStareTime + 0.2 * Math.random() - 0.1;
           this.timer = this.stareTime;
         } else {
           this.state = 'idle';

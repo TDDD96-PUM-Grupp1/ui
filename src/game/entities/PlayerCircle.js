@@ -1,7 +1,6 @@
 import * as PIXI from 'pixi.js';
 import BasicCircle from './BasicCircle';
 
-const RADIUS = 32;
 const MASS = 1;
 const SQUAREROOTOF2 = 1.4142135623730951;
 const ICONSIZE = Math.floor(256 * SQUAREROOTOF2);
@@ -10,8 +9,8 @@ const ICONSIZE = Math.floor(256 * SQUAREROOTOF2);
 Game object representing a player
 */
 class PlayerCircle extends BasicCircle {
-  constructor(game, resource) {
-    super(game, RADIUS, MASS, 0xffffff, true);
+  constructor(game, resource, radius = 32) {
+    super(game, radius, MASS, 0xffffff, true);
 
     this.sprite = new PIXI.Sprite(resource);
     this.sprite.width = ICONSIZE;
