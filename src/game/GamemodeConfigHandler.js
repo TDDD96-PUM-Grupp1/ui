@@ -488,8 +488,15 @@ class GamemodeConfigHandler {
     if (this.tagging) {
       this.tags[idTag] = [];
     }
-    // Turn the players entity into a dummy, leaving it in the game until it dies
-    this.gamemode.players[idTag].ownerLeft();
+
+    const playerEntity = this.gamemode.players[idTag];
+
+    // Kill player to make sure it doesn't respawn
+    this.game.respawnHandler.registerDeath(playerEntity);
+
+    // Delete player circle_outline
+    this.game.entityHandler.unregisterFully(playerEntity);
+    delete this.gamemode.players[idTag];
 
     this.binds.onPlayerLeave(idTag);
   }
