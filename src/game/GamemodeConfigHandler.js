@@ -35,11 +35,12 @@ class GamemodeConfigList {
   }
 
   getConfig(Gamemode) {
-    return this.configs[Gamemode.name];
+    return this.configs[Gamemode];
   }
 
   loadConfig() {
     this.addGamemode(
+      'KnockOff',
       KnockOff,
       {
         joinPhase: 2,
@@ -95,6 +96,7 @@ class GamemodeConfigList {
       ]
     );
     this.addGamemode(
+      'Dodgebot',
       Dodgebot,
       {
         joinPhase: 2,
@@ -126,20 +128,19 @@ class GamemodeConfigList {
       },
       [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
     );
-    this.addGamemode(KnockOffRandom, {}, [], KnockOff);
-    this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
-    this.addGamemode(KnockOffWander, {}, [], KnockOff);
-    this.addGamemode(TestGamemode);
+    this.addGamemode('KORandom', KnockOffRandom, {}, [], KnockOff);
+    this.addGamemode('KODynamic', KnockOffDynamic, {}, [], KnockOff);
+    this.addGamemode('KOWander', KnockOffWander, {}, [], KnockOff);
+    this.addGamemode('TestGamemode', TestGamemode);
   }
 
-  addGamemode(Gamemode, options = {}, resources = [], extending = []) {
+  addGamemode(name, Gamemode, options = {}, resources = [], extending = []) {
     let extendingArray = extending;
     if (extending.constructor !== Array) {
       extendingArray = [extending];
     }
-    const { name } = Gamemode;
     this.gamemodes[name] = Gamemode;
-    this.configs[name] = new GamemodeConfig(this, name, resources, options, extendingArray);
+    this.configs[Gamemode] = new GamemodeConfig(this, name, resources, options, extendingArray);
   }
 }
 
