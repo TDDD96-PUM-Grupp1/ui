@@ -45,10 +45,13 @@ class GMHandlerClass {
       throw new Error('Gamemode has not been selected');
     }
 
+    const Gamemode = this.gamemodes[this.selected];
+    const { resources, options } = this.configs[Gamemode];
+
     return {
-      SelectedMode: this.gamemodes[this.selected],
-      requestedResources: this.configs[this.selected].resources,
-      options: this.configs[this.selected].options,
+      SelectedMode: Gamemode,
+      requestedResources: resources,
+      options,
     };
   }
 
@@ -61,16 +64,24 @@ class GMHandlerClass {
   }
 
   /**
-   * Returns an array containing each buttons name for the selected game-mode
+   * Returns an array containing button information for the selected game-mode
    */
   getButtons() {
-    const names = [];
-    if (this.configs[this.selected].options.abilities) {
-      this.configs[this.selected].options.abilities.forEach(ability => {
-        names.push(ability.name);
+    const Gamemode = this.gamemodes[this.selected];
+    const { options } = this.configs[Gamemode];
+
+    const buttons = [];
+    if (options.abilities) {
+      options.abilities.forEach(ability => {
+        buttons.push({
+          name: ability.name,
+          cooldown: ability.cooldown,
+          duration: ability.duration,
+          color: ability.color,
+        });
       });
     }
-    return names;
+    return buttons;
   }
 }
 /**

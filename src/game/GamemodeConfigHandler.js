@@ -38,11 +38,12 @@ class GamemodeConfigList {
   }
 
   getConfig(Gamemode) {
-    return this.configs[Gamemode.name];
+    return this.configs[Gamemode];
   }
 
   loadConfig() {
     this.addGamemode(
+      'KnockOff',
       KnockOff,
       {
         joinPhase: 2,
@@ -53,6 +54,7 @@ class GamemodeConfigList {
             name: 'Super Heavy',
             cooldown: 10,
             duration: 3,
+            color: '#ff0000',
             activateFunc: (entity, resources) => {
               entity.mass *= 50;
               resources.baseCircle = entity.graphic.texture;
@@ -97,6 +99,7 @@ class GamemodeConfigList {
       ]
     );
     this.addGamemode(
+      'Dodgebot',
       Dodgebot,
       {
         joinPhase: 2,
@@ -128,23 +131,22 @@ class GamemodeConfigList {
       },
       [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
     );
-    this.addGamemode(KnockOffRandom, {}, [], KnockOff);
-    this.addGamemode(KnockOffDynamic, {}, [], KnockOff);
-    this.addGamemode(KnockOffWander, {}, [], KnockOff);
-    this.addGamemode(KnockOffSpinner, {}, [], KnockOff);
-    this.addGamemode(DodgebotBumper, {}, [], Dodgebot);
-    this.addGamemode(Hockey, { joinPhase: 2, moveWhilePhased: false }, []);
-    this.addGamemode(TestGamemode);
+    this.addGamemode('KORandom', KnockOffRandom, {}, [], KnockOff);
+    this.addGamemode('KODynamic', KnockOffDynamic, {}, [], KnockOff);
+    this.addGamemode('KOWander', KnockOffWander, {}, [], KnockOff);
+    this.addGamemode('KOSpinner', KnockOffSpinner, {}, [], KnockOff);
+    this.addGamemode('DodgeBump', DodgebotBumper, {}, [], Dodgebot);
+    this.addGamemode('Hockey', Hockey, { joinPhase: 2, moveWhilePhased: false }, []);
+    this.addGamemode('TestGamemode', TestGamemode);
   }
 
-  addGamemode(Gamemode, options = {}, resources = [], extending = []) {
+  addGamemode(name, Gamemode, options = {}, resources = [], extending = []) {
     let extendingArray = extending;
     if (extending.constructor !== Array) {
       extendingArray = [extending];
     }
-    const { name } = Gamemode;
     this.gamemodes[name] = Gamemode;
-    this.configs[name] = new GamemodeConfig(this, name, resources, options, extendingArray);
+    this.configs[Gamemode] = new GamemodeConfig(this, name, resources, options, extendingArray);
   }
 }
 
@@ -350,10 +352,16 @@ class GamemodeConfigHandler {
       const { cooldown, duration, deactivateFunc } = this.abilities[button];
       Object.keys(this.abilities[button].timers).forEach(id => {
         const timer = this.abilities[button].timers[id];
-        timer.time -= dt;
-        if (timer.active && timer.time <= cooldown - duration) {
-          deactivateFunc(this.gamemode.players[id], this.gamemode.resources, this.game);
-          timer.active = false;
+        if (timer.onCooldown) {
+          timer.time -= dt;
+          if (timer.active && timer.time <= cooldown - duration) {
+            deactivateFunc(this.gamemode.players[id], this.gamemode.resources, this.game);
+            timer.active = false;
+          } else if (timer.time <= 0) {
+            // Cooldown over, tell controller
+            this.game.communication.resetCooldown(id, button);
+            timer.onCooldown = false;
+          }
         }
       });
     });
@@ -509,6 +517,7 @@ class GamemodeConfigHandler {
         ability.activateFunc(playerEntity, this.gamemode.resources, this.game);
         ability.timers[id].time = ability.cooldown;
         ability.timers[id].active = true;
+        ability.timers[id].onCooldown = true;
       }
     }
     this.binds.onButtonPressed(id, button);
