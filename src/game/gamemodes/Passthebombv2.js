@@ -11,7 +11,7 @@ let Bombset = false;
 let bombTimer = 5;
 let bombExploded = false;
 
-class Passthebomb extends Gamemode {
+class Passthebombv2 extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
 
@@ -38,6 +38,29 @@ class Passthebomb extends Gamemode {
     this.createborder(0,0,window.innerWidth*2,0);
     this.createborder(0,window.innerHeight,window.innerWidth*2,0);
 
+    // const rectc = new TestController(700, 500, 0, 0, 0.8, 1.1);
+    // rect.setController(rectc);
+
+    this.createrect(window.innerWidth/4,window.innerHeight/2,window.innerHeight/2,32,0.5);
+    this.createrect(window.innerWidth/1.333,window.innerHeight/2,window.innerHeight/2,32,-0.5);
+
+
+  }
+
+  createrect(x,y,width,height,rv)
+  {
+
+    const rect = new BasicRectangle(this.game, width, height, 10, 0x88ee11);
+
+    rect.x = x;
+    rect.y = y;
+    rect.collisionGroup = 1;
+    rect.staticFriction = 0.8;
+    rect.dynamicFriction = 0.4;
+    rect.rv = rv;
+    rect.mass = Infinity;
+    rect.floorFriction = 0;
+    this.game.register(rect);
 
   }
 
@@ -132,7 +155,9 @@ class Passthebomb extends Gamemode {
   onPlayerCreated(playerObject, circle) {
     const { iconID } = playerObject;
     const idTag = playerObject.id;
+    circle.staticFriction = 0.8;
     circle.collision.addListener((player, victim) => {
+//      console.log(BOMB,player,victim);
       if(player === BOMB && victim.isPlayer() && this.resttime > .5)
       {
         BOMB.graphic.removeChild(this.bombtext);
@@ -186,4 +211,4 @@ class Passthebomb extends Gamemode {
   onWindowResize() {}
 }
 
-export default Passthebomb;
+export default Passthebombv2;

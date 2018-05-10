@@ -6,6 +6,7 @@ import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 import KnockOffWander from './gamemodes/KnockOffWander';
 import Dodgebot from './gamemodes/Dodgebot';
 import Passthebomb from './gamemodes/Passthebomb';
+import Passthebombv2 from './gamemodes/Passthebombv2';
 
 import HighscoreList from './HighscoreList';
 
@@ -131,15 +132,46 @@ class GamemodeConfigList {
               initial: 0,
               primary: true,
             },
-              Deaths: {
-                initial: 0,
-                events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
-              },
+            Bomb_Passes: {
+              initial: 0,
+            },
+            Deaths: {
+              initial: 0,
+              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
+            },
           },
         },
       },
       []
     );
+    this.addGamemode(
+          Passthebombv2,
+          {
+            backgroundColor: 0x061639,
+            moveWhilePhased: true,
+            respawn: {
+              time: 1,
+              phase: 1.5,
+            },
+            highscore: {
+              order: HIGHSCORE_ORDER_DESCENDING,
+              scores: {
+                Times_Avoided_Death: {
+                  initial: 0,
+                  primary: true,
+                },
+                Bomb_Passes: {
+                  initial: 0,
+                },
+                Deaths: {
+                  initial: 0,
+                  events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
+                },
+              },
+            },
+          },
+          []
+        );
     this.addGamemode(TestGamemode);
   }
 
