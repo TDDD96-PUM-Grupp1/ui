@@ -26,6 +26,7 @@
     "start-pc": "set PORT=3000 && npm-run-all -p watch-css start-js-pc",
     "start-pc-local": "set PORT=3001 && set REACT_APP_LOCAL=1 && npm-run-all -p watch-css start-js-pc",
     "build": "npm run build-css && react-scripts build",
+    "postbuild": "rimraf build/**/*.map",
     "test": "npm run build-css && react-scripts test --forceExit --env=jsdom && npm run lint",
     "eject": "react-scripts eject",
     "lint": "eslint src/",
@@ -45,6 +46,7 @@
     "eslint-plugin-react": "^7.6.1",
     "eslint-plugin-standard": "^3.0.1",
     "prettier": "^1.10.2",
-    "react-test-renderer": "^16.3.2"
+    "react-test-renderer": "^16.3.2",
+    "rimraf": "^2.6.2"
   }
 }
