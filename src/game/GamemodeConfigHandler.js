@@ -51,6 +51,7 @@ class GamemodeConfigList {
             name: 'Super Heavy',
             cooldown: 10,
             duration: 3,
+            color: '#ff0000',
             activateFunc: (entity, resources) => {
               entity.mass *= 50;
               resources.baseCircle = entity.graphic.texture;
@@ -345,10 +346,16 @@ class GamemodeConfigHandler {
       const { cooldown, duration, deactivateFunc } = this.abilities[button];
       Object.keys(this.abilities[button].timers).forEach(id => {
         const timer = this.abilities[button].timers[id];
-        timer.time -= dt;
-        if (timer.active && timer.time <= cooldown - duration) {
-          deactivateFunc(this.gamemode.players[id], this.gamemode.resources, this.game);
-          timer.active = false;
+        if (timer.onCooldown) {
+          timer.time -= dt;
+          if (timer.active && timer.time <= cooldown - duration) {
+            deactivateFunc(this.gamemode.players[id], this.gamemode.resources, this.game);
+            timer.active = false;
+          } else if (timer.time <= 0) {
+            // Cooldown over, tell controller
+            this.game.communication.resetCooldown(id, button);
+            timer.onCooldown = false;
+          }
         }
       });
     });
@@ -502,6 +509,7 @@ class GamemodeConfigHandler {
         ability.activateFunc(playerEntity, this.gamemode.resources, this.game);
         ability.timers[id].time = ability.cooldown;
         ability.timers[id].active = true;
+        ability.timers[id].onCooldown = true;
       }
     }
     this.binds.onButtonPressed(id, button);
