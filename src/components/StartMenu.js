@@ -58,12 +58,15 @@ class StartMenu extends Component {
           <div className="aboutHeader">About </div>
           <div className="aboutText">
             <p>
-              This is a realtime multiplayer game that uses one screen and many controllers. An instance of the game is created from this application. The players can then join from the control-application on their phones. The game is controlled by players tilting their phone. There are a number of different gamemodes with different goals. Have fun!
+              This is a realtime multiplayer game that uses one screen and many controllers. An
+              instance of the game is created from this application. The players can then join from
+              the control-application on their phones. The game is controlled by players tilting
+              their phone. There are a number of different gamemodes with different goals. Have fun!
             </p>
             <p>
-              This game is the result of a project carried out by students from Linköping University for Cybercom Group.
-              The game is open-source under the MIT-license.
-              The source code can be found on <a href="https://github.com/TDDD96-PUM-Grupp1">GitHub</a>.
+              This game is the result of a project carried out by students from Linköping University
+              for Cybercom Group. The game is open-source under the MIT-license. The source code can
+              be found on <a href="https://github.com/TDDD96-PUM-Grupp1">GitHub</a>.
             </p>
           </div>
           <Button raised primary onClick={this.showFirst} className="menu-button">
