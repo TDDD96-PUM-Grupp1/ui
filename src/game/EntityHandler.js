@@ -42,7 +42,10 @@ class EntityHandler {
   // Removes an entity from this entity handler.
   unregister(entity) {
     const index = this.entities.indexOf(entity);
-    this.entities.splice(index, 1);
+
+    if (index !== -1) {
+      this.entities.splice(index, 1);
+    }
   }
 
   // Removes an entity from this entity handler.

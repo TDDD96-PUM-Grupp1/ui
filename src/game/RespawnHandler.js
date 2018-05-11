@@ -128,10 +128,10 @@ class RespawnHandler {
    * Destroy all respawn timers for the given entity
    * @param entity - the entity to stop from respawning
    */
-  removeRespawns(entity){
+  removeRespawns(entity) {
     const index = this.getEntityIndex(entity);
 
-    if (index !== -1){
+    if (index !== -1) {
       this.respawnList.splice(index, 1);
     }
   }
