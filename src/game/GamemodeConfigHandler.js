@@ -129,7 +129,7 @@ class GamemodeConfigList {
       [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
     );
     this.addGamemode('Knock Off Random', KnockOffRandom, {}, [], KnockOff);
-    this.addGamemode('Knock off Dynamic', KnockOffDynamic, {}, [], KnockOff);
+    this.addGamemode('Knock Off Dynamic', KnockOffDynamic, {}, [], KnockOff);
     this.addGamemode('Knock Off Wander', KnockOffWander, {}, [], KnockOff);
     this.addGamemode('Test Gamemode', TestGamemode);
   }
