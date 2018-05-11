@@ -57,24 +57,14 @@ class StartMenu extends Component {
         <div>
           <div className="aboutHeader">About </div>
           <div className="aboutText">
-            Detta projekt utfördes som en del av kursen Kandidatprojekt i Programvaruutveckling på
-            LiTH våren 2018. Det utförs av en grupp studenter som går civilingenjör i datateknik
-            samt civilingenjör i mjukvaruteknik. Vi vill tacka Cybercom Group för möjligheten att
-            utföra ett intressant och givande projekt. Projektmedlemmarna har fått ett mycket varmt
-            bemötande och är tacksamma för den intressanta insikt vi har fått i organisationen. De
-            praktiska möjligheterna i form av arbetsplatser uppskattas även mycket och har på många
-            sätt underlättat arbetet.
-            <br />
-            <br />Ett speciellt tack vill vi rikta till Cybercoms IoT-grupp i Linköping som har
-            varit mycket seriösa och hjälpsamma som kunder för projektet. Projektgruppen är mycket
-            tacksam för alla de tips och idéer som vi har fått. Att få ta del av erfarenheter inom
-            de tekniker som använts i projektet har många gånger sparat oss stora mängder tid och
-            frustration.
-            <br />
-            <br />Tack även till vår handledare Carl Brage för stöd genom hela projektet. Den
-            respons vi har fått på dokument och presentationer har givit oss många nyttiga tips som
-            vi kan ta med oss även utanför detta projekt. Kvaliteten på denna rapport har uppnåtts
-            mycket tack vare all konstruktiv återkoppling från vår handledare.
+            <p>
+              This is a realtime multiplayer game that uses one screen and many controllers. An instance of the game is created from this application. The players can then join from the control-application on their phones. The game is controlled by players tilting their phone. There are a number of different gamemodes with different goals. Have fun!
+            </p>
+            <p>
+              This game is the result of a project carried out by students from Linköping University for Cybercom Group.
+              The game is open-source under the MIT-license.
+              The source code can be found on <a href="https://github.com/TDDD96-PUM-Grupp1">GitHub</a>.
+            </p>
           </div>
           <Button raised primary onClick={this.showFirst} className="menu-button">
             Back
