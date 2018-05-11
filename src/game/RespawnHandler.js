@@ -38,8 +38,9 @@ class RespawnHandler {
       this.respawnSpecific(getEntity(entityIndexPair), 0);
     });
   }
+
   // Returns the index of the given entity in this.respawnList.
-  // Throws an error if entity not found.
+  // returns -1 if entity not found.
   getEntityIndex(entity) {
     let index = -1;
 
@@ -52,9 +53,7 @@ class RespawnHandler {
       }
     }
 
-    if (index === -1) {
-      throw new Error('Entity not found in respawn list.');
-    }
+    return index;
   }
 
   // Notifies respawnListeners of a specific entity that should respawn.
@@ -94,28 +93,6 @@ class RespawnHandler {
     });
   }
 
-  // Registers a new death in the respawn list.
-  // If timeOfDeath is given, the entity will be set to respawn this.respawnTime
-  // seconds after it.
-  // If omitted, the respawn time will be set to inf and the entity needs to be
-  // manually respawned.
-  registerDeath(entity, timeOfDeath) {
-    // Kill entity
-    this.entityHandler.unregister(entity);
-    entity.graphic.visible = false;
-    entity.resetPhysics();
-
-    let respawnTime;
-    if (typeof timeOfDeath !== 'undefined') {
-      respawnTime = new Date();
-      respawnTime.setSeconds(timeOfDeath.getSeconds() + this.respawnTime);
-    } else {
-      respawnTime = Infinity;
-    }
-
-    this.respawnList.push([respawnTime, entity]);
-  }
-
   // Registers an entity to respawn in respawnDelay seconds
   addRespawn(entity, respawnDelay) {
     // Kill entity
@@ -145,6 +122,18 @@ class RespawnHandler {
     });
     this.respawnList = [];
     this.respawnListeners = [];
+  }
+
+  /*
+   * Destroy all respawn timers for the given entity
+   * @param entity - the entity to stop from respawning
+   */
+  removeRespawns(entity){
+    const index = this.getEntityIndex(entity);
+
+    if (index !== -1){
+      this.respawnList.splice(index, 1);
+    }
   }
 }
 

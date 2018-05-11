@@ -491,10 +491,10 @@ class GamemodeConfigHandler {
 
     const playerEntity = this.gamemode.players[idTag];
 
-    // Kill player to make sure it doesn't respawn
-    this.game.respawnHandler.registerDeath(playerEntity);
+    // Stop player from respawning if already qued
+    this.game.respawnHandler.removeRespawns(playerEntity);
 
-    // Delete player circle_outline
+    // Delete player circle
     this.game.entityHandler.unregisterFully(playerEntity);
     delete this.gamemode.players[idTag];
 
