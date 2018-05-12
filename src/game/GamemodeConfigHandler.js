@@ -6,10 +6,13 @@ import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 import KnockOffWander from './gamemodes/KnockOffWander';
 import Dodgebot from './gamemodes/Dodgebot';
 
-import HighscoreList from './HighscoreList';
 import PlayerCircle from './entities/PlayerCircle';
 import PlayerController from './entities/controllers/PlayerController';
 import iconData from './iconData';
+import AbilitySystem from './ConfigSystems.js/AbilitySystem';
+import RespawnSystem from './ConfigSystems.js/RespawnSystem';
+import KillSystem from './ConfigSystems.js/KillSystem';
+import HighscoreSystem from './ConfigSystems.js/HighscoreSystem';
 
 /* eslint-disable no-unused-vars */
 const EVENT_TRIGGER_DEATH = 0;
@@ -151,27 +154,51 @@ class GamemodeConfigHandler {
     this.gamemode = gamemode;
     this.options = options;
 
-    this.onDeath = this.onDeath.bind(this);
-
     this.playerRadius = 32;
     this.joinPhase = 0;
 
     this.moveWhilePhased = true;
 
-    this.tagging = false;
-    this.tagTime = 0;
-    this.tags = {};
-
-    this.abilities = {};
-
-    this.onDeathEvents = [];
-    this.onKillEvents = [];
-
-    this.advancedDisplays = [];
-    this.timeDisplays = [];
+    this.preUpdateSystems = [];
+    this.postUpdateSystems = [];
+    this.onPlayerJoinSystems = [];
+    this.onPlayerCreatedSystems = [];
+    this.onPlayerLeaveSystems = [];
+    this.onButtonPressedSystems = [];
 
     this.injectBinds();
     this.setUpOptions();
+  }
+
+  getPlayerEntity(id) {
+    // TODO: Move player entity list location out of gamemode.
+    return this.gamemode.players[id];
+  }
+
+  addSystem(System) {
+    const system = new System(this, this.options);
+    const binds = system.setup(this);
+    if (binds === undefined) {
+      throw new Error(`${System.name}'s setup method did not return an object.`);
+    }
+    if (binds.preUpdate) {
+      this.preUpdateSystems.push(system);
+    }
+    if (binds.postUpdate) {
+      this.postUpdateSystems.push(system);
+    }
+    if (binds.onPlayerJoin) {
+      this.onPlayerJoinSystems.push(system);
+    }
+    if (binds.onPlayerCreated) {
+      this.onPlayerCreatedSystems.push(system);
+    }
+    if (binds.onPlayerJoinSystems) {
+      this.onPlayerLeaveSystems.push(system);
+    }
+    if (binds.onButtonPressed) {
+      this.onButtonPressedSystems.push(system);
+    }
   }
 
   static getGamemodes() {
@@ -188,21 +215,13 @@ class GamemodeConfigHandler {
 
   setUpAbilities() {
     if (this.options.abilities) {
-      this.options.abilities.forEach(ability => {
-        ability.timers = {};
-      });
-      this.abilities = this.options.abilities;
-      this.game.setUpGameButtons(this.options.abilities);
+      this.addSystem(AbilitySystem);
     }
   }
 
   setUpKillSystem() {
     if (this.options.kill) {
-      const { tag } = this.options.kill;
-      if (tag) {
-        this.tagTime = tag.tagTime;
-        this.tagging = true;
-      }
+      this.addSystem(KillSystem);
     }
   }
 
@@ -223,102 +242,14 @@ class GamemodeConfigHandler {
 
   setUpRespawn() {
     if (this.options.respawn) {
-      let { time, phase } = this.options.respawn;
-      if (time === undefined) {
-        time = 0;
-      }
-      if (phase === undefined) {
-        phase = 0;
-      }
-      this.respawnTime = time;
-      this.respawnPhaseTime = phase;
-      this.respawn = true;
-      this.game.respawnHandler.registerRespawnListener(this.gamemode);
-      this.injectBind('onRespawn');
+      this.addSystem(RespawnSystem);
     }
   }
 
   setUpHighscores() {
     if (this.options.highscore) {
-      if (this.options.highscore.order) {
-        this.game.scoreManager.setAscOrder(this.options.highscore.order);
-      }
-      Object.keys(this.options.highscore.scores).forEach(title => {
-        const score = this.options.highscore.scores[title];
-        const name = title.replace(/_/g, ' ');
-        const { initial, primary } = score;
-        this.game.scoreManager.addScoreType(name, initial, primary);
-      });
-      this.gamemode.hs_list = new HighscoreList(this.game.scoreManager, this.game);
-
-      this.setUpHighscoreEvents();
+      this.addSystem(HighscoreSystem);
     }
-  }
-
-  setUpHighscoreEvents() {
-    Object.keys(this.options.highscore.scores).forEach(title => {
-      const highscore = this.options.highscore.scores[title];
-      const name = title.replace(/_/g, ' ');
-      const { initial, display, events } = highscore;
-      if (display !== undefined) {
-        switch (display) {
-          case HIGHSCORE_DISPLAY_TIME:
-            this.timeDisplays.push({ name });
-            break;
-          case HIGHSCORE_DISPLAY_LATENCY:
-            // Displayed through event from instance by game core.
-            break;
-          default:
-            if (display.type) {
-              const { type, target } = display;
-              let cond;
-              let update;
-              switch (type) {
-                case 'best':
-                  cond = (stored, comp) => comp > stored;
-                  update = (stored, comp) => comp;
-                  break;
-                default:
-                  throw new Error(`Invalid advanced display type '${type}'.`);
-              }
-              // Prettier wants this line on 1 row but eslint wants it spread out...
-              // eslint-disable-next-line
-              this.advancedDisplays.push({ name, target, cond, update });
-            } else {
-              throw new Error(`Invalid display type '${display}'.`);
-            }
-        }
-      }
-      if (events !== undefined) {
-        events.forEach(event => {
-          const { trigger, action } = event;
-          let actionFunc;
-          switch (action) {
-            case EVENT_ACTION_RESET:
-              actionFunc = () => initial;
-              break;
-            case EVENT_ACTION_INCREMENT:
-              actionFunc = n => n + 1;
-              break;
-            case EVENT_ACTION_DECREMENT:
-              actionFunc = n => n - 1;
-              break;
-            default:
-              throw new Error(`Invalid event action '${action}'.`);
-          }
-          switch (trigger) {
-            case EVENT_TRIGGER_DEATH:
-              this.onDeathEvents.push({ name, action: actionFunc });
-              break;
-            case EVENT_TRIGGER_KILL:
-              this.onKillEvents.push({ name, action: actionFunc });
-              break;
-            default:
-              throw new Error(`Invalid event trigger '${trigger}'.`);
-          }
-        });
-      }
-    });
   }
 
   injectBinds() {
@@ -342,79 +273,19 @@ class GamemodeConfigHandler {
   }
 
   preUpdate(dt) {
-    if (this.tagging) {
-      Object.keys(this.tags).forEach(id => {
-        const list = this.tags[id];
-        while (list.length > 0) {
-          if (list[0].timer - dt <= 0) {
-            // Remove expired tag
-            list.shift();
-          } else {
-            break;
-          }
-        }
-        list.forEach(item => {
-          item.timer -= dt;
-        });
-      }, this);
-    }
-    this.timeDisplays.forEach(display => {
-      const { name } = display;
-      this.game.entityHandler.getPlayers().forEach(entity => {
-        if (!entity.isDead) {
-          const { id } = entity.controller;
-          this.game.scoreManager.addScore(name, id, dt);
-        }
-      });
-    });
+    this.preUpdateSystems.forEach(system => system.preUpdate(dt));
+
     this.binds.preUpdate(dt);
   }
 
-  onDeath(entity) {
-    if (entity.isPlayer() && !entity.playerLeft) {
-      const { id } = entity.controller;
-      this.onDeathEvents.forEach(event => {
-        const { name, action } = event;
-        this.game.scoreManager.mutateScore(name, id, action);
-      });
-      if (this.tagging) {
-        this.tags[id].forEach(item => {
-          // console.log('%s killed %s', item.id, id);
-          this.onKillEvents.forEach(event => {
-            const { name, action } = event;
-            this.game.scoreManager.mutateScore(name, item.id, action);
-          });
-        });
-        this.tags[id] = [];
-      }
-    }
-    if (this.respawn) {
-      if (entity.isPlayer() && entity.playerLeft) {
-        this.game.entityHandler.unregisterFully(entity);
-      } else if (entity.respawnable) {
-        this.game.respawnHandler.addRespawn(entity, this.respawnTime);
-      }
-    }
-  }
-
   postUpdate(dt) {
-    const players = Object.keys(this.gamemode.players);
-    this.advancedDisplays.forEach(display => {
-      // Prettier wants this line on 1 row but eslint wants it spread out...
-      // eslint-disable-next-line
-      const { name, target, cond, update } = display;
-      players.forEach(id => {
-        const current = this.game.scoreManager.getScore(name, id);
-        const score = this.game.scoreManager.getScore(target, id);
-        if (cond(current, score)) {
-          this.game.scoreManager.setScore(name, id, update(current, score));
-        }
-      });
-    });
+    this.postUpdateSystems.forEach(system => system.postUpdate(dt));
+
     this.binds.postUpdate(dt);
   }
 
   onPlayerJoin(playerObject) {
+    this.onPlayerJoinSystems.forEach(system => system.onPlayerJoin(playerObject));
     const { iconID, id } = playerObject;
 
     return new Promise(resolve => {
@@ -444,44 +315,25 @@ class GamemodeConfigHandler {
   }
 
   onPlayerCreated(playerObject, circle) {
-    const { id } = playerObject;
-    if (this.tagging) {
-      this.tags[id] = [];
-      circle.collision.addListener((player, victim) => {
-        if (victim.isPlayer()) {
-          const vid = victim.controller.id;
-          const pid = player.controller.id;
-          this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
-          this.tags[vid].push({ id: pid, timer: this.tagTime });
-        }
-      });
-    }
-    if (this.respawn) {
-      circle.addDeathListener(this.onDeath);
-    }
+    this.onPlayerCreatedSystems.forEach(system => system.onPlayerCreated(playerObject, circle));
+
     circle.phase(this.joinPhase);
     circle.moveWhilePhased = this.moveWhilePhased;
+
     this.binds.onPlayerCreated(playerObject, circle);
   }
 
-  onPlayerLeave(idTag) {
-    if (this.tagging) {
-      this.tags[idTag] = [];
-    }
+  onPlayerLeave(id) {
+    this.onPlayerLeave.forEach(system => system.onPlayerLeave(id));
+
     // Turn the players entity into a dummy, leaving it in the game until it dies
-    this.gamemode.players[idTag].ownerLeft();
+    this.gamemode.players[id].ownerLeft();
 
-    this.binds.onPlayerLeave(idTag);
-  }
-
-  onRespawn(entity) {
-    if (this.respawnPhaseTime > 0) {
-      entity.phase(this.respawnPhaseTime);
-    }
-    this.binds.onRespawn(entity);
+    this.binds.onPlayerLeave(id);
   }
 
   onButtonPressed(id, button) {
+    this.onButtonPressedSystems.forEach(system => system.onButtonPressed(id, button));
     this.binds.onButtonPressed(id, button);
   }
 }

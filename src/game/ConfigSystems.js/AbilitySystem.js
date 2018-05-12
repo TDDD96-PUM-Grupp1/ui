@@ -1,6 +1,22 @@
 import ConfigSystem from './ConfigSystem';
 
-class Abilities extends ConfigSystem {
+class AbilitySystem extends ConfigSystem {
+  constructor(handler, options) {
+    super(handler, options);
+
+    this.abilities = [];
+  }
+
+  setup() {
+    this.options.abilities.forEach(ability => {
+      ability.timers = {};
+    });
+    this.abilities = this.options.abilities;
+    this.game.setUpGameButtons(this.options.abilities);
+
+    return { preUpdate: true, onPlayerCreated: true, onButtonPressed: true };
+  }
+
   preUpdate(dt) {
     Object.keys(this.abilities).forEach(button => {
       const { cooldown, duration, deactivateFunc } = this.abilities[button];
@@ -21,7 +37,7 @@ class Abilities extends ConfigSystem {
     });
   }
 
-  onPlayerCreated(playerObject, circle) {
+  onPlayerCreated(playerObject) {
     const { id } = playerObject;
     Object.keys(this.abilities).forEach(button => {
       this.abilities[button].timers[id] = { active: false, time: 0 };
@@ -31,7 +47,7 @@ class Abilities extends ConfigSystem {
   onButtonPressed(id, button) {
     if (this.abilities[button]) {
       const ability = this.abilities[button];
-      const playerEntity = this.gamemode.players[id];
+      const playerEntity = this.handler.getPlayerEntity(id);
       if (ability.timers[id].time <= 0) {
         ability.activateFunc(playerEntity, this.gamemode.resources, this.game);
         ability.timers[id].time = ability.cooldown;
@@ -42,4 +58,4 @@ class Abilities extends ConfigSystem {
   }
 }
 
-export default Abilities;
+export default AbilitySystem;

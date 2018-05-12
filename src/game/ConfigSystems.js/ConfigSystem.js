@@ -1,10 +1,14 @@
 class ConfigSystem {
-  constructor(handler, config) {
+  constructor(handler, options) {
+    this.game = handler.game;
+    this.gamemode = handler.gamemode;
     this.handler = handler;
-    this.config = config;
+    this.options = options;
   }
 
   /* eslint-disable */
+  setup(options) {}
+
   preUpdate(dt) {}
 
   postUpdate(dt) {}

@@ -3,7 +3,8 @@ import iconData from '../iconData';
 import PlayerCircle from '../entities/PlayerCircle';
 import PlayerController from '../entities/controllers/PlayerController';
 
-class Spawn extends ConfigSystem {
+// TODO: Figure out how this is going to work :S
+class SpawnSystem extends ConfigSystem {
   onPlayerJoin(playerObject) {
     const { iconID, id } = playerObject;
 
@@ -34,4 +35,4 @@ class Spawn extends ConfigSystem {
   }
 }
 
-export default Spawn;
+export default SpawnSystem;
