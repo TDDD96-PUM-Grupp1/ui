@@ -1,4 +1,5 @@
 import GamemodeConfig from './GamemodeConfig';
+
 import TestGamemode from './gamemodes/TestGamemode';
 import KnockOff from './gamemodes/KnockOff';
 import KnockOffRandom from './gamemodes/KnockOffRandom';
@@ -6,14 +7,11 @@ import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 import KnockOffWander from './gamemodes/KnockOffWander';
 import Dodgebot from './gamemodes/Dodgebot';
 
-import PlayerCircle from './entities/PlayerCircle';
-import PlayerController from './entities/controllers/PlayerController';
-import iconData from './iconData';
-
 import AbilitySystem from './configsystems/AbilitySystem';
 import RespawnSystem from './configsystems/RespawnSystem';
 import KillSystem from './configsystems/KillSystem';
 import HighscoreSystem from './configsystems/HighscoreSystem';
+import SpawnSystem from './configsystems/SpawnSystem';
 
 /* eslint-disable no-unused-vars */
 const EVENT_TRIGGER_DEATH = 0;
@@ -165,7 +163,7 @@ class GamemodeConfigHandler {
     this.systems = [];
     this.preUpdateSystems = [];
     this.postUpdateSystems = [];
-    this.onPlayerJoinSystems = [];
+    this.onPlayerJoinSystem = null;
     this.onPlayerCreatedSystems = [];
     this.onPlayerLeaveSystems = [];
     this.onButtonPressedSystems = [];
@@ -214,12 +212,15 @@ class GamemodeConfigHandler {
       this.postUpdateSystems.push(system);
     }
     if (binds.onPlayerJoin) {
-      this.onPlayerJoinSystems.push(system);
+      if (this.onPlayerJoinSystem !== null) {
+        throw new Error('GamemodeConfigHandler loaded two spawn systems.');
+      }
+      this.onPlayerJoinSystem = system;
     }
     if (binds.onPlayerCreated) {
       this.onPlayerCreatedSystems.push(system);
     }
-    if (binds.onPlayerJoinSystems) {
+    if (binds.onPlayerLeave) {
       this.onPlayerLeaveSystems.push(system);
     }
     if (binds.onButtonPressed) {
@@ -244,24 +245,13 @@ class GamemodeConfigHandler {
     if (this.options.respawn) {
       this.addSystem(RespawnSystem);
     }
-    this.setUpMisc();
-
-    this.systems.forEach(system => system.attachHooks());
-  }
-
-  setUpMisc() {
     if (this.options.backgroundColor !== undefined) {
       this.game.app.renderer.backgroundColor = this.options.backgroundColor;
     }
-    if (this.options.moveWhilePhased !== undefined) {
-      this.moveWhilePhased = this.options.moveWhilePhased;
-    }
-    if (this.options.playerRadius !== undefined) {
-      this.playerRadius = this.options.playerRadius;
-    }
-    if (this.options.joinPhase !== undefined) {
-      this.joinPhase = this.options.joinPhase;
-    }
+
+    this.addSystem(SpawnSystem);
+
+    this.systems.forEach(system => system.attachHooks());
   }
 
   injectBinds() {
@@ -286,52 +276,20 @@ class GamemodeConfigHandler {
 
   preUpdate(dt) {
     this.preUpdateSystems.forEach(system => system.preUpdate(dt));
-
     this.binds.preUpdate(dt);
   }
 
   postUpdate(dt) {
     this.postUpdateSystems.forEach(system => system.postUpdate(dt));
-
     this.binds.postUpdate(dt);
   }
 
   onPlayerJoin(playerObject) {
-    this.onPlayerJoinSystems.forEach(system => system.onPlayerJoin(playerObject));
-    const { iconID, id } = playerObject;
-
-    return new Promise(resolve => {
-      this.game.resourceServer
-        .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
-        .then(resources => {
-          const circle = new PlayerCircle(
-            this.game,
-            resources[iconData[iconID].name],
-            this.playerRadius
-          );
-          const controller = new PlayerController(this.game, id);
-          circle.setController(controller);
-          const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
-          const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
-
-          circle.setColor(backgroundCol, iconCol);
-
-          this.gamemode.players[id] = circle;
-          this.game.register(circle);
-
-          this.gamemode.onPlayerCreated(playerObject, circle);
-
-          resolve(circle);
-        });
-    });
+    return this.onPlayerJoinSystem.onPlayerJoin(playerObject);
   }
 
   onPlayerCreated(playerObject, circle) {
     this.onPlayerCreatedSystems.forEach(system => system.onPlayerCreated(playerObject, circle));
-
-    circle.phase(this.joinPhase);
-    circle.moveWhilePhased = this.moveWhilePhased;
-
     this.binds.onPlayerCreated(playerObject, circle);
   }
 
