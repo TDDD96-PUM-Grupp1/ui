@@ -29,6 +29,7 @@ class HighscoreSystem extends ConfigSystem {
   }
 
   setup() {
+    const binds = {};
     if (this.options.highscore.order) {
       this.game.scoreManager.setAscOrder(this.options.highscore.order);
     }
@@ -42,7 +43,23 @@ class HighscoreSystem extends ConfigSystem {
 
     this.setUpHighscoreEvents();
 
-    return { preUpdate: true, onPlayerCreated: true, postUpdate: true };
+    if (this.timeDisplays.length > 0) {
+      binds.preUpdate = true;
+    }
+    if (this.onDeathEvents.length > 0) {
+      binds.onPlayerCreated = true;
+    }
+    if (this.advancedDisplays.length > 0) {
+      binds.postUpdate = true;
+    }
+
+    return binds;
+  }
+
+  attachHooks() {
+    if (this.onKillEvents.length > 0) {
+      this.handler.hookUp('kill', this.onKill.bind(this));
+    }
   }
 
   setUpHighscoreEvents() {
@@ -151,6 +168,14 @@ class HighscoreSystem extends ConfigSystem {
         this.game.scoreManager.mutateScore(name, id, action);
       });
     }
+  }
+
+  onKill(params) {
+    const { killer } = params;
+    this.onKillEvents.forEach(event => {
+      const { name, action } = event;
+      this.game.scoreManager.mutateScore(name, killer, action);
+    });
   }
 }
 

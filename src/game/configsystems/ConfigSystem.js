@@ -9,6 +9,8 @@ class ConfigSystem {
   /* eslint-disable */
   setup(options) {}
 
+  attachHooks() {}
+
   preUpdate(dt) {}
 
   postUpdate(dt) {}

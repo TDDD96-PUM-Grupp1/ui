@@ -12,6 +12,8 @@ class KillSystem extends ConfigSystem {
     const { tag } = this.options.kill;
     this.tagTime = tag.tagTime;
 
+    this.handler.addHook('kill');
+
     return { preUpdate: true, onPlayerCreated: true, onPlayerLeave: true };
   }
 
@@ -49,14 +51,8 @@ class KillSystem extends ConfigSystem {
   onDeath(entity) {
     const { id } = entity.controller;
     this.tags[id].forEach(item => {
-      console.log('%s killed %s', item.id, id);
-      // Highscore stuff
-      /*
-        this.onKillEvents.forEach(event => {
-          const { name, action } = event;
-          this.game.scoreManager.mutateScore(name, item.id, action);
-        });
-        */
+      // console.log('%s killed %s', item.id, id);
+      this.handler.triggerHook('kill', { killer: item.id, victim: id });
     });
     this.tags[id] = [];
   }

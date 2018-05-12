@@ -9,10 +9,11 @@ import Dodgebot from './gamemodes/Dodgebot';
 import PlayerCircle from './entities/PlayerCircle';
 import PlayerController from './entities/controllers/PlayerController';
 import iconData from './iconData';
-import AbilitySystem from './ConfigSystems.js/AbilitySystem';
-import RespawnSystem from './ConfigSystems.js/RespawnSystem';
-import KillSystem from './ConfigSystems.js/KillSystem';
-import HighscoreSystem from './ConfigSystems.js/HighscoreSystem';
+
+import AbilitySystem from './configsystems/AbilitySystem';
+import RespawnSystem from './configsystems/RespawnSystem';
+import KillSystem from './configsystems/KillSystem';
+import HighscoreSystem from './configsystems/HighscoreSystem';
 
 /* eslint-disable no-unused-vars */
 const EVENT_TRIGGER_DEATH = 0;
@@ -154,11 +155,14 @@ class GamemodeConfigHandler {
     this.gamemode = gamemode;
     this.options = options;
 
+    this.hooks = {};
+
     this.playerRadius = 32;
     this.joinPhase = 0;
 
     this.moveWhilePhased = true;
 
+    this.systems = [];
     this.preUpdateSystems = [];
     this.postUpdateSystems = [];
     this.onPlayerJoinSystems = [];
@@ -175,8 +179,30 @@ class GamemodeConfigHandler {
     return this.gamemode.players[id];
   }
 
+  addHook(hook) {
+    if (this.hooks[hook]) {
+      throw new Error(`Hook '${hook}' is already defined.`);
+    }
+    this.hooks[hook] = [];
+  }
+
+  triggerHook(hook, params) {
+    if (this.hooks[hook] === undefined) {
+      throw new Error(`Hook '${hook}' is not defined.`);
+    }
+    this.hooks[hook].forEach(func => func(params));
+  }
+
+  hookUp(hook, func) {
+    if (this.hooks[hook] === undefined) {
+      throw new Error(`Hook '${hook}' is not defined.`);
+    }
+    this.hooks[hook].push(func);
+  }
+
   addSystem(System) {
     const system = new System(this, this.options);
+    this.systems.push(system);
     const binds = system.setup(this);
     if (binds === undefined) {
       throw new Error(`${System.name}'s setup method did not return an object.`);
@@ -206,23 +232,21 @@ class GamemodeConfigHandler {
   }
 
   setUpOptions() {
-    this.setUpAbilities();
-    this.setUpKillSystem();
-    this.setUpHighscores();
-    this.setUpMisc();
-    this.setUpRespawn();
-  }
-
-  setUpAbilities() {
     if (this.options.abilities) {
       this.addSystem(AbilitySystem);
     }
-  }
-
-  setUpKillSystem() {
     if (this.options.kill) {
       this.addSystem(KillSystem);
     }
+    if (this.options.highscore) {
+      this.addSystem(HighscoreSystem);
+    }
+    if (this.options.respawn) {
+      this.addSystem(RespawnSystem);
+    }
+    this.setUpMisc();
+
+    this.systems.forEach(system => system.attachHooks());
   }
 
   setUpMisc() {
@@ -237,18 +261,6 @@ class GamemodeConfigHandler {
     }
     if (this.options.joinPhase !== undefined) {
       this.joinPhase = this.options.joinPhase;
-    }
-  }
-
-  setUpRespawn() {
-    if (this.options.respawn) {
-      this.addSystem(RespawnSystem);
-    }
-  }
-
-  setUpHighscores() {
-    if (this.options.highscore) {
-      this.addSystem(HighscoreSystem);
     }
   }
 
