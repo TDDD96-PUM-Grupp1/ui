@@ -13,6 +13,7 @@ import KillSystem from './configsystems/KillSystem';
 import HighscoreSystem from './configsystems/HighscoreSystem';
 import SpawnSystem from './configsystems/SpawnSystem';
 
+// TODO: Sync these with HighscoreSystem somehow
 /* eslint-disable no-unused-vars */
 const EVENT_TRIGGER_DEATH = 0;
 const EVENT_TRIGGER_KILL = 1;
@@ -155,11 +156,6 @@ class GamemodeConfigHandler {
 
     this.hooks = {};
 
-    this.playerRadius = 32;
-    this.joinPhase = 0;
-
-    this.moveWhilePhased = true;
-
     this.systems = [];
     this.preUpdateSystems = [];
     this.postUpdateSystems = [];
@@ -173,7 +169,6 @@ class GamemodeConfigHandler {
   }
 
   getPlayerEntity(id) {
-    // TODO: Move player entity list location out of gamemode.
     return this.gamemode.players[id];
   }
 
