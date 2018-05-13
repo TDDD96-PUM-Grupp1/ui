@@ -27,12 +27,12 @@ class GMHandlerClass {
   }
 
   addGamemodes() {
-    this.addGamemode('KnockOff', KnockOff);
+    this.addGamemode('Knock Off', KnockOff);
     this.addGamemode('Dodgebot', Dodgebot);
-    this.addGamemode('KORandom', KnockOffRandom, false);
-    this.addGamemode('KODynamic', KnockOffDynamic, false);
-    this.addGamemode('KOWander', KnockOffWander);
-    this.addGamemode('TestGamemode', TestGamemode, false);
+    this.addGamemode('Knock Off Random', KnockOffRandom, false);
+    this.addGamemode('Knock Off Dynamic', KnockOffDynamic, false);
+    this.addGamemode('Knock Off Wander', KnockOffWander);
+    this.addGamemode('Test Gamemode', TestGamemode, false);
   }
 
   addGamemode(name, Gamemode, visible = true) {
