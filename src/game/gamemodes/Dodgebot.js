@@ -3,6 +3,23 @@ import Dangerbot from '../entities/Dangerbot';
 import DangerbotController from '../entities/controllers/DangerbotController';
 import BasicRectangle from '../entities/BasicRectangle';
 
+// TODO: Sync these with HighscoreSystem somehow
+/* eslint-disable no-unused-vars */
+const EVENT_TRIGGER_DEATH = 0;
+const EVENT_TRIGGER_KILL = 1;
+
+const EVENT_ACTION_RESET = 0;
+const EVENT_ACTION_INCREMENT = 1;
+const EVENT_ACTION_DECREMENT = 2;
+
+const HIGHSCORE_ORDER_ASCENDING = true;
+const HIGHSCORE_ORDER_DESCENDING = false;
+
+const HIGHSCORE_DISPLAY_TIME = 0;
+const HIGHSCORE_DISPLAY_LATENCY = 1;
+const HIGHSCORE_DISPLAY_BEST = name => ({ type: 'best', target: name });
+/* eslint-enable no-unused-vars */
+
 // How many walls the arena should have.
 const WALLS = 4;
 
@@ -96,10 +113,39 @@ class Dodgebot extends Gamemode {
     entity.y = this.centery;
   }
 
-  // Clean up after the gamemode is finished.
-  cleanUp() {
-    this.game.entityHandler.clear();
-    this.game.respawnHandler.clean();
+  static getResources() {
+    return [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }];
+  }
+
+  static getConfig() {
+    return {
+      joinPhase: 2,
+      backgroundColor: 0x061639,
+      moveWhilePhased: true,
+      respawn: {
+        time: 1,
+        phase: 1.5,
+      },
+      highscore: {
+        order: HIGHSCORE_ORDER_DESCENDING,
+        scores: {
+          Best_Time_Alive: {
+            initial: 0,
+            primary: true,
+            display: HIGHSCORE_DISPLAY_BEST('Time Alive'),
+          },
+          Time_Alive: {
+            initial: 0,
+            display: HIGHSCORE_DISPLAY_TIME,
+            events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_RESET }],
+          },
+          Deaths: {
+            initial: 0,
+            events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
+          },
+        },
+      },
+    };
   }
 }
 

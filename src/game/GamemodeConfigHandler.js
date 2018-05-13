@@ -37,113 +37,20 @@ class GamemodeConfigList {
     this.loadConfig();
   }
 
-  getConfig(Gamemode) {
-    return this.configs[Gamemode];
-  }
-
   loadConfig() {
-    this.addGamemode(
-      'KnockOff',
-      KnockOff,
-      {
-        joinPhase: 2,
-        playerRadius: 32,
-        backgroundColor: 0x061639,
-        abilities: [
-          {
-            name: 'Super Heavy',
-            cooldown: 10,
-            duration: 3,
-            color: '#ff0000',
-            activateFunc: (entity, resources) => {
-              entity.mass *= 50;
-              resources.baseCircle = entity.graphic.texture;
-              entity.graphic.texture = resources.ability;
-              // entity.graphic.tint ^= 0xffffff;
-            },
-            deactivateFunc: (entity, resources) => {
-              entity.mass /= 50;
-              entity.graphic.texture = resources.baseCircle;
-              // entity.graphic.tint ^= 0xffffff;
-            },
-          },
-        ],
-        kill: {
-          tag: {
-            tagTime: 1.5,
-          },
-        },
-        respawn: {
-          time: 1,
-          phase: 2,
-        },
-        highscore: {
-          order: HIGHSCORE_ORDER_DESCENDING,
-          scores: {
-            Kills: {
-              initial: 0,
-              primary: true,
-              events: [{ trigger: EVENT_TRIGGER_KILL, action: EVENT_ACTION_INCREMENT }],
-            },
-            Deaths: {
-              initial: 0,
-              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
-            },
-            Latency: { initial: '- ms', display: HIGHSCORE_DISPLAY_LATENCY },
-          },
-        },
-      },
-      [
-        { name: 'arena', path: 'knockoff/arena.png' },
-        { name: 'ability', path: 'knockoff/circle_activate5.png' },
-      ]
-    );
-    this.addGamemode(
-      'Dodgebot',
-      Dodgebot,
-      {
-        joinPhase: 2,
-        backgroundColor: 0x061639,
-        moveWhilePhased: true,
-        respawn: {
-          time: 1,
-          phase: 1.5,
-        },
-        highscore: {
-          order: HIGHSCORE_ORDER_DESCENDING,
-          scores: {
-            Best_Time_Alive: {
-              initial: 0,
-              primary: true,
-              display: HIGHSCORE_DISPLAY_BEST('Time Alive'),
-            },
-            Time_Alive: {
-              initial: 0,
-              display: HIGHSCORE_DISPLAY_TIME,
-              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_RESET }],
-            },
-            Deaths: {
-              initial: 0,
-              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
-            },
-          },
-        },
-      },
-      [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
-    );
-    this.addGamemode('KORandom', KnockOffRandom, {}, [], KnockOff);
-    this.addGamemode('KODynamic', KnockOffDynamic, {}, [], KnockOff);
-    this.addGamemode('KOWander', KnockOffWander, {}, [], KnockOff);
+    this.addGamemode('KnockOff', KnockOff);
+    this.addGamemode('Dodgebot', Dodgebot);
+    this.addGamemode('KORandom', KnockOffRandom);
+    this.addGamemode('KODynamic', KnockOffDynamic);
+    this.addGamemode('KOWander', KnockOffWander);
     this.addGamemode('TestGamemode', TestGamemode);
   }
 
-  addGamemode(name, Gamemode, options = {}, resources = [], extending = []) {
-    let extendingArray = extending;
-    if (extending.constructor !== Array) {
-      extendingArray = [extending];
-    }
+  addGamemode(name, Gamemode) {
+    const options = Gamemode.getConfig();
+    const resources = Gamemode.getResources();
     this.gamemodes[name] = Gamemode;
-    this.configs[Gamemode] = new GamemodeConfig(this, name, resources, options, extendingArray);
+    this.configs[name] = new GamemodeConfig(name, resources, options);
   }
 }
 

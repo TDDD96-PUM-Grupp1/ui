@@ -15,6 +15,14 @@ class Gamemode {
     this.players = {};
   }
 
+  static getResources() {
+    return [];
+  }
+
+  static getConfig() {
+    return {};
+  }
+
   init() {}
   /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
   no-empty-function */

@@ -46,7 +46,7 @@ class GMHandlerClass {
     }
 
     const Gamemode = this.gamemodes[this.selected];
-    const { resources, options } = this.configs[Gamemode];
+    const { resources, options } = this.configs[this.selected];
 
     return {
       SelectedMode: Gamemode,
@@ -67,8 +67,7 @@ class GMHandlerClass {
    * Returns an array containing button information for the selected game-mode
    */
   getButtons() {
-    const Gamemode = this.gamemodes[this.selected];
-    const { options } = this.configs[Gamemode];
+    const { options } = this.configs[this.selected];
 
     const buttons = [];
     if (options.abilities) {
