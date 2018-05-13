@@ -23,7 +23,14 @@ class GMHandlerClass {
    Get list of all names of available gamemodes
    */
   getGamemodes() {
-    return Object.keys(this.gamemodes);
+    const list = [];
+    Object.keys(this.gamemodes).forEach(name => {
+      const { visible } = this.gamemodes[name];
+      if (visible) {
+        list.push(name);
+      }
+    });
+    return list;
   }
 
   /**
@@ -45,7 +52,7 @@ class GMHandlerClass {
       throw new Error('Gamemode has not been selected');
     }
 
-    const Gamemode = this.gamemodes[this.selected];
+    const { Gamemode } = this.gamemodes[this.selected];
     const { resources, options } = this.configs[this.selected];
 
     return {

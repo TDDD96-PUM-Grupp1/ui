@@ -13,23 +13,6 @@ import KillSystem from './configsystems/KillSystem';
 import HighscoreSystem from './configsystems/HighscoreSystem';
 import SpawnSystem from './configsystems/SpawnSystem';
 
-// TODO: Sync these with HighscoreSystem somehow
-/* eslint-disable no-unused-vars */
-const EVENT_TRIGGER_DEATH = 0;
-const EVENT_TRIGGER_KILL = 1;
-
-const EVENT_ACTION_RESET = 0;
-const EVENT_ACTION_INCREMENT = 1;
-const EVENT_ACTION_DECREMENT = 2;
-
-const HIGHSCORE_ORDER_ASCENDING = true;
-const HIGHSCORE_ORDER_DESCENDING = false;
-
-const HIGHSCORE_DISPLAY_TIME = 0;
-const HIGHSCORE_DISPLAY_LATENCY = 1;
-const HIGHSCORE_DISPLAY_BEST = name => ({ type: 'best', target: name });
-/* eslint-enable no-unused-vars */
-
 class GamemodeConfigList {
   constructor() {
     this.gamemodes = {};
@@ -40,16 +23,16 @@ class GamemodeConfigList {
   loadConfig() {
     this.addGamemode('KnockOff', KnockOff);
     this.addGamemode('Dodgebot', Dodgebot);
-    this.addGamemode('KORandom', KnockOffRandom);
-    this.addGamemode('KODynamic', KnockOffDynamic);
+    this.addGamemode('KORandom', KnockOffRandom, false);
+    this.addGamemode('KODynamic', KnockOffDynamic, false);
     this.addGamemode('KOWander', KnockOffWander);
-    this.addGamemode('TestGamemode', TestGamemode);
+    this.addGamemode('TestGamemode', TestGamemode, false);
   }
 
-  addGamemode(name, Gamemode) {
+  addGamemode(name, Gamemode, visible = true) {
     const options = Gamemode.getConfig();
     const resources = Gamemode.getResources();
-    this.gamemodes[name] = Gamemode;
+    this.gamemodes[name] = { Gamemode, visible };
     this.configs[name] = new GamemodeConfig(name, resources, options);
   }
 }
@@ -73,6 +56,10 @@ class GamemodeConfigHandler {
 
     this.injectBinds();
     this.setUpOptions();
+  }
+
+  static getGamemodes() {
+    return new GamemodeConfigList();
   }
 
   getPlayerEntity(id) {
@@ -128,10 +115,6 @@ class GamemodeConfigHandler {
     if (binds.onButtonPressed) {
       this.onButtonPressedSystems.push(system);
     }
-  }
-
-  static getGamemodes() {
-    return new GamemodeConfigList();
   }
 
   setUpOptions() {
