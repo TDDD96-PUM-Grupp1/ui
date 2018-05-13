@@ -1,22 +1,45 @@
 import settings from '../config';
-import GamemodeConfigHandler from './GamemodeConfigHandler';
+import GamemodeConfig from './GamemodeConfig';
+
+import TestGamemode from './gamemodes/TestGamemode';
+import KnockOff from './gamemodes/KnockOff';
+import KnockOffRandom from './gamemodes/KnockOffRandom';
+import KnockOffDynamic from './gamemodes/KnockOffDynamic';
+import KnockOffWander from './gamemodes/KnockOffWander';
+import Dodgebot from './gamemodes/Dodgebot';
 
 /**
  * Singleton class for handling gamemode storage and selection
  */
 class GMHandlerClass {
   constructor() {
-    const { gamemodes, configs } = GamemodeConfigHandler.getGamemodes();
     // Map of all available gamemodes
-    this.gamemodes = gamemodes;
+    this.gamemodes = {};
     // Map of the gamemodes configs
-    this.configs = configs;
+    this.configs = {};
 
+    this.addGamemodes();
+
+    this.selected = '';
     if (settings.skipmenu) {
-      this.selected = settings.defaultGamemode;
-    } else {
-      this.selected = '';
+      this.selectGameMode(settings.defaultGamemode);
     }
+  }
+
+  addGamemodes() {
+    this.addGamemode('KnockOff', KnockOff);
+    this.addGamemode('Dodgebot', Dodgebot);
+    this.addGamemode('KORandom', KnockOffRandom, false);
+    this.addGamemode('KODynamic', KnockOffDynamic, false);
+    this.addGamemode('KOWander', KnockOffWander);
+    this.addGamemode('TestGamemode', TestGamemode, false);
+  }
+
+  addGamemode(name, Gamemode, visible = true) {
+    const options = Gamemode.getConfig();
+    const resources = Gamemode.getResources();
+    this.gamemodes[name] = { Gamemode, visible };
+    this.configs[name] = new GamemodeConfig(name, resources, options);
   }
 
   /**

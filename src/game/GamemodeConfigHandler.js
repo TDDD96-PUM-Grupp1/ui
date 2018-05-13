@@ -1,41 +1,8 @@
-import GamemodeConfig from './GamemodeConfig';
-
-import TestGamemode from './gamemodes/TestGamemode';
-import KnockOff from './gamemodes/KnockOff';
-import KnockOffRandom from './gamemodes/KnockOffRandom';
-import KnockOffDynamic from './gamemodes/KnockOffDynamic';
-import KnockOffWander from './gamemodes/KnockOffWander';
-import Dodgebot from './gamemodes/Dodgebot';
-
 import AbilitySystem from './configsystems/AbilitySystem';
 import RespawnSystem from './configsystems/RespawnSystem';
 import KillSystem from './configsystems/KillSystem';
 import HighscoreSystem from './configsystems/HighscoreSystem';
 import SpawnSystem from './configsystems/SpawnSystem';
-
-class GamemodeConfigList {
-  constructor() {
-    this.gamemodes = {};
-    this.configs = {};
-    this.loadConfig();
-  }
-
-  loadConfig() {
-    this.addGamemode('KnockOff', KnockOff);
-    this.addGamemode('Dodgebot', Dodgebot);
-    this.addGamemode('KORandom', KnockOffRandom, false);
-    this.addGamemode('KODynamic', KnockOffDynamic, false);
-    this.addGamemode('KOWander', KnockOffWander);
-    this.addGamemode('TestGamemode', TestGamemode, false);
-  }
-
-  addGamemode(name, Gamemode, visible = true) {
-    const options = Gamemode.getConfig();
-    const resources = Gamemode.getResources();
-    this.gamemodes[name] = { Gamemode, visible };
-    this.configs[name] = new GamemodeConfig(name, resources, options);
-  }
-}
 
 class GamemodeConfigHandler {
   constructor(game, gamemode, options) {
@@ -56,10 +23,6 @@ class GamemodeConfigHandler {
 
     this.injectBinds();
     this.setUpOptions();
-  }
-
-  static getGamemodes() {
-    return new GamemodeConfigList();
   }
 
   getPlayerEntity(id) {
