@@ -186,6 +186,7 @@ class CreateMenu extends Component {
           }}
           type="switch"
           position={SelectField.Positions.BOTTOM_RIGHT}
+          sameWidth
         />
         <div className="menu-setting">
           <TextField

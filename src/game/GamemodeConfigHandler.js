@@ -43,7 +43,7 @@ class GamemodeConfigList {
 
   loadConfig() {
     this.addGamemode(
-      'KnockOff',
+      'Knock Off',
       KnockOff,
       {
         joinPhase: 2,
@@ -131,13 +131,13 @@ class GamemodeConfigList {
       },
       [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
     );
-    this.addGamemode('KORandom', KnockOffRandom, {}, [], KnockOff);
-    this.addGamemode('KODynamic', KnockOffDynamic, {}, [], KnockOff);
-    this.addGamemode('KOWander', KnockOffWander, {}, [], KnockOff);
-    this.addGamemode('KOSpinner', KnockOffSpinner, {}, [], KnockOff);
-    this.addGamemode('DodgeBump', DodgebotBumper, {}, [], Dodgebot);
+    this.addGamemode('Knock Off Spinner', KnockOffSpinner, {}, [], KnockOff);
+    this.addGamemode('Dodgebot Bumpers', DodgebotBumper, {}, [], Dodgebot);
     this.addGamemode('Hockey', Hockey, { joinPhase: 2, moveWhilePhased: false }, []);
-    this.addGamemode('TestGamemode', TestGamemode);
+    this.addGamemode('Knock Off Random', KnockOffRandom, {}, [], KnockOff);
+    this.addGamemode('Knock Off Dynamic', KnockOffDynamic, {}, [], KnockOff);
+    this.addGamemode('Knock Off Wander', KnockOffWander, {}, [], KnockOff);
+    this.addGamemode('Test Gamemode', TestGamemode);
   }
 
   addGamemode(name, Gamemode, options = {}, resources = [], extending = []) {
