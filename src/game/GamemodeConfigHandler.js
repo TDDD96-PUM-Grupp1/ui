@@ -133,34 +133,34 @@ class GamemodeConfigList {
       [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
     );
     this.addGamemode(
-     'PassTheBomb',
-     PassTheBomb,
-     {
-       backgroundColor: 0x061639,
-       moveWhilePhased: true,
-       respawn: {
-         time: 1,
-         phase: 1.5,
-       },
-       highscore: {
-         order: HIGHSCORE_ORDER_DESCENDING,
-         scores: {
-           Times_Avoided_Death: {
-             initial: 0,
-             primary: true,
-           },
-           Bomb_Passes: {
-             initial: 0,
-           },
-           Deaths: {
-             initial: 0,
-             events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
-           },
-         },
-       },
-     },
-     []
-   );
+      'PassTheBomb',
+      PassTheBomb,
+      {
+        backgroundColor: 0x061639,
+        moveWhilePhased: true,
+        respawn: {
+          time: 1,
+          phase: 1.5,
+        },
+        highscore: {
+          order: HIGHSCORE_ORDER_DESCENDING,
+          scores: {
+            Times_Avoided_Death: {
+              initial: 0,
+              primary: true,
+            },
+            Bomb_Passes: {
+              initial: 0,
+            },
+            Deaths: {
+              initial: 0,
+              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
+            },
+          },
+        },
+      },
+      []
+    );
     this.addGamemode('Knock Off Spinner', KnockOffSpinner, {}, [], KnockOff);
     this.addGamemode('Dodgebot Bumpers', DodgebotBumper, {}, [], Dodgebot);
     this.addGamemode('Hockey', Hockey, { joinPhase: 2, moveWhilePhased: false }, []);
