@@ -28,9 +28,9 @@ class RespawnSystem extends ConfigSystem {
   }
 
   onDeath(entity) {
-    if (entity.playerLeft) {
+    if (!entity.respawnable || entity.playerLeft) {
       this.game.entityHandler.unregisterFully(entity);
-    } else if (entity.respawnable) {
+    } else {
       this.game.respawnHandler.addRespawn(entity, this.respawnTime);
     }
   }

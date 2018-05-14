@@ -6,7 +6,10 @@ import KnockOff from './gamemodes/KnockOff';
 import KnockOffRandom from './gamemodes/KnockOffRandom';
 import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 import KnockOffWander from './gamemodes/KnockOffWander';
+import KnockOffSpinner from './gamemodes/KnockOffSpinner';
+import DodgebotBumper from './gamemodes/DodgebotBumper';
 import Dodgebot from './gamemodes/Dodgebot';
+import Hockey from './gamemodes/Hockey';
 
 /**
  * Singleton class for handling gamemode storage and selection
@@ -33,6 +36,9 @@ class GMHandlerClass {
     this.addGamemode('Knock Off Dynamic', KnockOffDynamic, false);
     this.addGamemode('Knock Off Wander', KnockOffWander);
     this.addGamemode('Test Gamemode', TestGamemode, false);
+    this.addGamemode('Knock Off Spinner', KnockOffSpinner);
+    this.addGamemode('Dodgebot Bumpers', DodgebotBumper);
+    this.addGamemode('Hockey', Hockey);
   }
 
   addGamemode(name, Gamemode, visible = true) {

@@ -3,10 +3,11 @@ Configuration file for different project parameters.
 */
 
 const settings = {
-  skipmenu: true,
-  defaultGamemode: 'KnockOff',
+  skipmenu: false,
+  defaultGamemode: 'Hockey',
   game: {
-    localPlayer: true,
+    localPlayer: false,
+    dummyCount: 10,
     testLeave: false,
     testRejoin: false,
     testMove: false,
