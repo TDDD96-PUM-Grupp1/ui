@@ -121,7 +121,6 @@ class PassTheBomb extends Gamemode {
     // Adds the bomblistener to the players
     const { iconID } = playerObject;
     const idTag = playerObject.id;
-    circle.staticFriction = 1;
     circle.collision.addListener((player, victim) => {
       if (player === BOMB && victim.isPlayer() && this.resttime > 0.5) {
         BOMB.graphic.removeChild(this.bombtext);
