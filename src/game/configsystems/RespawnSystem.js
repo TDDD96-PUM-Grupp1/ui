@@ -1,5 +1,8 @@
 import ConfigSystem from './ConfigSystem';
 
+/*
+Handles player respawning
+*/
 class RespawnSystem extends ConfigSystem {
   constructor(handler, options) {
     super(handler, options);
@@ -18,16 +21,19 @@ class RespawnSystem extends ConfigSystem {
     }
     this.respawnTime = time;
     this.respawnPhaseTime = phase;
+    // Attach us as a respawn listener so we know when they player has respawned
     this.game.respawnHandler.registerRespawnListener(this);
 
     return { onPlayerCreated: true };
   }
 
   onPlayerCreated(playerObject, circle) {
+    // Add a death listener so we know when the player has died
     circle.addDeathListener(this.onDeath.bind(this));
   }
 
   onDeath(entity) {
+    // Set the player to respawn but only if they are respawnable and they haven't left the game
     if (!entity.respawnable || entity.playerLeft) {
       this.game.entityHandler.unregisterFully(entity);
     } else {
@@ -36,9 +42,13 @@ class RespawnSystem extends ConfigSystem {
   }
 
   onRespawn(entity) {
+    // Make the entity phase if the config says so.
     if (this.respawnPhaseTime > 0) {
       entity.phase(this.respawnPhaseTime);
     }
+    // If the gamemode has defined an onPlayerRespawn method we call it.
+    // If a gamemode has manually added itself as a respawn listener they use the method onRespawn
+    // So there is no risk for duplicate calls
     if (this.gamemode.onPlayerRespawn) {
       this.gamemode.onPlayerRespawn(entity);
     }

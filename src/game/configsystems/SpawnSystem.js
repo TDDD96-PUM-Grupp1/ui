@@ -3,6 +3,9 @@ import iconData from '../iconData';
 import PlayerCircle from '../entities/PlayerCircle';
 import PlayerController from '../entities/controllers/PlayerController';
 
+/*
+Handles player spawning
+*/
 class SpawnSystem extends ConfigSystem {
   constructor(handler, options) {
     super(handler, options);
@@ -28,6 +31,7 @@ class SpawnSystem extends ConfigSystem {
   onPlayerJoin(playerObject) {
     const { iconID, id } = playerObject;
 
+    // Return a promise since we load the texture async
     return new Promise(resolve => {
       this.game.resourceServer
         .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
@@ -37,16 +41,21 @@ class SpawnSystem extends ConfigSystem {
             resources[iconData[iconID].name],
             this.playerRadius
           );
+          // Attach a player controller to the circle so the player can control it
           const controller = new PlayerController(this.game, id);
           circle.setController(controller);
+
+          // Set the players colors
           const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
           const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
-
           circle.setColor(backgroundCol, iconCol);
 
+          // Add the player to the player list
           this.gamemode.players[id] = circle;
+          // Add the player circle to the game
           this.game.register(circle);
 
+          // Tell the gamemode (and other systems) that the player entity is ready
           this.gamemode.onPlayerCreated(playerObject, circle);
 
           resolve(circle);

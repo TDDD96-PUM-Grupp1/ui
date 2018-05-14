@@ -13,7 +13,6 @@ const WALLS = 4;
 class Dodgebot extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
-    this.game.respawnHandler.registerRespawnListener(this);
 
     this.time = 0;
 
@@ -91,7 +90,7 @@ class Dodgebot extends Gamemode {
   }
 
   // Called when an entity is respawned.
-  onRespawn(entity) {
+  onPlayerRespawn(entity) {
     // Move the entity close to the center
     entity.x = this.centerx;
     entity.y = this.centery;

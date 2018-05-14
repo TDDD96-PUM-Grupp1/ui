@@ -1,6 +1,7 @@
 import ConfigSystem from './ConfigSystem';
 import HighscoreList from '../HighscoreList';
 
+// Enums used to configure the highscore
 const enums = {
   event: {
     trigger: {
@@ -24,6 +25,9 @@ const enums = {
   },
 };
 
+/*
+Handles the highscore
+*/
 class HighscoreSystem extends ConfigSystem {
   constructor(handler, options) {
     super(handler, options);
@@ -50,12 +54,15 @@ class HighscoreSystem extends ConfigSystem {
 
     this.setUpHighscoreEvents();
 
+    // Only listen to preUpdate if we have any timeDisplays
     if (this.timeDisplays.length > 0) {
       binds.preUpdate = true;
     }
+    // Only listen to onPlayerCreated (to setup a death listener) if we have any deathEvents
     if (this.onDeathEvents.length > 0) {
       binds.onPlayerCreated = true;
     }
+    // Only listen to postUpdate if we have any advanced displays
     if (this.advancedDisplays.length > 0) {
       binds.postUpdate = true;
     }
@@ -64,16 +71,20 @@ class HighscoreSystem extends ConfigSystem {
   }
 
   attachHooks() {
+    // If we have any kill events then attach to the kill hook
+    // so we'll get notified by the kill system
     if (this.onKillEvents.length > 0) {
       this.handler.hookUp('kill', this.onKill.bind(this));
     }
   }
 
   setUpHighscoreEvents() {
+    // Go through the highscores in the options
     Object.keys(this.options.highscore.scores).forEach(title => {
       const highscore = this.options.highscore.scores[title];
       const name = title.replace(/_/g, ' ');
       const { initial, display, events } = highscore;
+      // Check for a display type, these are scores that depend on something that is not an event
       if (display !== undefined) {
         switch (display) {
           case enums.display.time:
@@ -83,7 +94,9 @@ class HighscoreSystem extends ConfigSystem {
             // Displayed through event from instance by game core.
             break;
           default:
+            // The display was not one the simple ones
             if (display.type) {
+              // We have an advanced display, these depend on another score
               const { type, target } = display;
               let cond;
               let update;
@@ -103,10 +116,14 @@ class HighscoreSystem extends ConfigSystem {
             }
         }
       }
+      // Check for events
       if (events !== undefined) {
+        // Events consist of a trigger and an action and a score can have many events
         events.forEach(event => {
           const { trigger, action } = event;
           let actionFunc;
+          // The action is a simple function that receives the score
+          // and returns the new value of the score
           switch (action) {
             case enums.event.action.reset:
               actionFunc = () => initial;
@@ -120,6 +137,7 @@ class HighscoreSystem extends ConfigSystem {
             default:
               throw new Error(`Invalid event action '${action}'.`);
           }
+          // Triggers are well defined events that mostly occur due to other systems
           switch (trigger) {
             case enums.event.trigger.death:
               this.onDeathEvents.push({ name, action: actionFunc });
@@ -136,6 +154,7 @@ class HighscoreSystem extends ConfigSystem {
   }
 
   preUpdate(dt) {
+    // For every time display if the player is alive we add the time delta to their score
     this.timeDisplays.forEach(display => {
       const { name } = display;
       this.game.entityHandler.getPlayers().forEach(entity => {
@@ -149,6 +168,7 @@ class HighscoreSystem extends ConfigSystem {
 
   postUpdate() {
     const players = Object.keys(this.gamemode.players);
+    // Check the conditionals for the advanced displays and update if they succeed
     this.advancedDisplays.forEach(display => {
       // Prettier wants this line on 1 row but eslint wants it spread out...
       // eslint-disable-next-line
@@ -164,12 +184,15 @@ class HighscoreSystem extends ConfigSystem {
   }
 
   onPlayerCreated(playerObject, circle) {
+    // Attach a death listener for the death events
     circle.addDeathListener(this.onDeath.bind(this));
   }
 
   onDeath(entity) {
+    // Don't try to update scores for a player that has left
     if (!entity.playerLeft) {
       const { id } = entity.controller;
+      // Perform the action of all death events
       this.onDeathEvents.forEach(event => {
         const { name, action } = event;
         this.game.scoreManager.mutateScore(name, id, action);
@@ -177,8 +200,10 @@ class HighscoreSystem extends ConfigSystem {
     }
   }
 
+  // Called by the 'kill' hook from the kill system
   onKill(params) {
     const { killer } = params;
+    // Perform the action of all kill events
     this.onKillEvents.forEach(event => {
       const { name, action } = event;
       this.game.scoreManager.mutateScore(name, killer, action);
@@ -187,4 +212,6 @@ class HighscoreSystem extends ConfigSystem {
 }
 
 export default HighscoreSystem;
+// Lets you import the highscore enums without importing the class
+// by doing `import {HighscoreEnums} from './HighscoreSystem`
 export { enums as HighscoreEnums };

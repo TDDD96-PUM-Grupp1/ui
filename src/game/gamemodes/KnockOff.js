@@ -8,7 +8,6 @@ import { HighscoreEnums } from '../configsystems/HighscoreSystem';
 class KnockOff extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
-    this.game.respawnHandler.registerRespawnListener(this);
 
     this.arenaRadius = 400;
     this.respawnArea = 100;
@@ -65,7 +64,7 @@ class KnockOff extends Gamemode {
   }
 
   // Called when an entity is respawned.
-  onRespawn(entity) {
+  onPlayerRespawn(entity) {
     // Move the entity close to the center
     entity.x = this.arenaGraphic.x + Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
     entity.y = this.arenaGraphic.y + Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;

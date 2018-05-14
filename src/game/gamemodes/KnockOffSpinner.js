@@ -30,7 +30,7 @@ class KnockOffSpinner extends KnockOff {
     circle.y = this.spawnDistance * Math.sin(angle);
   }
 
-  onRespawn(circle) {
+  onPlayerRespawn(circle) {
     const angle = Math.random() * 2 * Math.PI;
     circle.x = this.spawnDistance * Math.cos(angle);
     circle.y = this.spawnDistance * Math.sin(angle);

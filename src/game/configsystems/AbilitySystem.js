@@ -1,5 +1,8 @@
 import ConfigSystem from './ConfigSystem';
 
+/*
+Handles abilities.
+*/
 class AbilitySystem extends ConfigSystem {
   constructor(handler, options) {
     super(handler, options);
@@ -18,12 +21,14 @@ class AbilitySystem extends ConfigSystem {
   }
 
   preUpdate(dt) {
+    // Decrement the timer on all abilities
     Object.keys(this.abilities).forEach(button => {
       const { cooldown, duration, deactivateFunc } = this.abilities[button];
       Object.keys(this.abilities[button].timers).forEach(id => {
         const timer = this.abilities[button].timers[id];
         if (timer.onCooldown) {
           timer.time -= dt;
+          // If active time has run out, then we deactivate
           if (timer.active && timer.time <= cooldown - duration) {
             deactivateFunc(this.gamemode.players[id], this.gamemode.resources, this.game);
             timer.active = false;
@@ -39,13 +44,17 @@ class AbilitySystem extends ConfigSystem {
 
   onPlayerCreated(playerObject, circle) {
     const { id } = playerObject;
+    // Allocate timer for every ability for the player
     Object.keys(this.abilities).forEach(button => {
       this.abilities[button].timers[id] = { active: false, time: 0 };
     });
+
+    // Set up a death listener
     circle.addDeathListener(this.onDeath.bind(this));
   }
 
   onButtonPressed(id, button) {
+    // Check if the ability isn't on cooldown and activate it
     if (this.abilities[button]) {
       const ability = this.abilities[button];
       const playerEntity = this.handler.getPlayerEntity(id);
