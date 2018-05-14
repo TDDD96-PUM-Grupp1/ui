@@ -19,7 +19,7 @@ class CollisionLine extends CollisionBase {
     return [ex, ey, fx, fy];
   }
 
-  // Tell the other collision object to resolve a collision with a rectangle.
+  // Tell the other collision object to resolve a collision with a line.
   checkCollision(other, dt) {
     other.resolveLineCollision(this, dt);
   }

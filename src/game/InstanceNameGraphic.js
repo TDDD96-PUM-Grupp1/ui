@@ -10,7 +10,7 @@ class InstanceNameGraphic {
       new PIXI.TextStyle({
         fill: '#FFFFFF',
         fontSize: 36,
-        fontFamily: 'sans-serif',
+        fontFamily: ['Trebuchet MS', 'sans-serif'],
       })
     );
 
