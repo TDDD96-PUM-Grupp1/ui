@@ -78,7 +78,7 @@ class StartMenu extends Component {
 
     return (
       <div className="center-menu">
-        <div className="game-title">Ball Game</div>
+        <div className="game-title">IoT Party</div>
         <Paper className="menu-button-holder">{menus[this.state.menu]}</Paper>
       </div>
     );
