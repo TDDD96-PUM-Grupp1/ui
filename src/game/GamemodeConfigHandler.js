@@ -10,6 +10,9 @@ import HighscoreList from './HighscoreList';
 import PlayerCircle from './entities/PlayerCircle';
 import PlayerController from './entities/controllers/PlayerController';
 import iconData from './iconData';
+import KnockOffSpinner from './gamemodes/KnockOffSpinner';
+import DodgebotBumper from './gamemodes/DodgebotBumper';
+import Hockey from './gamemodes/Hockey';
 
 /* eslint-disable no-unused-vars */
 const EVENT_TRIGGER_DEATH = 0;
@@ -128,6 +131,9 @@ class GamemodeConfigList {
       },
       [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
     );
+    this.addGamemode('Knock Off Spinner', KnockOffSpinner, {}, [], KnockOff);
+    this.addGamemode('Dodgebot Bumpers', DodgebotBumper, {}, [], Dodgebot);
+    this.addGamemode('Hockey', Hockey, { joinPhase: 2, moveWhilePhased: false }, []);
     this.addGamemode('Knock Off Random', KnockOffRandom, {}, [], KnockOff);
     this.addGamemode('Knock Off Dynamic', KnockOffDynamic, {}, [], KnockOff);
     this.addGamemode('Knock Off Wander', KnockOffWander, {}, [], KnockOff);
@@ -430,6 +436,8 @@ class GamemodeConfigHandler {
         this.game.entityHandler.unregisterFully(entity);
       } else if (entity.respawnable) {
         this.game.respawnHandler.addRespawn(entity, this.respawnTime);
+      } else {
+        this.game.entityHandler.unregisterFully(entity);
       }
     }
   }
