@@ -132,7 +132,6 @@ class Game {
         name: `local${i}`,
         backgroundColor: '#EEFFF66',
         iconColor: `#${Math.floor(Math.random() * 0xffffff).toString(16)}`,
-        // iconColor: '#4422ff',
       });
     }
     this.localPlayerInputManager = new KeyboardManager(
