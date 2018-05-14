@@ -53,6 +53,7 @@ class GMHandlerClass {
    */
   getGamemodes() {
     const list = [];
+    // Only add visible gamemodes to the list
     Object.keys(this.gamemodes).forEach(name => {
       const { visible } = this.gamemodes[name];
       if (visible) {

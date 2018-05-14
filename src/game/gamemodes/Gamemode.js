@@ -15,10 +15,12 @@ class Gamemode {
     this.players = {};
   }
 
+  // Return a list of the resources the gamemode will use.
   static getResources() {
     return [];
   }
 
+  // Return the config for the gamemode.
   static getConfig() {
     return {};
   }
