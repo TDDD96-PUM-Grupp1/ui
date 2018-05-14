@@ -5,7 +5,7 @@ import KnockOffRandom from './gamemodes/KnockOffRandom';
 import KnockOffDynamic from './gamemodes/KnockOffDynamic';
 import KnockOffWander from './gamemodes/KnockOffWander';
 import Dodgebot from './gamemodes/Dodgebot';
-import Passthebomb from './gamemodes/Passthebomb';
+import PassTheBomb from './gamemodes/PassTheBomb';
 
 import HighscoreList from './HighscoreList';
 import PlayerCircle from './entities/PlayerCircle';
@@ -130,8 +130,8 @@ class GamemodeConfigList {
       [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
     );
     this.addGamemode(
-      'Passthebomb',
-      Passthebomb,
+      'PassTheBomb',
+      PassTheBomb,
       {
         backgroundColor: 0x061639,
         moveWhilePhased: true,

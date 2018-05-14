@@ -10,7 +10,7 @@ let Bombset = false;
 let bombTimer = 5;
 let bombExploded = false;
 
-class Passthebomb extends Gamemode {
+class PassTheBomb extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
 
@@ -196,4 +196,4 @@ class Passthebomb extends Gamemode {
   }
 }
 
-export default Passthebomb;
+export default PassTheBomb;
