@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { PulseLoader } from 'react-spinners';
 import deepstream from 'deepstream.io-client-js';
-import { Button, SelectField, TextField } from 'react-md';
+import { Button, SelectField, TextField, Paper } from 'react-md';
 
 import GamemodeHandler from '../game/GamemodeHandler';
 import getRandomInstanceName from './InstanceNameHandler';
+import Infobox from './Infobox';
 
 const DEFAULT_MAX_PLAYERS = 8;
 const MAX_ALLOWED_PLAYERS = 100;
@@ -157,74 +158,80 @@ class CreateMenu extends Component {
 
   render() {
     return (
-      <div className="create-menu">
-        <div className="create-title">Create New Game</div>
-        <div className="menu-setting">
-          <TextField
-            id="0" // Required
-            className="create-input"
-            label="Instance Name"
-            placeholder="Type a name..."
-            value={this.state.instanceName}
-            onChange={this.handleNameChange}
-            type="text"
-            helpText={`${this.state.instanceName.length}/${MAX_INSTANCE_NAME_LENGTH}`}
-            error={this.state.nameLengthError}
-            errorText={this.state.nameLengthErrorMessage}
-          />
-        </div>
-        <SelectField
-          id="1" // Required
-          label="Pick a gamemode"
-          className="create-input"
-          menuItems={this.state.gamemodeList}
-          onChange={this.updateGameMode}
-          value={this.state.gamemode}
-          style={{
-            textAlign: 'left',
-            width: '100%',
-          }}
-          type="switch"
-          position={SelectField.Positions.BOTTOM_RIGHT}
-          sameWidth
-        />
-        <div className="menu-setting">
-          <TextField
-            id="2" // Required
-            className="create-input"
-            label="Max players"
-            onChange={this.validatePlayers}
-            type="number"
-            value={this.state.maxPlayers}
-            error={this.state.numberError}
-            errorText={this.state.numberErrorMessage}
-          />
-        </div>
-        <div className="error-list">
-          {this.state.errors.map(error => (
-            <div className="error-box" key={error}>
-              {error}
+      <div>
+        <div className="empty-cell" />
+        <Paper className="menu-button-holder">
+          <div className="create-menu">
+            <div className="create-title">Create New Game</div>
+            <div className="menu-setting">
+              <TextField
+                id="0" // Required
+                className="create-input"
+                label="Instance Name"
+                placeholder="Type a name..."
+                value={this.state.instanceName}
+                onChange={this.handleNameChange}
+                type="text"
+                helpText={`${this.state.instanceName.length}/${MAX_INSTANCE_NAME_LENGTH}`}
+                error={this.state.nameLengthError}
+                errorText={this.state.nameLengthErrorMessage}
+              />
             </div>
-          ))}
-        </div>
-        <div className="spinner">
-          <PulseLoader color="#2196F3" loading={this.state.loading} />
-        </div>
-        <Button raised primary onClick={this.randomName} className="menu-button">
-          Random Name
-        </Button>
-        <Button
-          disabled={this.state.nameLengthError || this.state.numberError}
-          raised
-          primary
-          onClick={this.startGame}
-          className="menu-button"
-        >
-          Create
-        </Button>
-        <Button raised primary onClick={this.props.onBack} className="menu-button">
-          Back
-        </Button>
+            <SelectField
+              id="1" // Required
+              label="Pick a gamemode"
+              className="create-input"
+              menuItems={this.state.gamemodeList}
+              onChange={this.updateGameMode}
+              value={this.state.gamemode}
+              style={{
+                textAlign: 'left',
+                width: '100%',
+              }}
+              type="switch"
+              position={SelectField.Positions.BOTTOM_LEFT}
+              sameWidth
+            />
+            <div className="menu-setting">
+              <TextField
+                id="2" // Required
+                className="create-input"
+                label="Max players"
+                onChange={this.validatePlayers}
+                type="number"
+                value={this.state.maxPlayers}
+                error={this.state.numberError}
+                errorText={this.state.numberErrorMessage}
+              />
+            </div>
+            <div className="error-list">
+              {this.state.errors.map(error => (
+                <div className="error-box" key={error}>
+                  {error}
+                </div>
+              ))}
+            </div>
+            <div className="spinner">
+              <PulseLoader color="#2196F3" loading={this.state.loading} />
+            </div>
+            <Button raised primary onClick={this.randomName} className="menu-button">
+              Random Name
+            </Button>
+            <Button
+              disabled={this.state.nameLengthError || this.state.numberError}
+              raised
+              primary
+              onClick={this.startGame}
+              className="menu-button"
+            >
+              Create
+            </Button>
+            <Button raised primary onClick={this.props.onBack} className="menu-button">
+              Back
+            </Button>
+          </div>
+        </Paper>
+        <Infobox gamemodeTitle={this.state.gamemode} gamemodeDescription="ADD TEXT HERE" />
       </div>
     );
   }
