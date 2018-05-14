@@ -22,7 +22,7 @@ class SpawnSystem extends ConfigSystem {
     if (this.options.joinPhase !== undefined) {
       this.joinPhase = this.options.joinPhase;
     }
-    return { onPlayerJoin: true };
+    return { onPlayerJoin: true, onPlayerCreated: true };
   }
 
   onPlayerJoin(playerObject) {
