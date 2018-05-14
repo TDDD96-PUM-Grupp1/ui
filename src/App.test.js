@@ -228,6 +228,11 @@ describe('FirstMenu', () => {
 describe('Instance', () => {
   it('accepts players', () => {
     const inst = new Instance('TestInstance', 10);
+    // Lint disable since the mockGame must use the same function-names as
+    // the real class Game, which goes against Lint
+    /* eslint-disable-next-line  */
+    const mockGame = { onPlayerJoin: function() {} };
+    inst.instanceListener = mockGame;
     const testPlayer = {
       id: 'test_id',
       name: 'test_player',
@@ -238,6 +243,11 @@ describe('Instance', () => {
 
   it('checks max players', () => {
     const inst = new Instance('TestInstance', 1);
+    // Lint disable since the mockGame must use the same function-names as
+    // the real class Game, which goes against Lint
+    /* eslint-disable-next-line  */
+    const mockGame = { onPlayerJoin: function() {} };
+    inst.instanceListener = mockGame;
     const testPlayer1 = {
       id: 'test_id1',
       name: 'test_player1',

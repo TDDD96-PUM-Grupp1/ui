@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 import './css/App.css';
 
 import GameComponent from './components/GameComponent';
-
-// TODO: Uncomment and use the components below:
-// import PlayerList from './components/PlayerList';
 import Communication from './components/Communication';
 import StartMenu from './components/StartMenu';
 import settings from './config';
@@ -39,6 +36,17 @@ class App extends Component {
       /* eslint-disable-next-line */
       console.log('Using local Deepstream host');
       settings.communication.host_ip = 'localhost:60020';
+    } else {
+      // Use backend deepstream server
+      // Remove https, potential backslashes and port after the domain
+      const subdomain = document.location.href
+        .split('://')[1]
+        .split('/')[0]
+        .split(':')[0];
+
+      // Remove first subdomain (ui)
+      const domain = subdomain.substring(subdomain.indexOf('.') + 1);
+      settings.communication.host_ip = `wss://ds.${domain}:443`;
     }
     this.com = new Communication(settings.communication, onConnect);
   }

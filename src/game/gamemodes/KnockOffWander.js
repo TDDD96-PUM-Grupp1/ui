@@ -9,17 +9,15 @@ const moveSpeed = 100;
 class KnockOffWander extends KnockOff {
   constructor(game, resources) {
     super(game, resources);
-    // Move everything to the up right corner
-    this.arenaCentery = this.arenaRadius;
-    this.arenaCenterx = this.arenaRadius;
-    this.arenaGraphic.x = this.arenaRadius;
-    this.arenaGraphic.y = this.arenaRadius;
-
     // Constants for how far the circle's center can move
-    this.xleft = this.arenaRadius;
-    this.xright = this.game.app.screen.width - this.arenaRadius;
-    this.yup = this.arenaRadius;
-    this.ydown = this.game.app.screen.height - this.arenaRadius;
+    this.xleft = -100;
+    this.xright = 100;
+    this.yup = -25;
+    this.ydown = 25;
+
+    // Move everything to the up right corner
+    this.arenaGraphic.x = -100;
+    this.arenaGraphic.y = -25;
 
     this.moveHelperX = true;
     this.moveHelperY = false;
@@ -46,42 +44,44 @@ class KnockOffWander extends KnockOff {
 
   // X == true && Y == false
   moveRight(dt) {
-    if (this.arenaCenterx + dt > this.xright) {
+    if (this.arenaGraphic.x + dt > this.xright) {
       this.moveHelperX = false;
     } else {
-      this.arenaCenterx += dt;
       this.arenaGraphic.x += dt;
     }
   }
 
   // X == false && Y == false
   moveDown(dt) {
-    if (this.arenaCentery + dt > this.ydown) {
+    if (this.arenaGraphic.y + dt > this.ydown) {
       this.moveHelperY = true;
     } else {
-      this.arenaCentery += dt;
       this.arenaGraphic.y += dt;
     }
   }
 
   // X == false && Y == true
   moveLeft(dt) {
-    if (this.arenaCenterx - dt < this.xleft) {
+    if (this.arenaGraphic.x - dt < this.xleft) {
       this.moveHelperX = true;
     } else {
-      this.arenaCenterx -= dt;
       this.arenaGraphic.x -= dt;
     }
   }
 
   // X == true && Y == true
   moveUp(dt) {
-    if (this.arenaCentery - dt < this.yup) {
+    if (this.arenaGraphic.y - dt < this.yup) {
       this.moveHelperY = false;
     } else {
-      this.arenaCentery -= dt;
       this.arenaGraphic.y -= dt;
     }
+  }
+
+  // eslint-disable-next-line
+  onWindowResize() {
+    this.xright = this.game.gameStageWidth * 0.5 - this.arenaRadius;
+    this.xleft = -this.xright;
   }
 }
 

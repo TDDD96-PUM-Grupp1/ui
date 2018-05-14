@@ -17,6 +17,8 @@ const BOX_SPACING = 3;
 
 const ICON_SIZE = 28;
 
+const MAX_DECIMALS = 1;
+
 const TEXT_STYLE = new PIXI.TextStyle({
   fill: TEXT_COLOR,
   fontSize: 26,
@@ -40,7 +42,7 @@ class HighscoreList {
     this.widths = [];
 
     this.game = game;
-    game.app.stage.addChild(this.container);
+    game.staticStage.addChild(this.container);
 
     this.paintHeading();
     this.update();
@@ -106,7 +108,7 @@ class HighscoreList {
           if (curRow[scoreName].text !== val[scoreName].toString()) {
             let value = val[scoreName];
             if (value.toFixed) {
-              value = +value.toFixed(2);
+              value = +value.toFixed(MAX_DECIMALS);
             }
             curRow[scoreName].text = value;
           }
@@ -168,7 +170,7 @@ class HighscoreList {
         scores.forEach((scoreName, scoreI) => {
           let value = val[scoreName];
           if (value.toFixed) {
-            value = +value.toFixed(2);
+            value = +value.toFixed(MAX_DECIMALS);
           }
           const text = new PIXI.Text(value, TEXT_STYLE);
           text.x = scoreAdjust;
