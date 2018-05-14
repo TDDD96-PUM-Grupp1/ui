@@ -239,7 +239,7 @@ class Communication {
   * @param playerId id of the player to tell
   */
   signalRespawn(playerId) {
-    this.client.event.emit(`${this.serviceName}/aliveSignal/${playerId}`);
+    this.client.event.emit(`${this.serviceName}/respawnSignal/${playerId}`);
   }
 
   /*
@@ -248,7 +248,7 @@ class Communication {
   * @param respawnTime the time until the player is expected to respawn
   */
   signalDeath(playerId, respawnTime) {
-    this.client.event.emit(`${this.serviceName}/aliveSignal/${playerId}`, { respawnTime });
+    this.client.event.emit(`${this.serviceName}/deathSignal/${playerId}`, { respawnTime });
   }
 }
 
