@@ -57,7 +57,7 @@ class PassTheBomb extends Gamemode {
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
 
-  // Called before the game objects are updated.
+  // Called before the game objects are updated
   preUpdate(dt) {
     this.time += dt;
     this.resttime += dt;
