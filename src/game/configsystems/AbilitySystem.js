@@ -37,11 +37,12 @@ class AbilitySystem extends ConfigSystem {
     });
   }
 
-  onPlayerCreated(playerObject) {
+  onPlayerCreated(playerObject, circle) {
     const { id } = playerObject;
     Object.keys(this.abilities).forEach(button => {
       this.abilities[button].timers[id] = { active: false, time: 0 };
     });
+    circle.addDeathListener(this.onDeath.bind(this));
   }
 
   onButtonPressed(id, button) {
@@ -55,6 +56,29 @@ class AbilitySystem extends ConfigSystem {
         ability.timers[id].onCooldown = true;
       }
     }
+  }
+
+  onDeath(entity) {
+    const { id } = entity.controller;
+
+    // Reset all cooldowns
+    Object.keys(this.abilities).forEach(button => {
+      const timer = this.abilities[button].timers[id];
+      const { deactivateFunc } = this.abilities[button];
+
+      // If abilitiy is currently active, disable it
+      if (timer.active) {
+        deactivateFunc(this.gamemode.players[id], this.gamemode.resources, this.game);
+      }
+
+      // Completely reset timer
+      timer.active = false;
+      timer.onCooldown = false;
+      timer.time = 0;
+    });
+
+    // Signal death to controllers
+    this.game.communication.signalDeath(id, this.respawnTime);
   }
 }
 

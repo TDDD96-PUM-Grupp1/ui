@@ -42,6 +42,10 @@ class RespawnSystem extends ConfigSystem {
     if (this.gamemode.onPlayerRespawn) {
       this.gamemode.onPlayerRespawn(entity);
     }
+
+    // Signal controller that player has respawned
+    const { id } = entity.controller;
+    this.game.communication.signalRespawn(id);
   }
 }
 
