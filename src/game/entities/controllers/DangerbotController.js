@@ -54,7 +54,7 @@ class DangerbotController extends EntityController {
         break;
       }
       case 'stare': {
-        if (this.target.dead) {
+        if (!this.target || this.target.dead) {
           this.state = 'idle';
           this.timer = this.idleTime;
           break;
