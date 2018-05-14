@@ -392,11 +392,11 @@ class GamemodeConfigHandler {
 
     // Reset all cooldowns
     Object.keys(this.abilities).forEach(button => {
-      let timer = this.abilities[button].timers[id];
-      let {deactivateFunc} = this.abilities[button];
+      const timer = this.abilities[button].timers[id];
+      const { deactivateFunc } = this.abilities[button];
 
       // If abilitiy is currently active, disable it
-      if(timer.active){
+      if (timer.active) {
         deactivateFunc(this.gamemode.players[id], this.gamemode.resources, this.game);
       }
 
@@ -520,7 +520,7 @@ class GamemodeConfigHandler {
     }
 
     // Signal controller that player has respawned
-    const id = entity.controller.id;
+    const { id } = entity.controller;
     this.game.communication.signalRespawn(id);
 
     this.binds.onRespawn(entity);
