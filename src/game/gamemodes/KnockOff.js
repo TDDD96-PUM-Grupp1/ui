@@ -1,22 +1,6 @@
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
-
-// TODO: Sync these with HighscoreSystem somehow
-/* eslint-disable no-unused-vars */
-const EVENT_TRIGGER_DEATH = 0;
-const EVENT_TRIGGER_KILL = 1;
-
-const EVENT_ACTION_RESET = 0;
-const EVENT_ACTION_INCREMENT = 1;
-const EVENT_ACTION_DECREMENT = 2;
-
-const HIGHSCORE_ORDER_ASCENDING = true;
-const HIGHSCORE_ORDER_DESCENDING = false;
-
-const HIGHSCORE_DISPLAY_TIME = 0;
-const HIGHSCORE_DISPLAY_LATENCY = 1;
-const HIGHSCORE_DISPLAY_BEST = name => ({ type: 'best', target: name });
-/* eslint-enable no-unused-vars */
+import { HighscoreEnums } from '../configsystems/HighscoreSystem';
 
 /*
   Knock off gamemode, get score by knocking other players off the arena.
@@ -126,18 +110,28 @@ class KnockOff extends Gamemode {
         phase: 2,
       },
       highscore: {
-        order: HIGHSCORE_ORDER_DESCENDING,
+        order: HighscoreEnums.order.descending,
         scores: {
           Kills: {
             initial: 0,
             primary: true,
-            events: [{ trigger: EVENT_TRIGGER_KILL, action: EVENT_ACTION_INCREMENT }],
+            events: [
+              {
+                trigger: HighscoreEnums.event.trigger.kill,
+                action: HighscoreEnums.event.action.increment,
+              },
+            ],
           },
           Deaths: {
             initial: 0,
-            events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
+            events: [
+              {
+                trigger: HighscoreEnums.event.trigger.death,
+                action: HighscoreEnums.event.action.increment,
+              },
+            ],
           },
-          Latency: { initial: '- ms', display: HIGHSCORE_DISPLAY_LATENCY },
+          Latency: { initial: '- ms', display: HighscoreEnums.display.latency },
         },
       },
     };

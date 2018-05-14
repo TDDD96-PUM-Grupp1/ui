@@ -2,23 +2,7 @@ import Gamemode from './Gamemode';
 import Dangerbot from '../entities/Dangerbot';
 import DangerbotController from '../entities/controllers/DangerbotController';
 import BasicRectangle from '../entities/BasicRectangle';
-
-// TODO: Sync these with HighscoreSystem somehow
-/* eslint-disable no-unused-vars */
-const EVENT_TRIGGER_DEATH = 0;
-const EVENT_TRIGGER_KILL = 1;
-
-const EVENT_ACTION_RESET = 0;
-const EVENT_ACTION_INCREMENT = 1;
-const EVENT_ACTION_DECREMENT = 2;
-
-const HIGHSCORE_ORDER_ASCENDING = true;
-const HIGHSCORE_ORDER_DESCENDING = false;
-
-const HIGHSCORE_DISPLAY_TIME = 0;
-const HIGHSCORE_DISPLAY_LATENCY = 1;
-const HIGHSCORE_DISPLAY_BEST = name => ({ type: 'best', target: name });
-/* eslint-enable no-unused-vars */
+import { HighscoreEnums } from '../configsystems/HighscoreSystem';
 
 // How many walls the arena should have.
 const WALLS = 4;
@@ -127,21 +111,31 @@ class Dodgebot extends Gamemode {
         phase: 1.5,
       },
       highscore: {
-        order: HIGHSCORE_ORDER_DESCENDING,
+        order: HighscoreEnums.order.descending,
         scores: {
           Best_Time_Alive: {
             initial: 0,
             primary: true,
-            display: HIGHSCORE_DISPLAY_BEST('Time Alive'),
+            display: HighscoreEnums.display.best('Time Alive'),
           },
           Time_Alive: {
             initial: 0,
-            display: HIGHSCORE_DISPLAY_TIME,
-            events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_RESET }],
+            display: HighscoreEnums.display.time,
+            events: [
+              {
+                trigger: HighscoreEnums.event.trigger.death,
+                action: HighscoreEnums.event.action.reset,
+              },
+            ],
           },
           Deaths: {
             initial: 0,
-            events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
+            events: [
+              {
+                trigger: HighscoreEnums.event.trigger.death,
+                action: HighscoreEnums.event.action.increment,
+              },
+            ],
           },
         },
       },

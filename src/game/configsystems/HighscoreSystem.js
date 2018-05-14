@@ -1,21 +1,28 @@
 import ConfigSystem from './ConfigSystem';
 import HighscoreList from '../HighscoreList';
 
-/* eslint-disable no-unused-vars */
-const EVENT_TRIGGER_DEATH = 0;
-const EVENT_TRIGGER_KILL = 1;
-
-const EVENT_ACTION_RESET = 0;
-const EVENT_ACTION_INCREMENT = 1;
-const EVENT_ACTION_DECREMENT = 2;
-
-const HIGHSCORE_ORDER_ASCENDING = true;
-const HIGHSCORE_ORDER_DESCENDING = false;
-
-const HIGHSCORE_DISPLAY_TIME = 0;
-const HIGHSCORE_DISPLAY_LATENCY = 1;
-const HIGHSCORE_DISPLAY_BEST = name => ({ type: 'best', target: name });
-/* eslint-enable no-unused-vars */
+const enums = {
+  event: {
+    trigger: {
+      death: Symbol('trigger.death'),
+      kill: Symbol('trigger.kill'),
+    },
+    action: {
+      reset: Symbol('action.reset'),
+      increment: Symbol('action.increment'),
+      decrement: Symbol('action.decrement'),
+    },
+  },
+  order: {
+    ascending: true,
+    descending: false,
+  },
+  display: {
+    time: Symbol('display.time'),
+    latency: Symbol('display.latency'),
+    best: name => ({ type: 'best', target: name }),
+  },
+};
 
 class HighscoreSystem extends ConfigSystem {
   constructor(handler, options) {
@@ -69,10 +76,10 @@ class HighscoreSystem extends ConfigSystem {
       const { initial, display, events } = highscore;
       if (display !== undefined) {
         switch (display) {
-          case HIGHSCORE_DISPLAY_TIME:
+          case enums.display.time:
             this.timeDisplays.push({ name });
             break;
-          case HIGHSCORE_DISPLAY_LATENCY:
+          case enums.display.latency:
             // Displayed through event from instance by game core.
             break;
           default:
@@ -101,23 +108,23 @@ class HighscoreSystem extends ConfigSystem {
           const { trigger, action } = event;
           let actionFunc;
           switch (action) {
-            case EVENT_ACTION_RESET:
+            case enums.event.action.reset:
               actionFunc = () => initial;
               break;
-            case EVENT_ACTION_INCREMENT:
+            case enums.event.action.increment:
               actionFunc = n => n + 1;
               break;
-            case EVENT_ACTION_DECREMENT:
+            case enums.event.action.decrement:
               actionFunc = n => n - 1;
               break;
             default:
               throw new Error(`Invalid event action '${action}'.`);
           }
           switch (trigger) {
-            case EVENT_TRIGGER_DEATH:
+            case enums.event.trigger.death:
               this.onDeathEvents.push({ name, action: actionFunc });
               break;
-            case EVENT_TRIGGER_KILL:
+            case enums.event.trigger.kill:
               this.onKillEvents.push({ name, action: actionFunc });
               break;
             default:
@@ -180,3 +187,4 @@ class HighscoreSystem extends ConfigSystem {
 }
 
 export default HighscoreSystem;
+export { enums as HighscoreEnums };
