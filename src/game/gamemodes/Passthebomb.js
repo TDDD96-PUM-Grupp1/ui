@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
-import BasicRectangle from '../entities/BasicRectangle';
+import BasicLine from '../entities/BasicLine';
 /*
   Pass the bomb gamemode, get score by passing the bomb to other players.
 */
@@ -30,29 +30,29 @@ class PassTheBomb extends Gamemode {
     this.resttime = 0;
 
     // Center arena
-    this.arenaCenterx = Math.round(window.innerWidth / 2);
-    this.arenaCentery = Math.round(window.innerHeight / 2);
+    this.arenaCenterx = 0;
+    this.arenaCentery = 0;
 
     this.arenaSize = 700;
-    this.wallWidth = 30;
-    this.wallLength = 600;
-    this.centerx = 500;
-    this.centery = 500;
+    this.centerx = 0;
+    this.centery = 0;
 
     // Create arena
-    this.walls = [];
-    this.walls[0] = this.createborder(window.innerWidth, 0, 0, window.innerHeight * 2);
-    this.walls[1] = this.createborder(0, 0, 0, window.innerHeight * 2);
-    this.walls[2] = this.createborder(0, 0, window.innerWidth * 2, 0);
-    this.walls[3] = this.createborder(0, window.innerHeight, window.innerWidth * 2, 0);
+        this.topLine = this.addLine(-5000, 0, 5000, 0);
+        this.bottomLine = this.addLine(-5000, 0, 5000, 0);
+        this.rightLine = this.addLine(0, -500, 0, 500);
+        this.leftLine = this.addLine(0, -500, 0, 500);
   }
 
-  createborder(x, y, width, height) {
-    const wall = new BasicRectangle(this.game, width, height, Infinity, 0x44ff66);
-    wall.x = x;
-    wall.y = y;
-    this.game.register(wall);
-    return wall;
+  addLine(x, y, ex, ey) {
+    const line = new BasicLine(this.game, x, y, ex, ey, 0x6633ff);
+    line.staticFriction = 0;
+    line.dynamicFriction = 0;
+    line.restitution = 0.3;
+    line.collisionGroup = 0;
+    line.graphic.visible = false;
+    this.game.registerWall(line);
+    return line;
   }
 
   /* eslint-disable no-unused-vars, class-methods-use-this */
@@ -121,6 +121,7 @@ class PassTheBomb extends Gamemode {
     // Adds the bomblistener to the players
     const { iconID } = playerObject;
     const idTag = playerObject.id;
+    circle.staticFriction = 1;
     circle.collision.addListener((player, victim) => {
       if (player === BOMB && victim.isPlayer() && this.resttime > 0.5) {
         BOMB.graphic.removeChild(this.bombtext);
@@ -172,14 +173,13 @@ class PassTheBomb extends Gamemode {
   // eslint-disable-next-line
   onWindowResize() {
     // Updates the playing field to fit the window. Might be a better way to do this.
-    this.walls[0].update();
-    this.walls[1].update();
-    this.walls[2].update();
-    this.walls[3].update();
-    this.walls[0] = this.createborder(window.innerWidth, 0, 0, window.innerHeight * 2);
-    this.walls[1] = this.createborder(0, 0, 0, window.innerHeight * 2);
-    this.walls[2] = this.createborder(0, 0, window.innerWidth * 2, 0);
-    this.walls[3] = this.createborder(0, window.innerHeight, window.innerWidth * 2, 0);
+
+      const width = this.game.gameStageWidth * 0.5;
+      const height = this.game.gameStageHeight * 0.5;
+      this.topLine.y = -height;
+      this.bottomLine.y = height;
+      this.rightLine.x = width;
+      this.leftLine.x = -width;
 
     // Puts a player back into the playing field if the window resizes
     Object.keys(this.players).forEach(id => {

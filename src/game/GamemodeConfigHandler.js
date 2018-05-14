@@ -11,6 +11,9 @@ import HighscoreList from './HighscoreList';
 import PlayerCircle from './entities/PlayerCircle';
 import PlayerController from './entities/controllers/PlayerController';
 import iconData from './iconData';
+import KnockOffSpinner from './gamemodes/KnockOffSpinner';
+import DodgebotBumper from './gamemodes/DodgebotBumper';
+import Hockey from './gamemodes/Hockey';
 
 /* eslint-disable no-unused-vars */
 const EVENT_TRIGGER_DEATH = 0;
@@ -41,7 +44,7 @@ class GamemodeConfigList {
 
   loadConfig() {
     this.addGamemode(
-      'KnockOff',
+      'Knock Off',
       KnockOff,
       {
         joinPhase: 2,
@@ -130,38 +133,41 @@ class GamemodeConfigList {
       [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
     );
     this.addGamemode(
-      'PassTheBomb',
-      PassTheBomb,
-      {
-        backgroundColor: 0x061639,
-        moveWhilePhased: true,
-        respawn: {
-          time: 1,
-          phase: 1.5,
-        },
-        highscore: {
-          order: HIGHSCORE_ORDER_DESCENDING,
-          scores: {
-            Times_Avoided_Death: {
-              initial: 0,
-              primary: true,
-            },
-            Bomb_Passes: {
-              initial: 0,
-            },
-            Deaths: {
-              initial: 0,
-              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
-            },
-          },
-        },
-      },
-      []
-    );
-    this.addGamemode('KORandom', KnockOffRandom, {}, [], KnockOff);
-    this.addGamemode('KODynamic', KnockOffDynamic, {}, [], KnockOff);
-    this.addGamemode('KOWander', KnockOffWander, {}, [], KnockOff);
-    this.addGamemode('TestGamemode', TestGamemode);
+     'PassTheBomb',
+     PassTheBomb,
+     {
+       backgroundColor: 0x061639,
+       moveWhilePhased: true,
+       respawn: {
+         time: 1,
+         phase: 1.5,
+       },
+       highscore: {
+         order: HIGHSCORE_ORDER_DESCENDING,
+         scores: {
+           Times_Avoided_Death: {
+             initial: 0,
+             primary: true,
+           },
+           Bomb_Passes: {
+             initial: 0,
+           },
+           Deaths: {
+             initial: 0,
+             events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
+           },
+         },
+       },
+     },
+     []
+   );
+    this.addGamemode('Knock Off Spinner', KnockOffSpinner, {}, [], KnockOff);
+    this.addGamemode('Dodgebot Bumpers', DodgebotBumper, {}, [], Dodgebot);
+    this.addGamemode('Hockey', Hockey, { joinPhase: 2, moveWhilePhased: false }, []);
+    this.addGamemode('Knock Off Random', KnockOffRandom, {}, [], KnockOff);
+    this.addGamemode('Knock Off Dynamic', KnockOffDynamic, {}, [], KnockOff);
+    this.addGamemode('Knock Off Wander', KnockOffWander, {}, [], KnockOff);
+    this.addGamemode('Test Gamemode', TestGamemode);
   }
 
   addGamemode(name, Gamemode, options = {}, resources = [], extending = []) {
@@ -440,6 +446,8 @@ class GamemodeConfigHandler {
         this.game.entityHandler.unregisterFully(entity);
       } else if (entity.respawnable) {
         this.game.respawnHandler.addRespawn(entity, this.respawnTime);
+      } else {
+        this.game.entityHandler.unregisterFully(entity);
       }
     }
   }

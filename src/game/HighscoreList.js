@@ -132,6 +132,13 @@ class HighscoreList {
         const name = new PIXI.Text(val.name, TEXT_STYLE);
         name.x = TEXT_PADDING * 2 + ICON_SIZE;
         name.y = TEXT_PADDING;
+        // This is the string we remove one from to easier add ... after name.text.
+        let minifiedName = val.name;
+        while (name.width > NAME_WIDTH && minifiedName.length > 0) {
+          // Decrease the length by 1
+          minifiedName = minifiedName.substring(0, minifiedName.length - 1);
+          name.text = `${minifiedName}...`;
+        }
 
         // Circle icon
         const iconPath = iconData[styles[val.id].iconID].img;
