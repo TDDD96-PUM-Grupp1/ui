@@ -394,8 +394,28 @@ class GamemodeConfigHandler {
   }
 
   onDeath(entity) {
+    const { id } = entity.controller;
+
+    // Reset all cooldowns
+    Object.keys(this.abilities).forEach(button => {
+      const timer = this.abilities[button].timers[id];
+      const { deactivateFunc } = this.abilities[button];
+
+      // If abilitiy is currently active, disable it
+      if (timer.active) {
+        deactivateFunc(this.gamemode.players[id], this.gamemode.resources, this.game);
+      }
+
+      // Completely reset timer
+      timer.active = false;
+      timer.onCooldown = false;
+      timer.time = 0;
+    });
+
+    // Signal death to controllers
+    this.game.communication.signalDeath(id, this.respawnTime);
+
     if (entity.isPlayer() && !entity.playerLeft) {
-      const { id } = entity.controller;
       this.onDeathEvents.forEach(event => {
         const { name, action } = event;
         this.game.scoreManager.mutateScore(name, id, action);
@@ -506,6 +526,11 @@ class GamemodeConfigHandler {
     if (this.respawnPhaseTime > 0) {
       entity.phase(this.respawnPhaseTime);
     }
+
+    // Signal controller that player has respawned
+    const { id } = entity.controller;
+    this.game.communication.signalRespawn(id);
+
     this.binds.onRespawn(entity);
   }
 
