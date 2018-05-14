@@ -1,9 +1,5 @@
 import GamemodeConfig from './GamemodeConfig';
-import TestGamemode from './gamemodes/TestGamemode';
 import KnockOff from './gamemodes/KnockOff';
-import KnockOffRandom from './gamemodes/KnockOffRandom';
-import KnockOffDynamic from './gamemodes/KnockOffDynamic';
-import KnockOffWander from './gamemodes/KnockOffWander';
 import Dodgebot from './gamemodes/Dodgebot';
 
 import HighscoreList from './HighscoreList';
@@ -134,10 +130,6 @@ class GamemodeConfigList {
     this.addGamemode('Knock Off Spinner', KnockOffSpinner, {}, [], KnockOff);
     this.addGamemode('Dodgebot Bumpers', DodgebotBumper, {}, [], Dodgebot);
     this.addGamemode('Hockey', Hockey, { joinPhase: 2, moveWhilePhased: false }, []);
-    this.addGamemode('Knock Off Random', KnockOffRandom, {}, [], KnockOff);
-    this.addGamemode('Knock Off Dynamic', KnockOffDynamic, {}, [], KnockOff);
-    this.addGamemode('Knock Off Wander', KnockOffWander, {}, [], KnockOff);
-    this.addGamemode('Test Gamemode', TestGamemode);
   }
 
   addGamemode(name, Gamemode, options = {}, resources = [], extending = []) {
