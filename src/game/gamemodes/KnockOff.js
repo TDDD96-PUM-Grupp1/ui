@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
+import { HighscoreEnums } from '../configsystems/HighscoreSystem';
 
 /*
   Knock off gamemode, get score by knocking other players off the arena.
@@ -63,10 +64,76 @@ class KnockOff extends Gamemode {
   }
 
   // Called when an entity is respawned.
-  onRespawn(entity) {
+  onPlayerRespawn(entity) {
     // Move the entity close to the center
     entity.x = this.arenaGraphic.x + Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
     entity.y = this.arenaGraphic.y + Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
+  }
+
+  static getResources() {
+    return [
+      { name: 'arena', path: 'knockoff/arena.png' },
+      { name: 'ability', path: 'knockoff/circle_activate5.png' },
+    ];
+  }
+
+  static getConfig() {
+    return {
+      joinPhase: 2,
+      playerRadius: 32,
+      backgroundColor: 0x061639,
+      abilities: [
+        {
+          name: 'Super Heavy',
+          cooldown: 10,
+          duration: 3,
+          color: '#ff0000',
+          activateFunc: (entity, resources) => {
+            entity.mass *= 50;
+            resources.baseCircle = entity.graphic.texture;
+            entity.graphic.texture = resources.ability;
+          },
+          deactivateFunc: (entity, resources) => {
+            entity.mass /= 50;
+            entity.graphic.texture = resources.baseCircle;
+          },
+        },
+      ],
+      kill: {
+        tag: {
+          tagTime: 1.5,
+        },
+      },
+      respawn: {
+        time: 1,
+        phase: 2,
+      },
+      highscore: {
+        order: HighscoreEnums.order.descending,
+        scores: {
+          Kills: {
+            initial: 0,
+            primary: true,
+            events: [
+              {
+                trigger: HighscoreEnums.event.trigger.kill,
+                action: HighscoreEnums.event.action.increment,
+              },
+            ],
+          },
+          Deaths: {
+            initial: 0,
+            events: [
+              {
+                trigger: HighscoreEnums.event.trigger.death,
+                action: HighscoreEnums.event.action.increment,
+              },
+            ],
+          },
+          Latency: { initial: '- ms', display: HighscoreEnums.display.latency },
+        },
+      },
+    };
   }
 }
 

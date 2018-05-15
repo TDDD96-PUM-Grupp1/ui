@@ -139,7 +139,7 @@ class Game {
         instance.sensorMoved('local', { beta, gamma });
       },
       button => {
-        this.onButtonPressed('local', button);
+        this.onButtonsPressed('local', button);
       }
     );
     this.localPlayerInputManager.bindEventListener();
