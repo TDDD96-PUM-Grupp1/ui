@@ -40,7 +40,7 @@ class GMHandlerClass {
     this.addGamemode('Knock Off Spinner', KnockOffSpinner);
     this.addGamemode('Dodgebot Bumpers', DodgebotBumper);
     this.addGamemode('Hockey', Hockey);
-    this.addGamemode('PassTheBomb', PassTheBomb);
+    this.addGamemode('Pass The Bomb', PassTheBomb);
   }
 
   addGamemode(name, Gamemode, visible = true) {
