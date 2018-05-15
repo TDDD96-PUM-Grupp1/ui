@@ -11,23 +11,24 @@ class BasicLine extends GameEntity {
 
     this.x = x;
     this.y = y;
-    this.ex = ex;
-    this.ey = ey;
+    this.dx = ex - x;
+    this.dy = ey - y;
+    // Infinite mass since we don't want lines to move
     this.mass = Infinity;
 
     // Calculate inertia
     this.I = Infinity;
 
-    // Create a graphical circle
+    // Create a graphical line
     const graphic = new PIXI.Graphics();
     graphic.lineStyle(2, 0xffffff);
     graphic.moveTo(0, 0);
-    graphic.lineTo(ex - x, ey - y);
+    graphic.lineTo(this.dx, this.dy);
     graphic.tint = color;
     this.graphic = graphic;
 
-    // Create the collison circle
-    this.collision = new CollisionLine(ex, ey);
+    // Create the collison line
+    this.collision = new CollisionLine(this.dx, this.dy);
     this.collision.setEntity(this);
   }
 }

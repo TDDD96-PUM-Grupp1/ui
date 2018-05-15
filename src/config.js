@@ -4,9 +4,10 @@ Configuration file for different project parameters.
 
 const settings = {
   skipmenu: false,
-  defaultGamemode: 'Dodgebot',
+  defaultGamemode: 'Knock Off',
   game: {
     localPlayer: false,
+    dummyCount: 10,
     testLeave: false,
     testRejoin: false,
     testMove: false,

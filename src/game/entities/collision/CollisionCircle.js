@@ -62,8 +62,8 @@ class CollisionCircle extends CollisionBase {
     const [x, y] = this.entity.getNextPosition(dt);
     const [x2, y2] = line.entity.getNextPosition(dt);
     // find closest point on line
-    let lx = line.x2 - x2;
-    let ly = line.y2 - y2;
+    let lx = line.x2;
+    let ly = line.y2;
     const ls = Math.sqrt(lx * lx + ly * ly);
     lx /= ls;
     ly /= ls;

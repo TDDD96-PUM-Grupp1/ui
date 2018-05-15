@@ -1,149 +1,12 @@
-import GamemodeConfig from './GamemodeConfig';
-import TestGamemode from './gamemodes/TestGamemode';
-import KnockOff from './gamemodes/KnockOff';
-import KnockOffRandom from './gamemodes/KnockOffRandom';
-import KnockOffDynamic from './gamemodes/KnockOffDynamic';
-import KnockOffWander from './gamemodes/KnockOffWander';
-import Dodgebot from './gamemodes/Dodgebot';
+import AbilitySystem from './configsystems/AbilitySystem';
+import RespawnSystem from './configsystems/RespawnSystem';
+import KillSystem from './configsystems/KillSystem';
+import HighscoreSystem from './configsystems/HighscoreSystem';
+import SpawnSystem from './configsystems/SpawnSystem';
 
-import HighscoreList from './HighscoreList';
-import PlayerCircle from './entities/PlayerCircle';
-import PlayerController from './entities/controllers/PlayerController';
-import iconData from './iconData';
-
-/* eslint-disable no-unused-vars */
-const EVENT_TRIGGER_DEATH = 0;
-const EVENT_TRIGGER_KILL = 1;
-
-const EVENT_ACTION_RESET = 0;
-const EVENT_ACTION_INCREMENT = 1;
-const EVENT_ACTION_DECREMENT = 2;
-
-const HIGHSCORE_ORDER_ASCENDING = true;
-const HIGHSCORE_ORDER_DESCENDING = false;
-
-const HIGHSCORE_DISPLAY_TIME = 0;
-const HIGHSCORE_DISPLAY_LATENCY = 1;
-const HIGHSCORE_DISPLAY_BEST = name => ({ type: 'best', target: name });
-/* eslint-enable no-unused-vars */
-
-class GamemodeConfigList {
-  constructor() {
-    this.gamemodes = {};
-    this.configs = {};
-    this.loadConfig();
-  }
-
-  getConfig(Gamemode) {
-    return this.configs[Gamemode];
-  }
-
-  loadConfig() {
-    this.addGamemode(
-      'Knock Off',
-      KnockOff,
-      {
-        joinPhase: 2,
-        playerRadius: 32,
-        backgroundColor: 0x061639,
-        abilities: [
-          {
-            name: 'Super Heavy',
-            cooldown: 10,
-            duration: 3,
-            color: '#ff0000',
-            activateFunc: (entity, resources) => {
-              entity.mass *= 50;
-              resources.baseCircle = entity.graphic.texture;
-              entity.graphic.texture = resources.ability;
-              // entity.graphic.tint ^= 0xffffff;
-            },
-            deactivateFunc: (entity, resources) => {
-              entity.mass /= 50;
-              entity.graphic.texture = resources.baseCircle;
-              // entity.graphic.tint ^= 0xffffff;
-            },
-          },
-        ],
-        kill: {
-          tag: {
-            tagTime: 1.5,
-          },
-        },
-        respawn: {
-          time: 1,
-          phase: 2,
-        },
-        highscore: {
-          order: HIGHSCORE_ORDER_DESCENDING,
-          scores: {
-            Kills: {
-              initial: 0,
-              primary: true,
-              events: [{ trigger: EVENT_TRIGGER_KILL, action: EVENT_ACTION_INCREMENT }],
-            },
-            Deaths: {
-              initial: 0,
-              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
-            },
-            Latency: { initial: '- ms', display: HIGHSCORE_DISPLAY_LATENCY },
-          },
-        },
-      },
-      [
-        { name: 'arena', path: 'knockoff/arena.png' },
-        { name: 'ability', path: 'knockoff/circle_activate5.png' },
-      ]
-    );
-    this.addGamemode(
-      'Dodgebot',
-      Dodgebot,
-      {
-        joinPhase: 2,
-        backgroundColor: 0x061639,
-        moveWhilePhased: true,
-        respawn: {
-          time: 1,
-          phase: 1.5,
-        },
-        highscore: {
-          order: HIGHSCORE_ORDER_DESCENDING,
-          scores: {
-            Best_Time_Alive: {
-              initial: 0,
-              primary: true,
-              display: HIGHSCORE_DISPLAY_BEST('Time Alive'),
-            },
-            Time_Alive: {
-              initial: 0,
-              display: HIGHSCORE_DISPLAY_TIME,
-              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_RESET }],
-            },
-            Deaths: {
-              initial: 0,
-              events: [{ trigger: EVENT_TRIGGER_DEATH, action: EVENT_ACTION_INCREMENT }],
-            },
-          },
-        },
-      },
-      [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }]
-    );
-    this.addGamemode('Knock Off Random', KnockOffRandom, {}, [], KnockOff);
-    this.addGamemode('Knock Off Dynamic', KnockOffDynamic, {}, [], KnockOff);
-    this.addGamemode('Knock Off Wander', KnockOffWander, {}, [], KnockOff);
-    this.addGamemode('Test Gamemode', TestGamemode);
-  }
-
-  addGamemode(name, Gamemode, options = {}, resources = [], extending = []) {
-    let extendingArray = extending;
-    if (extending.constructor !== Array) {
-      extendingArray = [extending];
-    }
-    this.gamemodes[name] = Gamemode;
-    this.configs[Gamemode] = new GamemodeConfig(this, name, resources, options, extendingArray);
-  }
-}
-
+/*
+Handles a gamemode's config
+*/
 class GamemodeConfigHandler {
   constructor(game, gamemode, options) {
     this.game = game;
@@ -151,176 +14,120 @@ class GamemodeConfigHandler {
     this.gamemode = gamemode;
     this.options = options;
 
-    this.onDeath = this.onDeath.bind(this);
+    // Used to communicate between events
+    this.hooks = {};
 
-    this.playerRadius = 32;
-    this.joinPhase = 0;
-
-    this.moveWhilePhased = true;
-
-    this.tagging = false;
-    this.tagTime = 0;
-    this.tags = {};
-
-    this.abilities = {};
-
-    this.onDeathEvents = [];
-    this.onKillEvents = [];
-
-    this.advancedDisplays = [];
-    this.timeDisplays = [];
+    this.systems = [];
+    this.preUpdateSystems = [];
+    this.postUpdateSystems = [];
+    // Assumed to return a promise, so there can only be one
+    this.onPlayerJoinSystem = null;
+    this.onPlayerCreatedSystems = [];
+    this.onPlayerLeaveSystems = [];
+    this.onButtonPressedSystems = [];
 
     this.injectBinds();
     this.setUpOptions();
   }
 
-  static getGamemodes() {
-    return new GamemodeConfigList();
+  getPlayerEntity(id) {
+    return this.gamemode.players[id];
   }
 
-  setUpOptions() {
-    this.setUpAbilities();
-    this.setUpKillSystem();
-    this.setUpHighscores();
-    this.setUpMisc();
-    this.setUpRespawn();
-  }
-
-  setUpAbilities() {
-    if (this.options.abilities) {
-      this.options.abilities.forEach(ability => {
-        ability.timers = {};
-      });
-      this.abilities = this.options.abilities;
-      this.game.setUpGameButtons(this.options.abilities);
+  // Adds a hook
+  addHook(hook) {
+    if (this.hooks[hook]) {
+      throw new Error(`Hook '${hook}' is already defined.`);
     }
+    this.hooks[hook] = [];
   }
 
-  setUpKillSystem() {
-    if (this.options.kill) {
-      const { tag } = this.options.kill;
-      if (tag) {
-        this.tagTime = tag.tagTime;
-        this.tagging = true;
+  // Activate a hook
+  triggerHook(hook, params) {
+    if (this.hooks[hook] === undefined) {
+      throw new Error(`Hook '${hook}' is not defined.`);
+    }
+    this.hooks[hook].forEach(func => func(params));
+  }
+
+  // Attach to a hook, essentially adding a listener function
+  hookUp(hook, func) {
+    if (this.hooks[hook] === undefined) {
+      throw new Error(`Hook '${hook}' is not defined.`);
+    }
+    this.hooks[hook].push(func);
+  }
+
+  // Add a config system to the handler
+  addSystem(System) {
+    const system = new System(this, this.options);
+    this.systems.push(system);
+    // During the setup the system is assumed to config itself according to the config
+    // and return an object containing the events it will need to listen to.
+    // It is also assumed that the System will add eventual hooks during this.
+    const binds = system.setup(this);
+    if (binds === undefined) {
+      throw new Error(`${System.name}'s setup method did not return an object.`);
+    }
+    // Add the system as a listener to the requested events.
+    if (binds.preUpdate) {
+      this.preUpdateSystems.push(system);
+    }
+    if (binds.postUpdate) {
+      this.postUpdateSystems.push(system);
+    }
+    if (binds.onPlayerJoin) {
+      // There may only be one player join system since it should return a promise
+      if (this.onPlayerJoinSystem !== null) {
+        throw new Error('GamemodeConfigHandler loaded two spawn systems.');
       }
+      this.onPlayerJoinSystem = system;
+    }
+    if (binds.onPlayerCreated) {
+      this.onPlayerCreatedSystems.push(system);
+    }
+    if (binds.onPlayerLeave) {
+      this.onPlayerLeaveSystems.push(system);
+    }
+    if (binds.onButtonPressed) {
+      this.onButtonPressedSystems.push(system);
     }
   }
 
-  setUpMisc() {
+  // Adds relevant config systems
+  setUpOptions() {
+    // Quick check of the keys present in the gamemode's options.
+    // Adding the respective system if necessary.
+    // Further improvement might be to ask systems to say if they should be added
+    if (this.options.abilities) {
+      this.addSystem(AbilitySystem);
+    }
+    if (this.options.kill) {
+      this.addSystem(KillSystem);
+    }
+    if (this.options.highscore) {
+      this.addSystem(HighscoreSystem);
+    }
+    if (this.options.respawn) {
+      this.addSystem(RespawnSystem);
+    }
+    // Background color hangs around here too
     if (this.options.backgroundColor !== undefined) {
       this.game.app.renderer.backgroundColor = this.options.backgroundColor;
     }
-    if (this.options.moveWhilePhased !== undefined) {
-      this.moveWhilePhased = this.options.moveWhilePhased;
-    }
-    if (this.options.playerRadius !== undefined) {
-      this.playerRadius = this.options.playerRadius;
-    }
-    if (this.options.joinPhase !== undefined) {
-      this.joinPhase = this.options.joinPhase;
-    }
+
+    // Always add the spawn system because we only have games built around this one.
+    // If in the future you'd want to "spawn" players as something other than a circle with an icon
+    // then another spawn system should be added.
+    this.addSystem(SpawnSystem);
+
+    // After all systems have been added they should attach to hooks
+    // There is no assumption about specific order this will happen in
+    // so the available hooks should have already been created during setup.
+    this.systems.forEach(system => system.attachHooks());
   }
 
-  setUpRespawn() {
-    if (this.options.respawn) {
-      let { time, phase } = this.options.respawn;
-      if (time === undefined) {
-        time = 0;
-      }
-      if (phase === undefined) {
-        phase = 0;
-      }
-      this.respawnTime = time;
-      this.respawnPhaseTime = phase;
-      this.respawn = true;
-      this.game.respawnHandler.registerRespawnListener(this.gamemode);
-      this.injectBind('onRespawn');
-    }
-  }
-
-  setUpHighscores() {
-    if (this.options.highscore) {
-      if (this.options.highscore.order) {
-        this.game.scoreManager.setAscOrder(this.options.highscore.order);
-      }
-      Object.keys(this.options.highscore.scores).forEach(title => {
-        const score = this.options.highscore.scores[title];
-        const name = title.replace(/_/g, ' ');
-        const { initial, primary } = score;
-        this.game.scoreManager.addScoreType(name, initial, primary);
-      });
-      this.gamemode.hs_list = new HighscoreList(this.game.scoreManager, this.game);
-
-      this.setUpHighscoreEvents();
-    }
-  }
-
-  setUpHighscoreEvents() {
-    Object.keys(this.options.highscore.scores).forEach(title => {
-      const highscore = this.options.highscore.scores[title];
-      const name = title.replace(/_/g, ' ');
-      const { initial, display, events } = highscore;
-      if (display !== undefined) {
-        switch (display) {
-          case HIGHSCORE_DISPLAY_TIME:
-            this.timeDisplays.push({ name });
-            break;
-          case HIGHSCORE_DISPLAY_LATENCY:
-            // Displayed through event from instance by game core.
-            break;
-          default:
-            if (display.type) {
-              const { type, target } = display;
-              let cond;
-              let update;
-              switch (type) {
-                case 'best':
-                  cond = (stored, comp) => comp > stored;
-                  update = (stored, comp) => comp;
-                  break;
-                default:
-                  throw new Error(`Invalid advanced display type '${type}'.`);
-              }
-              // Prettier wants this line on 1 row but eslint wants it spread out...
-              // eslint-disable-next-line
-              this.advancedDisplays.push({ name, target, cond, update });
-            } else {
-              throw new Error(`Invalid display type '${display}'.`);
-            }
-        }
-      }
-      if (events !== undefined) {
-        events.forEach(event => {
-          const { trigger, action } = event;
-          let actionFunc;
-          switch (action) {
-            case EVENT_ACTION_RESET:
-              actionFunc = () => initial;
-              break;
-            case EVENT_ACTION_INCREMENT:
-              actionFunc = n => n + 1;
-              break;
-            case EVENT_ACTION_DECREMENT:
-              actionFunc = n => n - 1;
-              break;
-            default:
-              throw new Error(`Invalid event action '${action}'.`);
-          }
-          switch (trigger) {
-            case EVENT_TRIGGER_DEATH:
-              this.onDeathEvents.push({ name, action: actionFunc });
-              break;
-            case EVENT_TRIGGER_KILL:
-              this.onKillEvents.push({ name, action: actionFunc });
-              break;
-            default:
-              throw new Error(`Invalid event trigger '${trigger}'.`);
-          }
-        });
-      }
-    });
-  }
-
+  // Injects the handler into the gamemode events allowing us to seamlessly add functionality
   injectBinds() {
     this.injectBind('preUpdate');
     this.injectBind('postUpdate');
@@ -330,6 +137,7 @@ class GamemodeConfigHandler {
     this.injectBind('onButtonPressed');
   }
 
+  // Swap a function in a gamemode with one of ours
   injectBind(func) {
     const temp = this.gamemode[func];
 
@@ -341,177 +149,43 @@ class GamemodeConfigHandler {
     }
   }
 
+  // Called before the physics update each loop
   preUpdate(dt) {
-    Object.keys(this.abilities).forEach(button => {
-      const { cooldown, duration, deactivateFunc } = this.abilities[button];
-      Object.keys(this.abilities[button].timers).forEach(id => {
-        const timer = this.abilities[button].timers[id];
-        if (timer.onCooldown) {
-          timer.time -= dt;
-          if (timer.active && timer.time <= cooldown - duration) {
-            deactivateFunc(this.gamemode.players[id], this.gamemode.resources, this.game);
-            timer.active = false;
-          } else if (timer.time <= 0) {
-            // Cooldown over, tell controller
-            this.game.communication.resetCooldown(id, button);
-            timer.onCooldown = false;
-          }
-        }
-      });
-    });
-    if (this.tagging) {
-      Object.keys(this.tags).forEach(id => {
-        const list = this.tags[id];
-        while (list.length > 0) {
-          if (list[0].timer - dt <= 0) {
-            // Remove expired tag
-            list.shift();
-          } else {
-            break;
-          }
-        }
-        list.forEach(item => {
-          item.timer -= dt;
-        });
-      }, this);
-    }
-    this.timeDisplays.forEach(display => {
-      const { name } = display;
-      this.game.entityHandler.getPlayers().forEach(entity => {
-        if (!entity.isDead) {
-          const { id } = entity.controller;
-          this.game.scoreManager.addScore(name, id, dt);
-        }
-      });
-    });
+    this.preUpdateSystems.forEach(system => system.preUpdate(dt));
     this.binds.preUpdate(dt);
   }
 
-  onDeath(entity) {
-    if (entity.isPlayer() && !entity.playerLeft) {
-      const { id } = entity.controller;
-      this.onDeathEvents.forEach(event => {
-        const { name, action } = event;
-        this.game.scoreManager.mutateScore(name, id, action);
-      });
-      if (this.tagging) {
-        this.tags[id].forEach(item => {
-          // console.log('%s killed %s', item.id, id);
-          this.onKillEvents.forEach(event => {
-            const { name, action } = event;
-            this.game.scoreManager.mutateScore(name, item.id, action);
-          });
-        });
-        this.tags[id] = [];
-      }
-    }
-    if (this.respawn) {
-      if (entity.isPlayer() && entity.playerLeft) {
-        this.game.entityHandler.unregisterFully(entity);
-      } else if (entity.respawnable) {
-        this.game.respawnHandler.addRespawn(entity, this.respawnTime);
-      }
-    }
-  }
-
+  // Called after the physics update
   postUpdate(dt) {
-    const players = Object.keys(this.gamemode.players);
-    this.advancedDisplays.forEach(display => {
-      // Prettier wants this line on 1 row but eslint wants it spread out...
-      // eslint-disable-next-line
-      const { name, target, cond, update } = display;
-      players.forEach(id => {
-        const current = this.game.scoreManager.getScore(name, id);
-        const score = this.game.scoreManager.getScore(target, id);
-        if (cond(current, score)) {
-          this.game.scoreManager.setScore(name, id, update(current, score));
-        }
-      });
-    });
+    this.postUpdateSystems.forEach(system => system.postUpdate(dt));
     this.binds.postUpdate(dt);
   }
 
+  // Called when a player joins the game
+  // Should return a promise
   onPlayerJoin(playerObject) {
-    const { iconID, id } = playerObject;
-
-    return new Promise(resolve => {
-      this.game.resourceServer
-        .requestResources([{ name: iconData[iconID].name, path: iconData[iconID].img }])
-        .then(resources => {
-          const circle = new PlayerCircle(
-            this.game,
-            resources[iconData[iconID].name],
-            this.playerRadius
-          );
-          const controller = new PlayerController(this.game, id);
-          circle.setController(controller);
-          const backgroundCol = Number.parseInt(playerObject.backgroundColor.substr(1), 16);
-          const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
-
-          circle.setColor(backgroundCol, iconCol);
-
-          this.gamemode.players[id] = circle;
-          this.game.register(circle);
-
-          this.gamemode.onPlayerCreated(playerObject, circle);
-
-          resolve(circle);
-        });
-    });
+    return this.onPlayerJoinSystem.onPlayerJoin(playerObject);
   }
 
+  // Called when a player joins the game but after they have had an entity created for them
   onPlayerCreated(playerObject, circle) {
-    const { id } = playerObject;
-    Object.keys(this.abilities).forEach(button => {
-      this.abilities[button].timers[id] = { active: false, time: 0 };
-    });
-    if (this.tagging) {
-      this.tags[id] = [];
-      circle.collision.addListener((player, victim) => {
-        if (victim.isPlayer()) {
-          const vid = victim.controller.id;
-          const pid = player.controller.id;
-          this.tags[vid] = this.tags[vid].filter(e => e.id !== pid);
-          this.tags[vid].push({ id: pid, timer: this.tagTime });
-        }
-      });
-    }
-    if (this.respawn) {
-      circle.addDeathListener(this.onDeath);
-    }
-    circle.phase(this.joinPhase);
-    circle.moveWhilePhased = this.moveWhilePhased;
+    this.onPlayerCreatedSystems.forEach(system => system.onPlayerCreated(playerObject, circle));
     this.binds.onPlayerCreated(playerObject, circle);
   }
 
-  onPlayerLeave(idTag) {
-    if (this.tagging) {
-      this.tags[idTag] = [];
-    }
+  // Called when a player leaves the game
+  onPlayerLeave(id) {
+    this.onPlayerLeave.forEach(system => system.onPlayerLeave(id));
+
     // Turn the players entity into a dummy, leaving it in the game until it dies
-    this.gamemode.players[idTag].ownerLeft();
+    this.gamemode.players[id].ownerLeft();
 
-    this.binds.onPlayerLeave(idTag);
+    this.binds.onPlayerLeave(id);
   }
 
-  onRespawn(entity) {
-    if (this.respawnPhaseTime > 0) {
-      entity.phase(this.respawnPhaseTime);
-    }
-    this.binds.onRespawn(entity);
-  }
-
+  // Called when a player pressed a button
   onButtonPressed(id, button) {
-    if (this.abilities[button]) {
-      const ability = this.abilities[button];
-      const playerEntity = this.gamemode.players[id];
-      if (ability.timers[id].time <= 0) {
-        ability.activateFunc(playerEntity, this.gamemode.resources, this.game);
-        ability.timers[id].time = ability.cooldown;
-        ability.timers[id].active = true;
-        ability.timers[id].onCooldown = true;
-      }
-    }
+    this.onButtonPressedSystems.forEach(system => system.onButtonPressed(id, button));
     this.binds.onButtonPressed(id, button);
   }
 }
