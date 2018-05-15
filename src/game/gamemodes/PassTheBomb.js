@@ -56,8 +56,6 @@ class PassTheBomb extends Gamemode {
     return line;
   }
 
-  /* eslint-disable no-unused-vars, class-methods-use-this */
-
   // Called before the game objects are updated
   preUpdate(dt) {
     this.time += dt;
@@ -103,7 +101,7 @@ class PassTheBomb extends Gamemode {
   }
 
   // Called after the game objects are updated.
-  postUpdate(dt) {
+  postUpdate() {
     // Updates the scoreboard when the bomb explodes
     if (bombExploded) {
       Object.keys(this.players).forEach(id => {
@@ -120,7 +118,6 @@ class PassTheBomb extends Gamemode {
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
     // Adds the bomblistener to the players
-    const { iconID } = playerObject;
     const idTag = playerObject.id;
     circle.collision.addListener((player, victim) => {
       if (player === BOMB && victim.isPlayer() && this.resttime > 0.5) {
@@ -147,13 +144,6 @@ class PassTheBomb extends Gamemode {
     circle.y = this.arenaCentery;
   }
 
-  // Called when a player disconnects
-  onPlayerLeave(idTag) {}
-
-  onButtonPressed(id, button) {}
-
-  /* eslint-enable class-methods-use-this, no-unused-vars */
-
   // Clean up after the gamemode is finished.
   cleanUp() {
     this.arenaGraphic.destroy();
@@ -166,11 +156,6 @@ class PassTheBomb extends Gamemode {
     entity.y = this.arenaCentery + Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
   }
 
-  // Called when an entity dies.
-  // eslint-disable-next-line
-  onDeath(entity) {}
-
-  // eslint-disable-next-line
   onWindowResize() {
     // Updates the playing field to fit the window. Might be a better way to do this.
 
