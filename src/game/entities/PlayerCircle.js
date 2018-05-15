@@ -32,14 +32,6 @@ class PlayerCircle extends BasicCircle {
     this.collisionGroup = Math.random();
   }
 
-  ownerLeft() {
-    this.playerLeft = true;
-    // Make controller passive
-    this.controller.active = false;
-    // Clear collision listeners
-    this.collision.listeners = [];
-  }
-
   setColor(backgroundColor, iconColor) {
     this.graphic.tint = backgroundColor;
     if (iconColor !== undefined) {

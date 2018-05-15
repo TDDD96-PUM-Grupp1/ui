@@ -1,5 +1,6 @@
 import ConfigSystem from './ConfigSystem';
 import HighscoreList from '../HighscoreList';
+import ScoreManager from '../ScoreManager';
 
 // Enums used to configure the highscore
 const enums = {
@@ -31,6 +32,10 @@ Handles the highscore
 class HighscoreSystem extends ConfigSystem {
   constructor(handler, options) {
     super(handler, options);
+    // New gamemode, new scoremanager
+    this.scoreManager = new ScoreManager();
+    // Drop a reference to it in game so gamemodes can manipulate
+    this.scoreManager = this.scoreManager;
 
     this.onDeathEvents = [];
     this.onKillEvents = [];
@@ -40,17 +45,17 @@ class HighscoreSystem extends ConfigSystem {
   }
 
   setup() {
-    const binds = {};
+    const binds = { onPlayerLeave: true };
     if (this.options.highscore.order) {
-      this.game.scoreManager.setAscOrder(this.options.highscore.order);
+      this.scoreManager.setAscOrder(this.options.highscore.order);
     }
     Object.keys(this.options.highscore.scores).forEach(title => {
       const score = this.options.highscore.scores[title];
       const name = title.replace(/_/g, ' ');
       const { initial, primary } = score;
-      this.game.scoreManager.addScoreType(name, initial, primary);
+      this.scoreManager.addScoreType(name, initial, primary);
     });
-    this.gamemode.hs_list = new HighscoreList(this.game.scoreManager, this.game);
+    this.gamemode.hs_list = new HighscoreList(this.scoreManager, this.game);
 
     this.setUpHighscoreEvents();
 
@@ -160,7 +165,7 @@ class HighscoreSystem extends ConfigSystem {
       this.game.entityHandler.getPlayers().forEach(entity => {
         if (!entity.isDead) {
           const { id } = entity.controller;
-          this.game.scoreManager.addScore(name, id, dt);
+          this.scoreManager.addScore(name, id, dt);
         }
       });
     });
@@ -174,16 +179,18 @@ class HighscoreSystem extends ConfigSystem {
       // eslint-disable-next-line
       const { name, target, cond, update } = display;
       players.forEach(id => {
-        const current = this.game.scoreManager.getScore(name, id);
-        const score = this.game.scoreManager.getScore(target, id);
+        const current = this.scoreManager.getScore(name, id);
+        const score = this.scoreManager.getScore(target, id);
         if (cond(current, score)) {
-          this.game.scoreManager.setScore(name, id, update(current, score));
+          this.scoreManager.setScore(name, id, update(current, score));
         }
       });
     });
   }
 
   onPlayerCreated(playerObject, circle) {
+    // Add player to the scoremanager to track their scores
+    this.scoreManager.addPlayer(playerObject);
     // Attach a death listener for the death events
     circle.addDeathListener(this.onDeath.bind(this));
   }
@@ -195,9 +202,13 @@ class HighscoreSystem extends ConfigSystem {
       // Perform the action of all death events
       this.onDeathEvents.forEach(event => {
         const { name, action } = event;
-        this.game.scoreManager.mutateScore(name, id, action);
+        this.scoreManager.mutateScore(name, id, action);
       });
     }
+  }
+
+  onPlayerLeave(id) {
+    this.scoreManager.removePlayer(id);
   }
 
   // Called by the 'kill' hook from the kill system
@@ -206,7 +217,7 @@ class HighscoreSystem extends ConfigSystem {
     // Perform the action of all kill events
     this.onKillEvents.forEach(event => {
       const { name, action } = event;
-      this.game.scoreManager.mutateScore(name, killer, action);
+      this.scoreManager.mutateScore(name, killer, action);
     });
   }
 }
