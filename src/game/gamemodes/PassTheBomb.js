@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
 import BasicLine from '../entities/BasicLine';
+import { HighscoreEnums } from '../configsystems/HighscoreSystem';
 /*
   Pass the bomb gamemode, get score by passing the bomb to other players
 */
@@ -108,8 +109,8 @@ class PassTheBomb extends Gamemode {
       Object.keys(this.players).forEach(id => {
         const entity = this.players[id];
         if (!entity.dead) {
-          const score = this.game.scoreManager.getScore('Times Avoided Death', id);
-          this.game.scoreManager.setScore('Times Avoided Death', id, score + 1);
+          const score = this.game.scoreManager.getScore('Score', id);
+          this.game.scoreManager.setScore('Score', id, score + 1);
         }
       });
       bombExploded = false;
@@ -128,16 +129,16 @@ class PassTheBomb extends Gamemode {
         BOMB.graphic.addChild(this.bombtext);
         this.resttime = 0;
         bombTimer = Math.ceil(bombTimer);
-        const score = this.game.scoreManager.getScore('Bomb Passes', idTag);
-        this.game.scoreManager.setScore('Bomb Passes', idTag, score + 1);
+        const score = this.game.scoreManager.getScore('Passes', idTag);
+        this.game.scoreManager.setScore('Passes', idTag, score + 1);
       } else if (victim === BOMB && this.resttime > 0.5) {
         BOMB.graphic.removeChild(this.bombtext);
         BOMB = player;
         BOMB.graphic.addChild(this.bombtext);
         this.resttime = 0;
         bombTimer = Math.ceil(bombTimer);
-        const score = this.game.scoreManager.getScore('Bomb Passes', victim.controller.id);
-        this.game.scoreManager.setScore('Bomb Passes', victim.controller.id, score + 1);
+        const score = this.game.scoreManager.getScore('Passes', victim.controller.id);
+        this.game.scoreManager.setScore('Passes', victim.controller.id, score + 1);
       }
     });
 
@@ -159,7 +160,7 @@ class PassTheBomb extends Gamemode {
   }
 
   // Called when an entity is respawned.
-  onRespawn(entity) {
+  onPlayerRespawn(entity) {
     // Move the entity close to the center
     entity.x = this.arenaCenterx + Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
     entity.y = this.arenaCentery + Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
@@ -192,6 +193,41 @@ class PassTheBomb extends Gamemode {
         entity.y = entity.radius;
       } else if (entity.y > window.innerHeight) entity.y = window.innerHeight - entity.radius;
     });
+  }
+
+  static getConfig() {
+    return {
+      joinPhase: 2,
+      playerRadius: 32,
+      backgroundColor: 0x061639,
+      respawn: {
+        time: 1,
+        phase: 2,
+      },
+      highscore: {
+        order: HighscoreEnums.order.descending,
+        scores: {
+          Score: {
+            initial: 0,
+            primary: true,
+          },
+          Passes: {
+            initial: 0,
+          },
+
+          Deaths: {
+            initial: 0,
+            events: [
+              {
+                trigger: HighscoreEnums.event.trigger.death,
+                action: HighscoreEnums.event.action.increment,
+              },
+            ],
+          },
+          Latency: { initial: '- ms', display: HighscoreEnums.display.latency },
+        },
+      },
+    };
   }
 }
 

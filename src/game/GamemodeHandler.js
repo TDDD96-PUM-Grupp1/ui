@@ -10,6 +10,7 @@ import KnockOffSpinner from './gamemodes/KnockOffSpinner';
 import DodgebotBumper from './gamemodes/DodgebotBumper';
 import Dodgebot from './gamemodes/Dodgebot';
 import Hockey from './gamemodes/Hockey';
+import PassTheBomb from './gamemodes/PassTheBomb';
 
 /**
  * Singleton class for handling gamemode storage and selection
@@ -39,6 +40,7 @@ class GMHandlerClass {
     this.addGamemode('Knock Off Spinner', KnockOffSpinner);
     this.addGamemode('Dodgebot Bumpers', DodgebotBumper);
     this.addGamemode('Hockey', Hockey);
+    this.addGamemode('PassTheBomb', PassTheBomb);
   }
 
   addGamemode(name, Gamemode, visible = true) {
