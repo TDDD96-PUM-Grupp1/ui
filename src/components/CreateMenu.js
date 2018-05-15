@@ -158,7 +158,7 @@ class CreateMenu extends Component {
 
   render() {
     return (
-      <div>
+      <div className="menu-holder">
         <div className="empty-cell" />
         <Paper className="menu-button-holder">
           <div className="create-menu">
@@ -231,7 +231,10 @@ class CreateMenu extends Component {
             </Button>
           </div>
         </Paper>
-        <Infobox gamemodeTitle={this.state.gamemode} gamemodeDescription="ADD TEXT HERE" />
+        <Infobox
+          gamemodeTitle={this.state.gamemode}
+          gamemodeDescription={this.state.gamemodeHandler.getRules(this.state.gamemode)}
+        />
       </div>
     );
   }

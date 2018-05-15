@@ -1,5 +1,6 @@
 import deepstream from 'deepstream.io-client-js';
 import Instance from './../game/Instance';
+import GamemodeHandler from '../game/GamemodeHandler';
 
 class Communication {
   /*
@@ -30,6 +31,7 @@ class Communication {
     this.update = this.update.bind(this);
     this.getInstance = this.getInstance.bind(this);
     this.onPingTime = this.onPingTime.bind(this);
+    this.sendGamemodeinfo = this.sendGamemodeinfo.bind(this);
   }
 
   /*
@@ -76,6 +78,12 @@ class Communication {
         this.client.rpc.provide(
           `${this.serviceName}/pingTime/${this.instance.getName()}`,
           this.onPingTime
+        );
+
+        // Provide an RPC to let controllers test the ping to the UI.
+        this.client.rpc.provide(
+          `${this.serviceName}/getGamemodeInfo/${this.instance.getName()}`,
+          this.sendGamemodeinfo
         );
 
         // Subsribe to the data channel of the players.
@@ -249,6 +257,15 @@ class Communication {
   */
   signalDeath(playerId, respawnTime) {
     this.client.event.emit(`${this.serviceName}/deathSignal/${playerId}`, { respawnTime });
+  }
+
+  /**
+   * Sends gamerules
+   * @param response Object that returns data to the caller.
+   * Expects this in function, it's still relevant to the class.
+   */
+  sendGamemodeinfo(data, response) {
+    response.send(GamemodeHandler.getInstance().getRules(this.instance.getGamemodeId()));
   }
 }
 

@@ -15,7 +15,7 @@
 }
 .menu-button-holder{
   display: inline-block;
-  flex-wrap: nowrap;
+  white-space: normal;
   width: 400px;
   padding: 10px 30px 30px 30px;
 
@@ -106,5 +106,5 @@
   vertical-align: top;
 }
 .menu-holder{
-  flex-wrap: nowrap;
+  white-space: nowrap;
 }
