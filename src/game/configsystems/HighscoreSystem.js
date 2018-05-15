@@ -35,7 +35,7 @@ class HighscoreSystem extends ConfigSystem {
     // New gamemode, new scoremanager
     this.scoreManager = new ScoreManager();
     // Drop a reference to it in game so gamemodes can manipulate
-    this.scoreManager = this.scoreManager;
+    this.game.scoreManager = this.scoreManager;
 
     this.onDeathEvents = [];
     this.onKillEvents = [];

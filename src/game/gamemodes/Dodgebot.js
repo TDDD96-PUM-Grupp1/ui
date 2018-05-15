@@ -105,6 +105,9 @@ class Dodgebot extends Gamemode {
       joinPhase: 2,
       backgroundColor: 0x061639,
       moveWhilePhased: true,
+      leave: {
+        removeTime: 2,
+      },
       respawn: {
         time: 1,
         phase: 1.5,

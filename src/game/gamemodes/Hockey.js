@@ -173,7 +173,13 @@ class Hockey extends Gamemode {
   }
 
   static getConfig() {
-    return { joinPhase: 2, moveWhilePhased: false };
+    return {
+      joinPhase: 2,
+      moveWhilePhased: false,
+      leave: {
+        removeTime: 3,
+      },
+    };
   }
 }
 

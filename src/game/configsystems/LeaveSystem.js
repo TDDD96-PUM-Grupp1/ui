@@ -73,7 +73,7 @@ class LeaveSystem extends ConfigSystem {
     // Color it gray so it is clear that it is no longer controlled.
     entity.setColor(0x888888, 0x888888);
     // Hide the icon
-    entity.graphic.getChildAt(0).visible = false;
+    // entity.graphic.getChildAt(0).visible = false;
 
     // Attach an indicator that shows how close the entity is to being killed,
     // so that players are ready for it to disappear.
