@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
 import BasicLine from '../entities/BasicLine';
 /*
-  Pass the bomb gamemode, get score by passing the bomb to other players.
+  Pass the bomb gamemode, get score by passing the bomb to other players
 */
 
 let BOMB = null;
