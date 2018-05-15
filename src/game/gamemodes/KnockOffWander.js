@@ -83,6 +83,14 @@ class KnockOffWander extends KnockOff {
     this.xright = this.game.gameStageWidth * 0.5 - this.arenaRadius;
     this.xleft = -this.xright;
   }
+
+  static getRules() {
+    return [
+      'Knock the players off whilist the arena is moving!',
+      'Abillities:',
+      'SuperHeavy - Become super heavy and knock your enemies with an extreme force!',
+    ];
+  }
 }
 
 export default KnockOffWander;

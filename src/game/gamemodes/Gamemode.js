@@ -27,7 +27,7 @@ class Gamemode {
 
   // Return a description of gamemode.
   static getRules() {
-    return 'this is a test.';
+    return [];
   }
 
   init() {}

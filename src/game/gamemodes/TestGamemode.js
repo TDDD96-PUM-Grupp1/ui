@@ -36,6 +36,10 @@ class TestGamemode extends Gamemode {
     line.collisionGroup = 1;
     this.game.register(line);
   }
+
+  static getRules() {
+    return ['This is a test gamemode'];
+  }
 }
 
 export default TestGamemode;

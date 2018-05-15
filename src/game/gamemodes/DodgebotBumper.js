@@ -22,6 +22,9 @@ class DodgebotBumper extends Dodgebot {
 
     this.game.register(bumper);
   }
+  static getRules() {
+    return ['Avoid the killer robots that try to kill you and the bumper!'];
+  }
 }
 
 export default DodgebotBumper;

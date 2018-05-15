@@ -26,6 +26,14 @@ class KnockOffDynamic extends KnockOff {
     this.modifyCircle();
   }
 
+  static getRules() {
+    return [
+      'Knock the players off the ever changing arena!',
+      'Abillities:',
+      'SuperHeavy - Become super heavy and knock your enemies with an extreme force!',
+    ];
+  }
+
   /**
    * Changes the circles size untill it would over-shoot the min/max size,
    * then it changes its direction of change.
