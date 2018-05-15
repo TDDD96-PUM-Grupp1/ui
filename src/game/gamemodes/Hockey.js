@@ -171,6 +171,10 @@ class Hockey extends Gamemode {
     this.rightLine.x = width;
     this.leftLine.x = -width;
   }
+
+  static getConfig() {
+    return { joinPhase: 2, moveWhilePhased: false };
+  }
 }
 
 export default Hockey;

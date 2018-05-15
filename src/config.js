@@ -4,7 +4,7 @@ Configuration file for different project parameters.
 
 const settings = {
   skipmenu: false,
-  defaultGamemode: 'Hockey',
+  defaultGamemode: 'Knock Off',
   game: {
     localPlayer: false,
     dummyCount: 10,

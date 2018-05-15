@@ -36,11 +36,6 @@ class TestGamemode extends Gamemode {
     line.collisionGroup = 1;
     this.game.register(line);
   }
-
-  // Clean up after the gamemode is finished.
-  cleanUp() {
-    this.game.entityHandler.clear();
-  }
 }
 
 export default TestGamemode;

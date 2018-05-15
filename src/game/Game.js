@@ -132,7 +132,6 @@ class Game {
         name: `local${i}`,
         backgroundColor: '#EEFFF66',
         iconColor: `#${Math.floor(Math.random() * 0xffffff).toString(16)}`,
-        // iconColor: '#4422ff',
       });
     }
     this.localPlayerInputManager = new KeyboardManager(
@@ -140,7 +139,7 @@ class Game {
         instance.sensorMoved('local', { beta, gamma });
       },
       button => {
-        this.onButtonPressed('local', button);
+        this.onButtonsPressed('local', button);
       }
     );
     this.localPlayerInputManager.bindEventListener();
