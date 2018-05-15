@@ -28,11 +28,11 @@ class PassTheBomb extends Gamemode {
     this.arenaRadius = 490;
     this.respawnArea = 100;
     this.time = 0;
-    this.resttime = 0;
+    this.restTime = 0;
 
     // Center arena
-    this.arenaCenterx = 0;
-    this.arenaCentery = 0;
+    this.arenaCenterX = 0;
+    this.arenaCenterY = 0;
 
     this.arenaSize = 700;
     this.centerx = 0;
@@ -59,7 +59,7 @@ class PassTheBomb extends Gamemode {
   // Called before the game objects are updated
   preUpdate(dt) {
     this.time += dt;
-    this.resttime += dt;
+    this.restTime += dt;
 
     // Sets up the bomb amongst eligible players
     if (BOMB === null) {
@@ -120,19 +120,19 @@ class PassTheBomb extends Gamemode {
     // Adds the bomblistener to the players
     const idTag = playerObject.id;
     circle.collision.addListener((player, victim) => {
-      if (player === BOMB && victim.isPlayer() && this.resttime > 0.5) {
+      if (player === BOMB && victim.isPlayer() && this.restTime > 0.5) {
         BOMB.graphic.removeChild(this.bombtext);
         BOMB = victim;
         BOMB.graphic.addChild(this.bombtext);
-        this.resttime = 0;
+        this.restTime = 0;
         bombTimer = Math.ceil(bombTimer);
         const score = this.game.scoreManager.getScore('Passes', idTag);
         this.game.scoreManager.setScore('Passes', idTag, score + 1);
-      } else if (victim === BOMB && this.resttime > 0.5) {
+      } else if (victim === BOMB && this.restTime > 0.5) {
         BOMB.graphic.removeChild(this.bombtext);
         BOMB = player;
         BOMB.graphic.addChild(this.bombtext);
-        this.resttime = 0;
+        this.restTime = 0;
         bombTimer = Math.ceil(bombTimer);
         const score = this.game.scoreManager.getScore('Passes', victim.controller.id);
         this.game.scoreManager.setScore('Passes', victim.controller.id, score + 1);
@@ -140,8 +140,8 @@ class PassTheBomb extends Gamemode {
     });
 
     // Place them in the middle of the arena for now
-    circle.x = this.arenaCenterx;
-    circle.y = this.arenaCentery;
+    circle.x = this.arenaCenterX;
+    circle.y = this.arenaCenterY;
   }
 
   // Clean up after the gamemode is finished.
@@ -152,8 +152,8 @@ class PassTheBomb extends Gamemode {
   // Called when an entity is respawned.
   onPlayerRespawn(entity) {
     // Move the entity close to the center
-    entity.x = this.arenaCenterx + Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
-    entity.y = this.arenaCentery + Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
+    entity.x = this.arenaCenterX + Math.cos(Math.random() * Math.PI * 2) * this.respawnArea;
+    entity.y = this.arenaCenterY + Math.sin(Math.random() * Math.PI * 2) * this.respawnArea;
   }
 
   onWindowResize() {
@@ -169,14 +169,16 @@ class PassTheBomb extends Gamemode {
     // Puts a player back into the playing field if the window resizes
     Object.keys(this.players).forEach(id => {
       const entity = this.players[id];
-      if (entity.x < 0) {
-        entity.x = entity.radius;
-      } else if (entity.x > window.innerWidth) {
-        entity.x = window.innerWidth - entity.radius;
+      if (entity.x < -width) {
+        entity.x = -width + entity.radius;
+      } else if (entity.x > width) {
+        entity.x = width - entity.radius;
       }
-      if (entity.y < 0) {
-        entity.y = entity.radius;
-      } else if (entity.y > window.innerHeight) entity.y = window.innerHeight - entity.radius;
+      if (entity.y < -height) {
+        entity.y = -height + entity.radius;
+      } else if (entity.y > height) {
+        entity.y = height - entity.radius;
+      }
     });
   }
 
