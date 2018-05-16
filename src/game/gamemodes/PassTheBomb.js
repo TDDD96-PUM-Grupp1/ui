@@ -179,7 +179,7 @@ class PassTheBomb extends Gamemode {
       playerRadius: 32,
       backgroundColor: 0x061639,
       leave: {
-        // If a player has the bomb the bomb must pop before they are removed
+        // If a player has the bomb then the bomb must pop before they are removed
         removeTime: bombTimer + 0.1,
       },
       respawn: {
