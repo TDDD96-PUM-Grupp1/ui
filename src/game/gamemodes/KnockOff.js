@@ -77,19 +77,16 @@ class KnockOff extends Gamemode {
     ];
   }
 
-  static getRules() {
-    return [
-      'Knock the players off the arena!',
-      'Abillities:',
-      'SuperHeavy - Become super heavy and knock your enemies with an extreme force!',
-    ];
-  }
-
   static getConfig() {
     return {
       joinPhase: 2,
       playerRadius: 32,
       backgroundColor: 0x061639,
+      rules: [
+        'Knock the players off the arena!',
+        'Abillities:',
+        'SuperHeavy - Become super heavy and knock your enemies with an extreme force!',
+      ],
       abilities: [
         {
           name: 'Super Heavy',

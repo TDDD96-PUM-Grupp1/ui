@@ -25,11 +25,6 @@ class Gamemode {
     return {};
   }
 
-  // Return a description of gamemode.
-  static getRules() {
-    return [];
-  }
-
   init() {}
   /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
   no-empty-function */

@@ -84,12 +84,14 @@ class KnockOffWander extends KnockOff {
     this.xleft = -this.xright;
   }
 
-  static getRules() {
-    return [
+  static getConfig() {
+    const superConf = super.getConfig();
+    superConf.rules = [
       'Knock the players off whilist the arena is moving!',
       'Abillities:',
       'SuperHeavy - Become super heavy and knock your enemies with an extreme force!',
     ];
+    return superConf;
   }
 }
 

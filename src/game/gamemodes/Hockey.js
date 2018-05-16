@@ -173,13 +173,13 @@ class Hockey extends Gamemode {
   }
 
   static getConfig() {
-    return { joinPhase: 2, moveWhilePhased: false };
-  }
-
-  static getRules() {
-    return [
-      'Play as a team and try to score by bumping the puck into the goal of the opposite team!',
-    ];
+    return {
+      joinPhase: 2,
+      moveWhilePhased: false,
+      rules: [
+        'Play as a team and try to score by bumping the puck into the goal of the opposite team!',
+      ],
+    };
   }
 }
 

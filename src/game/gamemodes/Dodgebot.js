@@ -100,10 +100,6 @@ class Dodgebot extends Gamemode {
     return [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }];
   }
 
-  static getRules() {
-    return ['Avoid the killer robots that try to kill you!'];
-  }
-
   static getConfig() {
     return {
       joinPhase: 2,
@@ -113,6 +109,7 @@ class Dodgebot extends Gamemode {
         time: 1,
         phase: 1.5,
       },
+      rules: ['Avoid the killer robots that try to kill you!'],
       highscore: {
         order: HighscoreEnums.order.descending,
         scores: {

@@ -36,12 +36,14 @@ class KnockOffSpinner extends KnockOff {
     circle.y = this.spawnDistance * Math.sin(angle);
   }
 
-  static getRules() {
-    return [
+  static getConfig() {
+    const superConf = super.getConfig();
+    superConf.rules = [
       'Knock the players off arena whilst avoiding the spinning beam!',
       'Abillities:',
       'SuperHeavy - Become super heavy and knock your enemies with an extreme force!',
     ];
+    return superConf;
   }
 }
 

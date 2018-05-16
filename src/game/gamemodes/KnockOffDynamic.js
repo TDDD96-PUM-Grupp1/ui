@@ -26,12 +26,14 @@ class KnockOffDynamic extends KnockOff {
     this.modifyCircle();
   }
 
-  static getRules() {
-    return [
+  static getConfig() {
+    const superConf = super.getConfig();
+    superConf.rules = [
       'Knock the players off the ever changing arena!',
       'Abillities:',
       'SuperHeavy - Become super heavy and knock your enemies with an extreme force!',
     ];
+    return superConf;
   }
 
   /**

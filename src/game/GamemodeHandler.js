@@ -46,8 +46,8 @@ class GMHandlerClass {
   addGamemode(name, Gamemode, visible = true) {
     const options = Gamemode.getConfig();
     const resources = Gamemode.getResources();
-    const rules = Gamemode.getRules();
-    this.rules[name] = rules;
+
+    this.rules[name] = options.rules;
     this.gamemodes[name] = { Gamemode, visible };
     this.configs[name] = new GamemodeConfig(name, resources, options);
   }

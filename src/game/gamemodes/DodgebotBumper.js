@@ -22,8 +22,11 @@ class DodgebotBumper extends Dodgebot {
 
     this.game.register(bumper);
   }
-  static getRules() {
-    return ['Avoid the killer robots that try to kill you and the bumper!'];
+
+  static getConfig() {
+    const superConf = super.getConfig();
+    superConf.rules = ['Avoid the killer robots that try to kill you and the bumper!'];
+    return superConf;
   }
 }
 

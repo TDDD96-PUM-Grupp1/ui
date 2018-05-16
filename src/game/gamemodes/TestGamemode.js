@@ -37,8 +37,8 @@ class TestGamemode extends Gamemode {
     this.game.register(line);
   }
 
-  static getRules() {
-    return ['This is a test gamemode'];
+  static getConfig() {
+    return { rules: ['This is a test gamemode'] };
   }
 }
 
