@@ -22,7 +22,7 @@ const MAX_DECIMALS = 1;
 const TEXT_STYLE = new PIXI.TextStyle({
   fill: TEXT_COLOR,
   fontSize: 26,
-  fontFamily: 'sans-serif',
+  fontFamily: ['Trebuchet MS', 'sans-serif'],
 });
 
 class HighscoreList {
@@ -132,6 +132,13 @@ class HighscoreList {
         const name = new PIXI.Text(val.name, TEXT_STYLE);
         name.x = TEXT_PADDING * 2 + ICON_SIZE;
         name.y = TEXT_PADDING;
+        // This is the string we remove one from to easier add ... after name.text.
+        let minifiedName = val.name;
+        while (name.width > NAME_WIDTH && minifiedName.length > 0) {
+          // Decrease the length by 1
+          minifiedName = minifiedName.substring(0, minifiedName.length - 1);
+          name.text = `${minifiedName}...`;
+        }
 
         // Circle icon
         const iconPath = iconData[styles[val.id].iconID].img;

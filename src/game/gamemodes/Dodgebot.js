@@ -2,6 +2,7 @@ import Gamemode from './Gamemode';
 import Dangerbot from '../entities/Dangerbot';
 import DangerbotController from '../entities/controllers/DangerbotController';
 import BasicRectangle from '../entities/BasicRectangle';
+import { HighscoreEnums } from '../configsystems/HighscoreSystem';
 
 // How many walls the arena should have.
 const WALLS = 4;
@@ -12,7 +13,6 @@ const WALLS = 4;
 class Dodgebot extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
-    this.game.respawnHandler.registerRespawnListener(this);
 
     this.time = 0;
 
@@ -90,16 +90,58 @@ class Dodgebot extends Gamemode {
   }
 
   // Called when an entity is respawned.
-  onRespawn(entity) {
+  onPlayerRespawn(entity) {
     // Move the entity close to the center
     entity.x = this.centerx;
     entity.y = this.centery;
   }
 
-  // Clean up after the gamemode is finished.
-  cleanUp() {
-    this.game.entityHandler.clear();
-    this.game.respawnHandler.clean();
+  static getResources() {
+    return [{ name: 'dangerbot', path: 'dangerbot/dangerbot2.png' }];
+  }
+
+  static getConfig() {
+    return {
+      joinPhase: 2,
+      backgroundColor: 0x061639,
+      moveWhilePhased: true,
+      leave: {
+        removeTime: 2,
+      },
+      respawn: {
+        time: 1,
+        phase: 1.5,
+      },
+      highscore: {
+        order: HighscoreEnums.order.descending,
+        scores: {
+          Best_Time_Alive: {
+            initial: 0,
+            primary: true,
+            display: HighscoreEnums.display.best('Time Alive'),
+          },
+          Time_Alive: {
+            initial: 0,
+            display: HighscoreEnums.display.time,
+            events: [
+              {
+                trigger: HighscoreEnums.event.trigger.death,
+                action: HighscoreEnums.event.action.reset,
+              },
+            ],
+          },
+          Deaths: {
+            initial: 0,
+            events: [
+              {
+                trigger: HighscoreEnums.event.trigger.death,
+                action: HighscoreEnums.event.action.increment,
+              },
+            ],
+          },
+        },
+      },
+    };
   }
 }
 

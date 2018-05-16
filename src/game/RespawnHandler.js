@@ -59,10 +59,12 @@ class RespawnHandler {
 
   // Notifies respawnListeners of a specific entity that should respawn.
   respawnEntity(entity) {
-    entity.graphic.visible = true;
-    entity.dead = false;
-    this.entityHandler.register(entity);
-    this.notifyListeners(entity);
+    if (entity.respawnable) {
+      entity.graphic.visible = true;
+      entity.dead = false;
+      this.entityHandler.register(entity);
+      this.notifyListeners(entity);
+    }
   }
 
   // Respawns an entity and removes it from the respawn list.

@@ -7,9 +7,10 @@ import ScoreManager from './ScoreManager';
 import RespawnHandler from './RespawnHandler';
 import InstanceNameGraphic from './InstanceNameGraphic';
 import settings from './../config';
-import LocalPlayerController from './entities/controllers/LocalPlayerController';
 import Instance from './Instance';
 import GamemodeConfigHandler from './GamemodeConfigHandler';
+import KeyboardManager from './KeyboardManager';
+import iconData from './iconData';
 
 // Graphics scaling
 const BASE_HEIGHT = 1000;
@@ -29,7 +30,7 @@ class Game {
       this.instance.addInstanceListener(this);
     } else {
       // Test instance
-      this.instance = new Instance('Test', 8);
+      this.instance = new Instance('Test \ud83e\udd14', 50);
       this.instance.addInstanceListener(this);
     }
 
@@ -64,8 +65,8 @@ class Game {
       ])
       .then(resources => {
         this.basicResources = resources;
-        // Create gamemode
 
+        // Create gamemode
         const gamemodeHandler = GamemodeHandler.getInstance();
         const { SelectedMode, requestedResources, options } = gamemodeHandler.getSelected();
         this.resourceServer.requestResources(requestedResources).then(gamemodeResources => {
@@ -117,43 +118,48 @@ class Game {
   // Adds local players to the instance.
   addLocalPlayers() {
     const { instance } = this;
+
     instance.addPlayer({
-      iconID: 1,
+      iconID: 0,
       id: 'local',
       name: 'local',
       backgroundColor: '#EE6666',
       iconColor: '#00ffff',
     });
-    instance.addPlayer({
-      iconID: 2,
-      id: 'local2',
-      name: 'local2',
-      backgroundColor: '#EEFFF66',
-      iconColor: '#4422ff',
-    });
-    setTimeout(() => {
-      const localPlayer = this.currentGamemode.players.local;
-      if (localPlayer) {
-        // TODO: Make local player work through a normal player controller
-        localPlayer.setController(new LocalPlayerController(this, 'local'));
+    for (let i = 1; i <= settings.game.dummyCount; i += 1) {
+      instance.addPlayer({
+        iconID: i % iconData.length,
+        id: `local${i}`,
+        name: `local${i}`,
+        backgroundColor: '#EEFFF66',
+        iconColor: `#${Math.floor(Math.random() * 0xffffff).toString(16)}`,
+      });
+    }
+    this.localPlayerInputManager = new KeyboardManager(
+      (beta, gamma) => {
+        instance.sensorMoved('local', { beta, gamma });
+      },
+      button => {
+        this.onButtonsPressed('local', button);
       }
-    }, 500);
+    );
+    this.localPlayerInputManager.bindEventListener();
     if (settings.game.testMove) {
       setTimeout(() => {
-        instance.sensorMoved('local2', { beta: 30, gamma: 0 });
+        instance.sensorMoved('local1', { beta: 30, gamma: 0 });
       }, 3 * 1000);
     }
     if (settings.game.testLeave) {
       setTimeout(() => {
-        instance.removePlayer('local2');
-      }, 10 * 1000);
+        instance.removePlayer('local1');
+      }, 6 * 1000);
     }
     if (settings.game.testRejoin) {
       setTimeout(() => {
         instance.addPlayer({
-          iconID: 2,
-          id: 'local2',
-          name: 'local2',
+          iconID: 1,
+          id: 'local1',
+          name: 'local1',
           backgroundColor: '#EEFFF66',
           iconColor: '#4422ff',
         });
@@ -161,7 +167,7 @@ class Game {
     }
     if (settings.game.testMove) {
       setTimeout(() => {
-        instance.sensorMoved('local2', { beta: 30, gamma: 0 });
+        instance.sensorMoved('local1', { beta: 30, gamma: 0 });
       }, 16 * 1000);
     }
   }
@@ -180,16 +186,14 @@ class Game {
 
   // Called when a new player joins.
   onPlayerJoin(playerObject) {
-    this.currentGamemode.onPlayerJoin(playerObject).then(() => {
-      this.scoreManager.addPlayer(playerObject);
-    });
+    this.currentGamemode.onPlayerJoin(playerObject);
   }
 
   // Called when a player leaves the game.
-  onPlayerLeave(idTag) {
-    this.scoreManager.removePlayer(idTag);
-    this.currentGamemode.onPlayerLeave(idTag);
+  onPlayerLeave(id) {
+    this.currentGamemode.onPlayerLeave(id);
   }
+
   // eslint-disable-next-line
   onSensorMoved(id, sensor) {}
 

@@ -233,6 +233,23 @@ class Communication {
   resetCooldown(playerId, button) {
     this.client.event.emit(`${this.serviceName}/resetCooldown/${playerId}`, { button });
   }
+
+  /*
+  * Tell controller of player with playerId that they have respawned
+  * @param playerId id of the player to tell
+  */
+  signalRespawn(playerId) {
+    this.client.event.emit(`${this.serviceName}/respawnSignal/${playerId}`);
+  }
+
+  /*
+  * Tell controller of player with playerId that they have died
+  * @param playerId id of the player to tell
+  * @param respawnTime the time until the player is expected to respawn
+  */
+  signalDeath(playerId, respawnTime) {
+    this.client.event.emit(`${this.serviceName}/deathSignal/${playerId}`, { respawnTime });
+  }
 }
 
 export default Communication;
