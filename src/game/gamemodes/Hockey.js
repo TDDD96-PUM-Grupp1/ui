@@ -163,6 +163,15 @@ class Hockey extends Gamemode {
     }
   }
 
+  onPlayerLeave(id) {
+    const entity = this.players[id];
+    if (entity.team === 1) {
+      this.team1 = this.team1.filter(player => id !== player);
+    } else {
+      this.team2 = this.team2.filter(player => id !== player);
+    }
+  }
+
   onWindowResize() {
     const width = this.game.gameStageWidth * 0.5;
     const height = this.game.gameStageHeight * 0.5;

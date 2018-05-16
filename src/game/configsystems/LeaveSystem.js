@@ -13,12 +13,17 @@ class LeaveSystem extends ConfigSystem {
   }
 
   setup() {
+    const binds = { preUpdate: true, onPlayerLeave: true };
     if (this.options.leave) {
       if (this.options.leave.removeTime) {
         this.removeTime = this.options.leave.removeTime;
       }
     }
-    return { preUpdate: true, onPlayerLeave: true };
+    // If there is no respawn system to handle deaths then we must do it instead
+    if (this.options.respawn === undefined) {
+      binds.onPlayerCreated = true;
+    }
+    return binds;
   }
 
   preUpdate(dt) {
@@ -85,6 +90,13 @@ class LeaveSystem extends ConfigSystem {
     entity.graphic.addChild(indicator);
 
     this.dyingEntities.push({ entity, indicator, timer: this.removeTime });
+  }
+
+  onPlayerCreated(playerObject, circle) {
+    // Dead entities must die
+    circle.addDeathListener(() => {
+      this.game.entityHandler.unregisterFully(circle);
+    });
   }
 }
 
