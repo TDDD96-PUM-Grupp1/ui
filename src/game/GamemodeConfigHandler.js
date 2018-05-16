@@ -3,6 +3,7 @@ import RespawnSystem from './configsystems/RespawnSystem';
 import KillSystem from './configsystems/KillSystem';
 import HighscoreSystem from './configsystems/HighscoreSystem';
 import SpawnSystem from './configsystems/SpawnSystem';
+import LeaveSystem from './configsystems/LeaveSystem';
 
 /*
 Handles a gamemode's config
@@ -116,6 +117,8 @@ class GamemodeConfigHandler {
       this.game.app.renderer.backgroundColor = this.options.backgroundColor;
     }
 
+    this.addSystem(LeaveSystem);
+
     // Always add the spawn system because we only have games built around this one.
     // If in the future you'd want to "spawn" players as something other than a circle with an icon
     // then another spawn system should be added.
@@ -175,11 +178,7 @@ class GamemodeConfigHandler {
 
   // Called when a player leaves the game
   onPlayerLeave(id) {
-    this.onPlayerLeave.forEach(system => system.onPlayerLeave(id));
-
-    // Turn the players entity into a dummy, leaving it in the game until it dies
-    this.gamemode.players[id].ownerLeft();
-
+    this.onPlayerLeaveSystems.forEach(system => system.onPlayerLeave(id));
     this.binds.onPlayerLeave(id);
   }
 

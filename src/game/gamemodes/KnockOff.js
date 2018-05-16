@@ -82,6 +82,9 @@ class KnockOff extends Gamemode {
       joinPhase: 2,
       playerRadius: 32,
       backgroundColor: 0x061639,
+      leave: {
+        removeTime: 2,
+      },
       abilities: [
         {
           name: 'Super Heavy',
