@@ -21,6 +21,8 @@ class GMHandlerClass {
     this.gamemodes = {};
     // Map of the gamemodes configs
     this.configs = {};
+    // Map of gamemode rules
+    this.rules = {};
 
     this.addGamemodes();
 
@@ -46,6 +48,8 @@ class GMHandlerClass {
   addGamemode(name, Gamemode, visible = true) {
     const options = Gamemode.getConfig();
     const resources = Gamemode.getResources();
+
+    this.rules[name] = options.rules;
     this.gamemodes[name] = { Gamemode, visible };
     this.configs[name] = new GamemodeConfig(name, resources, options);
   }
@@ -92,6 +96,13 @@ class GMHandlerClass {
       requestedResources: resources,
       options,
     };
+  }
+
+  /**
+   Get description of gamemode rules.
+   */
+  getRules(gamemode) {
+    return this.rules[gamemode];
   }
 
   /**
