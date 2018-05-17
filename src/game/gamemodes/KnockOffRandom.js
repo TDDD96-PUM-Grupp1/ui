@@ -34,6 +34,16 @@ class KnockOffRandom extends KnockOff {
     }
   }
 
+  static getConfig() {
+    const superConf = super.getConfig();
+    superConf.rules = [
+      'Knock the players off the ever changing arena!',
+      'Abillities:',
+      'SuperHeavy - Become super heavy and knock your enemies with an extreme force!',
+    ];
+    return superConf;
+  }
+
   /**
    * Randomly resizes the gamecircle, the radius changes with multiplication
    * and hence the circle's area may changes quite drastically on a single tick.

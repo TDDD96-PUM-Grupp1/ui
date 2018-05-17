@@ -1,7 +1,8 @@
 class Instance {
-  constructor(name, maxPlayers) {
+  constructor(name, maxPlayers, gamemodeId) {
     this.name = name;
     this.maxPlayers = maxPlayers;
+    this.gamemodeId = gamemodeId;
     this.players = {};
     this.instanceListener = undefined;
 
@@ -14,6 +15,7 @@ class Instance {
     this.getMaxPlayers = this.getMaxPlayers.bind(this);
     this.getPlayer = this.getPlayer.bind(this);
     this.getPlayers = this.getPlayers.bind(this);
+    this.getGamemodeId = this.getGamemodeId.bind(this);
   }
 
   /*
@@ -156,6 +158,13 @@ class Instance {
     Object.keys(this.stash).forEach(key => {
       this.addPlayer(this.stash[key]);
     });
+  }
+  
+  /*
+   * @return gameID
+   */
+  getGamemodeId() {
+    return this.gamemodeId;
   }
 }
 

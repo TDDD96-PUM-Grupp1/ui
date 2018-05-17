@@ -112,6 +112,7 @@ class Dodgebot extends Gamemode {
         time: 1,
         phase: 1.5,
       },
+      rules: ['Avoid the killer robots that try to kill you!'],
       highscore: {
         order: HighscoreEnums.order.descending,
         scores: {
