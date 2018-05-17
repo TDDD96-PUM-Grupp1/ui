@@ -159,7 +159,7 @@ class Instance {
       this.addPlayer(this.stash[key]);
     });
   }
-  
+
   /*
    * @return gameID
    */
