@@ -20,6 +20,7 @@ class DodgebotBumper extends Dodgebot {
     bumper.y = y;
     bumper.restitution = 2;
 
+    // If these are registered as walls then they can push the players out of the square
     this.game.register(bumper);
   }
 }

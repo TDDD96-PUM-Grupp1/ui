@@ -89,7 +89,7 @@ class GMHandlerClass {
 
     return {
       SelectedMode: Gamemode,
-      requestedResources: resources,
+      resources,
       options,
     };
   }

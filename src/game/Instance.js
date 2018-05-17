@@ -143,6 +143,20 @@ class Instance {
   getPlayers() {
     return this.players;
   }
+
+  stashPlayers() {
+    this.stash = {};
+    Object.keys(this.players).forEach(key => {
+      this.stash[key] = this.players[key];
+    });
+  }
+
+  popStash() {
+    this.players = {};
+    Object.keys(this.stash).forEach(key => {
+      this.addPlayer(this.stash[key]);
+    });
+  }
 }
 
 export default Instance;
