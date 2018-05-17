@@ -22,7 +22,7 @@ const MAX_DECIMALS = 1;
 const TEXT_STYLE = new PIXI.TextStyle({
   fill: TEXT_COLOR,
   fontSize: 26,
-  fontFamily: 'sans-serif',
+  fontFamily: ['Trebuchet MS', 'sans-serif'],
 });
 
 class HighscoreList {

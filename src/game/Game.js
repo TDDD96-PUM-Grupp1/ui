@@ -10,6 +10,7 @@ import settings from './../config';
 import Instance from './Instance';
 import GamemodeConfigHandler from './GamemodeConfigHandler';
 import KeyboardManager from './KeyboardManager';
+import iconData from './iconData';
 
 // Graphics scaling
 const BASE_HEIGHT = 1000;
@@ -119,15 +120,15 @@ class Game {
     const { instance } = this;
 
     instance.addPlayer({
-      iconID: 1,
+      iconID: 0,
       id: 'local',
       name: 'local',
       backgroundColor: '#EE6666',
       iconColor: '#00ffff',
     });
-    for (let i = 1; i < settings.game.dummyCount; i += 1) {
+    for (let i = 1; i <= settings.game.dummyCount; i += 1) {
       instance.addPlayer({
-        iconID: i + 1,
+        iconID: i % iconData.length,
         id: `local${i}`,
         name: `local${i}`,
         backgroundColor: '#EEFFF66',
@@ -145,20 +146,20 @@ class Game {
     this.localPlayerInputManager.bindEventListener();
     if (settings.game.testMove) {
       setTimeout(() => {
-        instance.sensorMoved('local2', { beta: 30, gamma: 0 });
+        instance.sensorMoved('local1', { beta: 30, gamma: 0 });
       }, 3 * 1000);
     }
     if (settings.game.testLeave) {
       setTimeout(() => {
-        instance.removePlayer('local2');
-      }, 10 * 1000);
+        instance.removePlayer('local1');
+      }, 6 * 1000);
     }
     if (settings.game.testRejoin) {
       setTimeout(() => {
         instance.addPlayer({
-          iconID: 2,
-          id: 'local2',
-          name: 'local2',
+          iconID: 1,
+          id: 'local1',
+          name: 'local1',
           backgroundColor: '#EEFFF66',
           iconColor: '#4422ff',
         });
@@ -166,7 +167,7 @@ class Game {
     }
     if (settings.game.testMove) {
       setTimeout(() => {
-        instance.sensorMoved('local2', { beta: 30, gamma: 0 });
+        instance.sensorMoved('local1', { beta: 30, gamma: 0 });
       }, 16 * 1000);
     }
   }
@@ -185,15 +186,12 @@ class Game {
 
   // Called when a new player joins.
   onPlayerJoin(playerObject) {
-    this.currentGamemode.onPlayerJoin(playerObject).then(() => {
-      this.scoreManager.addPlayer(playerObject);
-    });
+    this.currentGamemode.onPlayerJoin(playerObject);
   }
 
   // Called when a player leaves the game.
-  onPlayerLeave(idTag) {
-    this.scoreManager.removePlayer(idTag);
-    this.currentGamemode.onPlayerLeave(idTag);
+  onPlayerLeave(id) {
+    this.currentGamemode.onPlayerLeave(id);
   }
 
   // eslint-disable-next-line

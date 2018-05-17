@@ -87,6 +87,9 @@ class KnockOff extends Gamemode {
         'Abillities:',
         'SuperHeavy - Become super heavy and knock your enemies with an extreme force!',
       ],
+      leave: {
+        removeTime: 2,
+      },
       abilities: [
         {
           name: 'Super Heavy',
