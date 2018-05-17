@@ -50,6 +50,9 @@ class Hockey extends Gamemode {
     this.team2Display = this.addScoreDisplay('#FFAAAA', 200);
     this.game.gameStage.addChildAt(this.displayContainer, 0);
     this.displayContainer.alpha = 0.5;
+
+    this.team1Zone = this.addGoalZone(0xAAAAFF, -500);
+    this.team2Zone = this.addGoalZone(0xFFAAAA, 500);
   }
 
   addLine(x, y, ex, ey) {
@@ -61,6 +64,19 @@ class Hockey extends Gamemode {
     line.graphic.visible = false;
     this.game.register(line);
     return line;
+  }
+
+  addGoalZone(color, x) {
+    const width = 100;
+    const height = this.scaleHeight;
+    const zone = new PIXI.Graphics();
+    zone.beginFill(color);
+    zone.drawRect(-width * 0.5, -height * 0.5, width, height);
+    zone.endFill();
+    zone.x = x;
+    zone.alpha = 0.5;
+    this.displayContainer.addChild(zone);
+    return zone;
   }
 
   addScoreDisplay(color, x) {
@@ -101,7 +117,7 @@ class Hockey extends Gamemode {
     this.team1.forEach(player => {
       const entity = this.players[player];
       entity.resetPhysics();
-      entity.phase(2);
+      entity.phase(1.3);
 
       const angle = angleStart + angleSlice * counter;
       entity.x = -dist * Math.cos(angle);
@@ -115,7 +131,7 @@ class Hockey extends Gamemode {
     this.team2.forEach(player => {
       const entity = this.players[player];
       entity.resetPhysics();
-      entity.phase(2);
+      entity.phase(1.3);
 
       const angle = angleStart + angleSlice * counter;
       entity.x = dist * Math.cos(angle);
@@ -179,6 +195,9 @@ class Hockey extends Gamemode {
     this.bottomLine.y = height;
     this.rightLine.x = width;
     this.leftLine.x = -width;
+
+    this.team1Zone.x = -width;
+    this.team2Zone.x = width;
   }
 
   static getConfig() {
@@ -191,6 +210,21 @@ class Hockey extends Gamemode {
       leave: {
         removeTime: 3,
       },
+      abilities: [
+        {
+          name: 'Speed Boost',
+          cooldown: 10,
+          duration: 3,
+          color: '#0099ff',
+          activateFunc: (entity, resources) => {
+            entity.vx *= 2;
+            entity.vy *= 2;
+          },
+          deactivateFunc: (entity, resources) => {
+
+          },
+        },
+      ],
     };
   }
 }

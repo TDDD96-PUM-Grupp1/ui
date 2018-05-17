@@ -92,8 +92,8 @@ class Dodgebot extends Gamemode {
   // Called when an entity is respawned.
   onPlayerRespawn(entity) {
     // Move the entity close to the center
-    entity.x = this.centerx;
-    entity.y = this.centery;
+    entity.x = this.centerx - 20 + Math.random() * 40;
+    entity.y = this.centery - 20 + Math.random() * 40;
   }
 
   static getResources() {
@@ -113,6 +113,21 @@ class Dodgebot extends Gamemode {
         phase: 1.5,
       },
       rules: ['Avoid the killer robots that try to kill you!'],
+      abilities: [
+        {
+          name: 'Speed Boost',
+          cooldown: 10,
+          duration: 3,
+          color: '#0099ff',
+          activateFunc: (entity, resources) => {
+            entity.vx *= 2;
+            entity.vy *= 2;
+          },
+          deactivateFunc: (entity, resources) => {
+
+          },
+        },
+      ],
       highscore: {
         order: HighscoreEnums.order.descending,
         scores: {
