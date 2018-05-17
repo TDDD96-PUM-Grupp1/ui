@@ -67,7 +67,7 @@ class Game {
         this.basicResources = resources;
 
         this.startGamemode().then(() => {
-          // Let local players join after a bit
+          // Let local players join after it has loaded
           if (settings.game.localPlayer) {
             this.addLocalPlayers();
           }
@@ -103,12 +103,8 @@ class Game {
     this.gamemodeLoaded = false;
 
     // Clean (consistent naming btw)
-    /* if (this.localPlayerInputManager) {
-      this.localPlayerInputManager.unbindEventListener();
-    } */
     this.entityHandler.clear();
     this.respawnHandler.clean();
-    // this.gameStage.removeChildren();
     this.currentGamemode.cleanUp();
     this.handler.clean();
 
@@ -218,7 +214,6 @@ class Game {
   // Called when a new player joins.
   onPlayerJoin(playerObject) {
     this.handler.onPlayerJoin(playerObject);
-    // this.currentGamemode.onPlayerJoin(playerObject);
   }
 
   // Called when a player leaves the game.

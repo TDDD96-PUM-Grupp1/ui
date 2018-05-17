@@ -84,7 +84,6 @@ class Hockey extends Gamemode {
     this.ball.resetPhysics();
     this.ball.x = 0;
     this.ball.y = 0;
-    // this.ball.phase(2);
     this.resetPlayers();
   }
 
