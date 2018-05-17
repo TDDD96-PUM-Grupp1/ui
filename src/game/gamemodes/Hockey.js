@@ -195,6 +195,9 @@ class Hockey extends Gamemode {
     return {
       joinPhase: 2,
       moveWhilePhased: false,
+      rules: [
+        'Play as a team and try to score by bumping the puck into the goal of the opposite team!',
+      ],
       leave: {
         removeTime: 3,
       },

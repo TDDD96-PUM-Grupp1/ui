@@ -82,6 +82,11 @@ class KnockOff extends Gamemode {
       joinPhase: 2,
       playerRadius: 32,
       backgroundColor: 0x061639,
+      rules: [
+        'Knock the players off the arena!',
+        'Abillities:',
+        'SuperHeavy - Become super heavy and knock your enemies with an extreme force!',
+      ],
       leave: {
         removeTime: 2,
       },

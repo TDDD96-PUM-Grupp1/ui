@@ -44,7 +44,11 @@ class StartMenu extends Component {
 
   render() {
     const menus = {
-      first: <FirstMenu showCreate={this.showCreate} showAbout={this.showAbout} />,
+      first: (
+        <Paper className="menu-button-holder">
+          <FirstMenu showCreate={this.showCreate} showAbout={this.showAbout} />
+        </Paper>
+      ),
 
       create: (
         <CreateMenu
@@ -54,7 +58,7 @@ class StartMenu extends Component {
         />
       ),
       about: (
-        <div>
+        <Paper className="menu-button-holder">
           <div className="aboutHeader">About </div>
           <div className="aboutText">
             <p>
@@ -72,14 +76,14 @@ class StartMenu extends Component {
           <Button raised primary onClick={this.showFirst} className="menu-button">
             Back
           </Button>
-        </div>
+        </Paper>
       ),
     };
 
     return (
-      <div className="center-menu">
+      <div>
         <div className="game-title">IoT Party</div>
-        <Paper className="menu-button-holder">{menus[this.state.menu]}</Paper>
+        <div className="menu-holder">{menus[this.state.menu]}</div>
       </div>
     );
   }
