@@ -7,7 +7,7 @@ const settings = {
   defaultGamemode: 'Knock Off',
   game: {
     localPlayer: false,
-    dummyCount: 10,
+    dummyCount: 2,
     testLeave: false,
     testRejoin: false,
     testMove: false,

@@ -118,17 +118,8 @@ class PassTheBomb extends Gamemode {
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
     // Adds the bomblistener to the players
-    const idTag = playerObject.id;
     circle.collision.addListener((player, victim) => {
-      if (player === BOMB && victim.isPlayer() && this.restTime > 0.5) {
-        BOMB.graphic.removeChild(this.bombtext);
-        BOMB = victim;
-        BOMB.graphic.addChild(this.bombtext);
-        this.restTime = 0;
-        bombTimer = Math.ceil(bombTimer);
-        const score = this.game.scoreManager.getScore('Passes', idTag);
-        this.game.scoreManager.setScore('Passes', idTag, score + 1);
-      } else if (victim === BOMB && this.restTime > 0.5) {
+      if (victim === BOMB && this.restTime > 0.5) {
         BOMB.graphic.removeChild(this.bombtext);
         BOMB = player;
         BOMB.graphic.addChild(this.bombtext);
@@ -187,10 +178,15 @@ class PassTheBomb extends Gamemode {
       joinPhase: 2,
       playerRadius: 32,
       backgroundColor: 0x061639,
+      leave: {
+        // If a player has the bomb then the bomb must pop before they are removed
+        removeTime: bombTimer + 0.1,
+      },
       respawn: {
         time: 1,
         phase: 2,
       },
+      rules: ['Avoid the bomb! If you are unlucky try to pass the bomb to a foe!'],
       highscore: {
         order: HighscoreEnums.order.descending,
         scores: {

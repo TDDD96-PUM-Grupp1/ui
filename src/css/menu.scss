@@ -2,20 +2,12 @@
 
 .game-title{
   font-size: 70px;
-
   margin-bottom: 20px;
 }
 
-.center-menu{
-  margin-top: 0px;
-}
-
 .menu-button{
-  display:block;
-  margin: auto;
-
-  margin-top: 20px;
   width: 250px;
+  margin-top: 8px;
 }
 
 .menu-button:hover{
@@ -23,8 +15,8 @@
 }
 .menu-button-holder{
   display: inline-block;
+  white-space: normal;
   width: 400px;
-
   padding: 10px 30px 30px 30px;
 
   margin:auto;
@@ -36,6 +28,18 @@
 
   margin:auto;
   margin-top: 8px;
+}
+
+.infobox-title{    
+  font-size: 24px;
+  margin:auto;
+  margin-top: 8px;
+}
+
+.infobox-text{
+  text-align: left;
+  padding: 8px 30px 30px 30px;
+  white-space: normal;
 }
 
 .menu-descriptor{
@@ -85,4 +89,23 @@
 
 .aboutHeader{
   font-size: 30px;
+}
+
+.gamemode-infobox{
+  display: inline-block;
+  margin: auto;
+  width: 250px;
+  margin-left: 20px;
+  vertical-align: top;
+}
+
+.empty-cell{
+  display: inline-block;
+  margin: auto;
+  width: 250px;
+  margin-left: 20px;
+  vertical-align: top;
+}
+.menu-holder{
+  white-space: nowrap;
 }
