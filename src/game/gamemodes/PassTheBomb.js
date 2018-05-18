@@ -88,11 +88,10 @@ class PassTheBomb extends Gamemode {
     if (Bombset) {
       bombTimer -= dt;
       this.bombtext.text = Math.ceil(bombTimer);
-      if(BOMB.playerLeft)
-      {
+      if (BOMB.playerLeft) {
         BOMB.graphic.removeChild(this.bombtext);
 
-        if(!BOMB.dead){
+        if (!BOMB.dead) {
           BOMB.die();
         }
         BOMB = null;
