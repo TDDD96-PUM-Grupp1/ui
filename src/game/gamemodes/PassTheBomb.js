@@ -193,13 +193,11 @@ class PassTheBomb extends Gamemode {
           cooldown: 10,
           duration: 3,
           color: '#0099ff',
-          activateFunc: (entity, resources) => {
+          activateFunc: entity => {
             entity.vx *= 2;
             entity.vy *= 2;
           },
-          deactivateFunc: (entity, resources) => {
-
-          },
+          deactivateFunc: () => {},
         },
       ],
       highscore: {

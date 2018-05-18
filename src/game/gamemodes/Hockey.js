@@ -51,8 +51,8 @@ class Hockey extends Gamemode {
     this.game.gameStage.addChildAt(this.displayContainer, 0);
     this.displayContainer.alpha = 0.5;
 
-    this.team1Zone = this.addGoalZone(0xAAAAFF, -500);
-    this.team2Zone = this.addGoalZone(0xFFAAAA, 500);
+    this.team1Zone = this.addGoalZone(0xaaaaff, -500);
+    this.team2Zone = this.addGoalZone(0xffaaaa, 500);
   }
 
   addLine(x, y, ex, ey) {
@@ -216,13 +216,11 @@ class Hockey extends Gamemode {
           cooldown: 10,
           duration: 3,
           color: '#0099ff',
-          activateFunc: (entity, resources) => {
+          activateFunc: entity => {
             entity.vx *= 2;
             entity.vy *= 2;
           },
-          deactivateFunc: (entity, resources) => {
-
-          },
+          deactivateFunc: () => {},
         },
       ],
     };
