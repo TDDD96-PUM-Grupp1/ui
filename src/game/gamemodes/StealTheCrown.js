@@ -3,23 +3,17 @@ import Gamemode from './Gamemode';
 import BasicLine from '../entities/BasicLine';
 import BasicRectangle from '../entities/BasicRectangle';
 import { HighscoreEnums } from '../configsystems/HighscoreSystem';
-import CollisionCircle from '../entities/collision/CollisionCircle';
 /*
   Pass the bomb gamemode, get score by passing the bomb to other players
 */
 
 let crown = null;
-let crownTime = 0;
 
 class StealTheCrown extends Gamemode {
   constructor(game, resources) {
     super(game, resources);
 
     const crownimg = new PIXI.Sprite(resources.crown);
-    //crownimg.width = 3200 * 2;
-    //´´crownimg.height = 3200 * 2;
-    crownimg.scale.set(2.7,3.2);
-    crownimg.anchor.set(0.475, 0.47);
     this.crownimg = crownimg;
 
     this.arenaRadius = 490;
@@ -40,8 +34,11 @@ class StealTheCrown extends Gamemode {
     this.bottomLine = this.addLine(-5000, 0, 5000, 0);
     this.rightLine = this.addLine(0, -500, 0, 500);
     this.leftLine = this.addLine(0, -500, 0, 500);
+
+    this.crownEntity = this.createCrown();
   }
 
+  // gameborders
   addLine(x, y, ex, ey) {
     const line = new BasicLine(this.game, x, y, ex, ey, 0x6633ff);
     line.staticFriction = 0;
@@ -52,88 +49,85 @@ class StealTheCrown extends Gamemode {
     this.game.registerWall(line);
     return line;
   }
-  addCrown(width,height,mass,color){
-    const crownEntity = new BasicRectangle(this.game,width,height,mass,color);
-    crownEntity.staticFriction = 0;
-    crownEntity.dynamicFriction = 0;
-    //crownEntity.collisionGroup = 0;
-    const graphic = new PIXI.Sprite(this.resources.crown);
-    graphic.scale.set(0.45,0.5);
-    graphic.anchor.set(0.475, 0.47);
-    crownEntity.graphic.addChild(graphic);
 
+  // Creates the invisible crownwearer
+  createCrown() {
+    const crownEntity = new BasicRectangle(
+      this.game,
+      60,
+      72,
+      0.01,
+      this.game.app.renderer.backgroundColor
+    );
 
-    this.collision = new CollisionCircle(42);
-    this.collision.setEntity(crownEntity);
-    this.collision.addListener((crownEntity, victim) => {
-      console.log(crownEntity);
-      if (victim.isPlayer()) {
+    // gives first player hitting the invisible crownbearer the crown
+    crownEntity.collision.addListener((object, victim) => {
+      if (victim.isPlayer() && this.restTime > 0.5) {
         crown = victim;
+        this.crownimg.scale.set(2.7, 3.2);
+        this.crownimg.anchor.set(0.475, 0.47);
         crown.graphic.addChild(this.crownimg);
+        this.restTime = 0;
+        crownEntity.colliding = false;
       }
     });
-        this.game.register(crownEntity);
+    this.crownEntity = crownEntity;
+    this.game.register(crownEntity);
     return crownEntity;
+  }
+
+  // Resets the invisible crownbearer
+  addCrown() {
+    this.crownEntity.rv = 0;
+    this.crownEntity.vx = 0;
+    this.crownEntity.vy = 0;
+    this.crownEntity.rotation = 0;
+    this.crownEntity.graphic.addChild(this.crownimg);
+    this.crownimg.scale.set(0.3, 0.35);
+    this.crownimg.anchor.set(0.475, 0.22);
+    this.crownEntity.colliding = true;
+    this.crownEntity.visible = true;
+
+    // random number given, if null will spawn new crown
+    crown = 5;
   }
 
   // Called before the game objects are updated
   preUpdate(dt) {
     this.time += dt;
     this.restTime += dt;
-    if (crown === null)
-    {
-      const crownEntity = this.addCrown(50,50,Infinity,0xffffff);
-      crownEntity.x = 500;
-      crownEntity.y = 50;
-      crown = 5;
-
-
-      //Give crown to random player
-      /*
-      const players = this.game.entityHandler.getPlayers();
-      const eligible = [];
-      players.forEach(player => {
-        if (!player.phasing && !player.dead) {
-          eligible.push(player);
-        }
-      });
-      let player;
-      if (eligible.length > 1 && this.time > 5) {
-        player = eligible[Math.floor(Math.random() * eligible.length)];
-        crown = player;
-        this.time = 0;
-      }*/
-    }
-    else if(crown.isPlayer)
-    {
+    // Spawns in a starting crown after 5s
+    if (crown === null && this.time > 5) {
+      this.addCrown();
+      this.crownEntity.x = Math.random() * 1000 - 500;
+      this.crownEntity.y = Math.random() * 400 - 200;
+    } else if (crown !== null && crown.isPlayer) {
+      // Gives a player score for having the crown, spawns a new one if the crowned player leaves
+      if (crown.playerLeft) {
+        this.crownEntity.x = crown.x;
+        this.crownEntity.y = crown.y;
+        crown.graphic.removeChild(this.crownimg);
+        crown.die();
+        this.addCrown();
+      } else {
         const score = this.game.scoreManager.getScore('Time', crown.controller.id);
-
-        this.game.scoreManager.setScore('Time', crown.controller.id, score + 1/60);
+        this.game.scoreManager.setScore('Time', crown.controller.id, score + 1 / 60);
+      }
     }
-
-  }
-
-  // Called after the game objects are updated.
-  postUpdate() {
-    // Updates the scoreboard when the bomb explodes
-
   }
 
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
-    // Adds the bomblistener to the players
+    // Adds the crownstealing mechanic between players
     const idTag = playerObject.id;
     circle.collision.addListener((player, victim) => {
-
       if (victim === crown && this.restTime > 0.5) {
         crown.graphic.removeChild(this.crownimg);
         crown = player;
         crown.graphic.addChild(this.crownimg);
         this.restTime = 0;
-        crownTime = Math.ceil(crownTime);
         const score = this.game.scoreManager.getScore('Steals', idTag);
         this.game.scoreManager.setScore('Steals', idTag, score + 1);
-        this.time = 0;
       }
     });
 
@@ -155,7 +149,7 @@ class StealTheCrown extends Gamemode {
   }
 
   onWindowResize() {
-    // Updates the playing field to fit the window. Might be a better way to do this.
+    // Updates the playing field to fit the window.
 
     const width = this.game.gameStageWidth * 0.5;
     const height = this.game.gameStageHeight * 0.5;
@@ -189,10 +183,17 @@ class StealTheCrown extends Gamemode {
       joinPhase: 2,
       playerRadius: 32,
       backgroundColor: 0x061639,
+      leave: {
+        // If a player has the bomb then the bomb must pop before they are removed
+        removeTime: 5,
+      },
       respawn: {
         time: 1,
         phase: 2,
       },
+      rules: [
+        'Steal the crown! Hold it to get points, and steal it from whoever currently carries it!',
+      ],
       highscore: {
         order: HighscoreEnums.order.descending,
         scores: {
@@ -203,7 +204,6 @@ class StealTheCrown extends Gamemode {
           Steals: {
             initial: 0,
           },
-
           Deaths: {
             initial: 0,
             events: [
