@@ -66,7 +66,7 @@ class PassTheBomb extends Gamemode {
       const players = this.game.entityHandler.getPlayers();
       const eligible = [];
       players.forEach(player => {
-        if (!player.phasing && !player.dead) {
+        if (!player.phasing && !player.dead && !player.playerLeft) {
           eligible.push(player);
         }
       });
@@ -88,6 +88,19 @@ class PassTheBomb extends Gamemode {
     if (Bombset) {
       bombTimer -= dt;
       this.bombtext.text = Math.ceil(bombTimer);
+      if(BOMB.playerLeft)
+      {
+        BOMB.graphic.removeChild(this.bombtext);
+
+        if(!BOMB.dead){
+          BOMB.die();
+        }
+        BOMB = null;
+        this.time = 0;
+        bombTimer = 5;
+        Bombset = false;
+        bombExploded = true;
+      }
       if (bombTimer < 0) {
         BOMB.graphic.removeChild(this.bombtext);
         BOMB.die();
@@ -180,6 +193,7 @@ class PassTheBomb extends Gamemode {
       backgroundColor: 0x061639,
       leave: {
         // If a player has the bomb then the bomb must pop before they are removed
+
         removeTime: bombTimer + 0.1,
       },
       respawn: {
