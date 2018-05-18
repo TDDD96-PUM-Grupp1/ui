@@ -11,6 +11,7 @@ import DodgebotBumper from './gamemodes/DodgebotBumper';
 import Dodgebot from './gamemodes/Dodgebot';
 import Hockey from './gamemodes/Hockey';
 import PassTheBomb from './gamemodes/PassTheBomb';
+import StealTheCrown from './gamemodes/StealTheCrown';
 
 /**
  * Singleton class for handling gamemode storage and selection
@@ -41,6 +42,7 @@ class GMHandlerClass {
     this.addGamemode('Dodgebot Bumpers', DodgebotBumper);
     this.addGamemode('Hockey', Hockey);
     this.addGamemode('Pass The Bomb', PassTheBomb);
+    this.addGamemode('Steal The Crown', StealTheCrown);
   }
 
   addGamemode(name, Gamemode, visible = true) {
