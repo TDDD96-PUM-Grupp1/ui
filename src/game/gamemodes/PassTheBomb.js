@@ -118,7 +118,7 @@ class PassTheBomb extends Gamemode {
     if (bombExploded) {
       Object.keys(this.players).forEach(id => {
         const entity = this.players[id];
-        if (!entity.dead) {
+        if (!entity.playerLeft && !entity.dead) {
           const score = this.game.scoreManager.getScore('Score', id);
           this.game.scoreManager.setScore('Score', id, score + 1);
         }
@@ -131,7 +131,7 @@ class PassTheBomb extends Gamemode {
   onPlayerCreated(playerObject, circle) {
     // Adds the bomblistener to the players
     circle.collision.addListener((player, victim) => {
-      if (victim === BOMB && this.restTime > 0.5) {
+      if (!player.playerLeft && victim === BOMB && this.restTime > 0.5) {
         BOMB.graphic.removeChild(this.bombtext);
         BOMB = player;
         BOMB.graphic.addChild(this.bombtext);
@@ -172,15 +172,27 @@ class PassTheBomb extends Gamemode {
     // Puts a player back into the playing field if the window resizes
     Object.keys(this.players).forEach(id => {
       const entity = this.players[id];
-      if (entity.x < -width) {
-        entity.x = -width + entity.radius;
-      } else if (entity.x > width) {
-        entity.x = width - entity.radius;
-      }
-      if (entity.y < -height) {
-        entity.y = -height + entity.radius;
-      } else if (entity.y > height) {
-        entity.y = height - entity.radius;
+      if (!entity.playerLeft) {
+        if (entity.x < -width) {
+          entity.x = -width + entity.radius;
+        } else if (entity.x > width) {
+          entity.x = width - entity.radius;
+        }
+        if (entity.y < -height) {
+          entity.y = -height + entity.radius;
+        } else if (entity.y > height) {
+          entity.y = height - entity.radius;
+        }
+      } else if (!entity.dead) {
+        if (entity === BOMB) {
+          BOMB.graphic.removeChild(this.bombtext);
+          BOMB.die();
+          Bombset = false;
+          BOMB = null;
+          this.time = 0;
+          bombTimer = 5;
+          bombExploded = true;
+        } else entity.die();
       }
     });
   }
