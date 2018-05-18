@@ -38,6 +38,8 @@ class RespawnSystem extends ConfigSystem {
       this.game.entityHandler.unregisterFully(entity);
     } else {
       this.game.respawnHandler.addRespawn(entity, this.respawnTime);
+      // Signal death to controllers
+      this.game.communication.signalDeath(entity.controller.id, this.respawnTime);
     }
   }
 
