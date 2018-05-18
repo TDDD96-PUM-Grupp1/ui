@@ -256,7 +256,6 @@ class Communication {
   * @param respawnTime the time until the player is expected to respawn
   */
   signalDeath(playerId, respawnTime) {
-    console.log(respawnTime);
     this.client.event.emit(`${this.serviceName}/deathSignal/${playerId}`, { respawnTime });
   }
 
