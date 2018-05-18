@@ -99,8 +99,10 @@ class StealTheCrown extends Gamemode {
     // Spawns in a starting crown after 5s
     if (crown === null && this.time > 5) {
       this.addCrown();
-      this.crownEntity.x = Math.random() * (this.game.gameStageWidth-60) - (this.game.gameStageWidth/2-30);
-      this.crownEntity.y = Math.random() * (this.game.gameStageHeight-72) - (this.game.gameStageHeight/2-36);
+      this.crownEntity.x =
+        Math.random() * (this.game.gameStageWidth - 60) - (this.game.gameStageWidth / 2 - 30);
+      this.crownEntity.y =
+        Math.random() * (this.game.gameStageHeight - 72) - (this.game.gameStageHeight / 2 - 36);
     } else if (crown !== null && crown.isPlayer) {
       // Gives a player score for having the crown, spawns a new one if the crowned player leaves
       if (crown.playerLeft) {
