@@ -2,12 +2,20 @@
 import * as PIXI from 'pixi.js';
 import Gamemode from './Gamemode';
 
+// Used to configure the highscore list
+import { HighscoreEnums } from '../configsystems/HighscoreSystem';
+
 /*
 Gamemode template.
 */
 class GamemodeTemplate extends Gamemode {
   constructor(game, resources) {
     // Always call super!
+    // super sets up `this.game`, `this.resources`, `this.players`, `this.scaleHeight`
+    // this.scaleHeight defaults to 1000 pixels, depending on the gamemode,
+    // the value should be changed to keep the scale of the game reasonable.
+    // this.players is a dictionary that maps player id to their entity and
+    // is used by many things, best to treat it as read-only.
     super(game, resources);
 
     // It is OK to create consequences here (create graphics, entities, etc)
@@ -69,7 +77,7 @@ class GamemodeTemplate extends Gamemode {
   // Called when the window is resized
   onWindowResize() {
     // Here you should update things that depend on the screen size.
-    // The gameStage is scaled so that the height is always equal to `this.targetHeight`
+    // The gameStage is scaled so that the height is always equal to `this.scaleHeight`
     // So the width will likely have changed.
     // You can get the width and height from
     // `this.game.gameStageWidth` and `this.game.gameStageHeight`
@@ -81,6 +89,12 @@ class GamemodeTemplate extends Gamemode {
     // Here you should clean up any custom graphics added to the stage
     // You don't have to care about cleaning up any entities
   }
+
+  // Called after config systems have been loaded
+  attachHooks(handler) {
+    // Here you can attach to hooks setup by the config systems
+  }
 }
 
-export default Gamemode;
+// Remember to change the classname and export!
+export default GamemodeTemplate;

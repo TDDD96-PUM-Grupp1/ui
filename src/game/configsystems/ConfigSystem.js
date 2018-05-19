@@ -1,3 +1,8 @@
+/* eslint-disable no-useless-constructor, class-methods-use-this, no-unused-vars */
+
+/*
+Base class for the config systems.
+*/
 class ConfigSystem {
   constructor(handler, options) {
     this.game = handler.game;
@@ -6,9 +11,8 @@ class ConfigSystem {
     this.options = options;
   }
 
-  /* eslint-disable */
   // Configure system from options, set up hooks and return the events it will need to listen to
-  setup(options) {}
+  setup(handler) {}
 
   // Attach listener to the needed hooks
   attachHooks() {}
@@ -28,10 +32,12 @@ class ConfigSystem {
   onPlayerCreated(playerObject, circle) {}
 
   // Called when a player leaves the game
-  onPlayerLeave(idTag) {}
+  onPlayerLeave(id) {}
 
   // Called when a player presses a button
   onButtonPressed(id, button) {}
-  /* eslint-enable */
+
+  // Clean up any consequences left by the system
+  clean() {}
 }
 export default ConfigSystem;
