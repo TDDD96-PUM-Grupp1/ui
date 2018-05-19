@@ -71,7 +71,6 @@ class Game {
         const { SelectedMode, requestedResources, options } = gamemodeHandler.getSelected();
         this.resourceServer.requestResources(requestedResources).then(gamemodeResources => {
           this.currentGamemode = new SelectedMode(this, gamemodeResources);
-          this.currentGamemode.init();
 
           this.handler = new GamemodeConfigHandler(this, this.currentGamemode, options);
 

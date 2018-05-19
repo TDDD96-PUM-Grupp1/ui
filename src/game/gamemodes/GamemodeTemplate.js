@@ -14,8 +14,7 @@ class GamemodeTemplate extends Gamemode {
     // super sets up `this.game`, `this.resources`, `this.players`, `this.scaleHeight`
     // this.scaleHeight defaults to 1000 pixels, depending on the gamemode,
     // the value should be changed to keep the scale of the game reasonable.
-    // this.players is a dictionary that maps player id to their entity and
-    // is used by many things, best to treat it as read-only.
+    // this.players is a dictionary that maps player id to their entity.
     super(game, resources);
 
     // It is OK to create consequences here (create graphics, entities, etc)

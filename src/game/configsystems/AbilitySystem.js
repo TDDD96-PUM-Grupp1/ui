@@ -31,7 +31,7 @@ class AbilitySystem extends ConfigSystem {
 
     // If abilitiy is currently active, disable it
     if (timer.active) {
-      deactivateFunc(this.gamemode.players[id], this.gamemode.resources, this.game);
+      deactivateFunc(this.handler.getPlayerEntity(id), this.gamemode.resources, this.game);
       timer.active = false;
     }
   }

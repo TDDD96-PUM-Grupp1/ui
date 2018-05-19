@@ -172,7 +172,7 @@ class HighscoreSystem extends ConfigSystem {
   }
 
   postUpdate() {
-    const players = Object.keys(this.gamemode.players);
+    const players = Object.keys(this.handler.players);
     // Check the conditionals for the advanced displays and update if they succeed
     this.advancedDisplays.forEach(display => {
       // Prettier wants this line on 1 row but eslint wants it spread out...

@@ -25,7 +25,7 @@ class SpawnSystem extends ConfigSystem {
     if (this.options.joinPhase !== undefined) {
       this.joinPhase = this.options.joinPhase;
     }
-    return { onPlayerJoin: true, onPlayerCreated: true };
+    return { onPlayerJoin: true, onPlayerCreated: true, onPlayerLeave: true };
   }
 
   onPlayerJoin(playerObject) {
@@ -50,8 +50,9 @@ class SpawnSystem extends ConfigSystem {
           const iconCol = Number.parseInt(playerObject.iconColor.substr(1), 16);
           circle.setColor(backgroundCol, iconCol);
 
-          // Add the player to the player list
+          // Add the player to the player lists
           this.gamemode.players[id] = circle;
+          this.handler.players[id] = circle;
           // Add the player circle to the game
           this.game.register(circle);
 
@@ -66,6 +67,11 @@ class SpawnSystem extends ConfigSystem {
   onPlayerCreated(playerObject, circle) {
     circle.phase(this.joinPhase);
     circle.moveWhilePhased = this.moveWhilePhased;
+  }
+
+  onPlayerLeave(id) {
+    delete this.gamemode.players[id];
+    delete this.handler.players[id];
   }
 }
 
