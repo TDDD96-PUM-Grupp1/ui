@@ -100,9 +100,6 @@ class AbilitySystem extends ConfigSystem {
       timer.onCooldown = false;
       timer.time = 0;
     });
-
-    // Signal death to controllers
-    this.game.communication.signalDeath(id, this.respawnTime);
   }
 
   onPlayerLeave(id) {
