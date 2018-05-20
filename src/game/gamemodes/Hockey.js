@@ -27,13 +27,14 @@ class Hockey extends Gamemode {
     this.team1 = [];
     this.team2 = [];
 
-    this.scaleHeight = 600;
+    this.scaleHeight = 750;
 
     const ball = new BasicCircle(this.game, 20, 0.5, 0xdddddd, true);
     ball.x = 0;
     ball.y = 0;
     ball.collisionGroup = 4;
     this.game.register(ball);
+    // ball.dynamicFriction = 0.5;
     this.ball = ball;
 
     this.topLine = this.addLine(-5000, 0, 5000, 0);
@@ -109,7 +110,7 @@ class Hockey extends Gamemode {
     this.team2 = shuffle(this.team2);
 
     let counter = 0.5;
-    const dist = -250;
+    const dist = -this.scaleHeight / 2 + 50;
     const angleStart = Math.atan2(-this.scaleHeight + 50, dist);
     const angleEnd = Math.atan2(this.scaleHeight - 50, dist);
     const angleSpan = Math.atan2(Math.sin(angleEnd - angleStart), Math.cos(angleEnd - angleStart));
@@ -159,6 +160,8 @@ class Hockey extends Gamemode {
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
     const { id } = playerObject;
+
+    circle.dynamicFriction = 0;
 
     if (this.team2.length >= this.team1.length) {
       // join team 1
