@@ -212,6 +212,19 @@ class PassTheBomb extends Gamemode {
         phase: 2,
       },
       rules: ['Avoid the bomb! If you are unlucky try to pass the bomb to a foe!'],
+      abilities: [
+        {
+          name: 'Speed Boost',
+          cooldown: 10,
+          duration: 3,
+          color: '#0099ff',
+          activateFunc: entity => {
+            entity.vx *= 2;
+            entity.vy *= 2;
+          },
+          deactivateFunc: () => {},
+        },
+      ],
       highscore: {
         order: HighscoreEnums.order.descending,
         scores: {
