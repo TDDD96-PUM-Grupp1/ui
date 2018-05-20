@@ -13,7 +13,7 @@ Other browsers might be supported but we have not gone out of our way to test th
 In order to run the game for this project the user need four different repositories which are listed below:
 * [Server](https://github.com/TDDD96-PUM-Grupp1/server) - This runs the deepstream server that handles the network connections.
 * [UI](https://github.com/TDDD96-PUM-Grupp1/ui) - This hosts the Javascript files for the UI.
-* [Controller](https://github.com/TDDD96-PUM-Grupp1/services) - This hosts the Javascript files for the Controller.
+* [Controller](https://github.com/TDDD96-PUM-Grupp1/controller) - This hosts the Javascript files for the Controller.
 * [Services](https://github.com/TDDD96-PUM-Grupp1/services) - This hosts services that handles all instances that are currently running, this makes it possible to run multiple instances of the UI.
 
 The corresponing setup is described in their respective GitHub repositories.
