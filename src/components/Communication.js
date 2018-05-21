@@ -15,6 +15,8 @@ class Communication {
     this.timeoutCount = options.timeout_count;
     this.pingrate = options.pingrate;
     this.serviceName = options.service_name;
+
+    // NOTE: This is not the same as the auth id.
     this.id = undefined;
 
     // If we are testing things don't connect to deepstream.
