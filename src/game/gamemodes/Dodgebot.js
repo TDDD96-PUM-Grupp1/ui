@@ -115,7 +115,7 @@ class Dodgebot extends Gamemode {
       rules: [
         'Avoid the killer robots that try to kill you!',
         'Abilities:',
-        'Speed Boost - Increases the speed of the played to easier avoid the bots!',
+        'Speed Boost - Increases the speed of the player to easier avoid the bots!',
       ],
       abilities: [
         {
