@@ -206,6 +206,8 @@ class Hockey extends Gamemode {
       moveWhilePhased: false,
       rules: [
         'Play as a team and try to score by bumping the puck into the goal of the opposite team!',
+        'Abilities:',
+        'Speed Boost - Increases the speed of the played for more scoring potential!',
       ],
       leave: {
         removeTime: 3,
