@@ -189,7 +189,7 @@ class PassTheBomb extends Gamemode {
       rules: [
         'Avoid the bomb! If you are unlucky try to pass the bomb to a foe!',
         'Abilities:',
-        'Speed Boost - Increases the speed of the played to easier escape or tag another player!',
+        'Speed Boost - Increases the speed of the player to easier escape or tag another player!',
       ],
       abilities: [
         {
