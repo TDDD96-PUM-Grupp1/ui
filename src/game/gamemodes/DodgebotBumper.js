@@ -28,7 +28,7 @@ class DodgebotBumper extends Dodgebot {
     superConf.rules = [
       'Avoid the killer robots that try to kill you and the bumper!',
       'Abilities:',
-      'Speed Boost - Increases the speed of the played to easier avoid the bots!',
+      'Speed Boost - Increases the speed of the player to easier avoid the bots!',
     ];
     return superConf;
   }
