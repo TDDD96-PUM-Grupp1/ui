@@ -8,6 +8,8 @@ import { HighscoreEnums } from '../configsystems/HighscoreSystem';
 */
 
 let crown = null;
+const CROWNHEIGHT = 72;
+const CROWNWIDTH = 60;
 
 class StealTheCrown extends Gamemode {
   constructor(game, resources) {
@@ -54,10 +56,10 @@ class StealTheCrown extends Gamemode {
   createCrown() {
     const crownEntity = new BasicRectangle(
       this.game,
-      60,
-      72,
+      CROWNWIDTH,
+      CROWNHEIGHT,
       0.01,
-      this.game.app.renderer.backgroundColor
+      0xffffff // this.game.app.renderer.backgroundColor
     );
 
     // gives first player hitting the invisible crownbearer the crown
@@ -100,9 +102,11 @@ class StealTheCrown extends Gamemode {
     if (crown === null && this.time > 5) {
       this.addCrown();
       this.crownEntity.x =
-        Math.random() * (this.game.gameStageWidth - 60) - (this.game.gameStageWidth / 2 - 30);
+        Math.random() * (this.game.gameStageWidth - CROWNWIDTH) -
+        (this.game.gameStageWidth - CROWNWIDTH) / 2;
       this.crownEntity.y =
-        Math.random() * (this.game.gameStageHeight - 72) - (this.game.gameStageHeight / 2 - 36);
+        Math.random() * (this.game.gameStageHeight - CROWNHEIGHT) -
+        (this.game.gameStageHeight - CROWNHEIGHT) / 2;
     } else if (crown !== null && crown.isPlayer) {
       // Gives a player score for having the crown, spawns a new one if the crowned player leaves
       if (crown.playerLeft) {
@@ -151,7 +155,7 @@ class StealTheCrown extends Gamemode {
   }
 
   onWindowResize() {
-    // Updates the playing field to fit the window.
+    // Updates the playing field to fit the window. Might be a better way to do this.
 
     const width = this.game.gameStageWidth * 0.5;
     const height = this.game.gameStageHeight * 0.5;
@@ -160,18 +164,39 @@ class StealTheCrown extends Gamemode {
     this.rightLine.x = width;
     this.leftLine.x = -width;
 
+    // make sure crownentity always stays within borders on resize
+    if (this.crownEntity.x < -width) {
+      this.crownEntity.x = -width + CROWNWIDTH;
+    } else if (this.crownEntity.x > width) {
+      this.crownEntity.x = width - CROWNWIDTH;
+    }
+    if (this.crownEntity.y < -height) {
+      this.crownEntity.y = -height + CROWNHEIGHT;
+    } else if (this.crownEntity.y > height) {
+      this.crownEntity.y = height - CROWNHEIGHT;
+    }
     // Puts a player back into the playing field if the window resizes
     Object.keys(this.players).forEach(id => {
       const entity = this.players[id];
-      if (entity.x < -width) {
-        entity.x = -width + entity.radius;
-      } else if (entity.x > width) {
-        entity.x = width - entity.radius;
-      }
-      if (entity.y < -height) {
-        entity.y = -height + entity.radius;
-      } else if (entity.y > height) {
-        entity.y = height - entity.radius;
+      if (!entity.playerLeft) {
+        if (entity.x < -width) {
+          entity.x = -width + entity.radius;
+        } else if (entity.x > width) {
+          entity.x = width - entity.radius;
+        }
+        if (entity.y < -height) {
+          entity.y = -height + entity.radius;
+        } else if (entity.y > height) {
+          entity.y = height - entity.radius;
+        }
+      } else if (!entity.dead) {
+        if (entity === crown) {
+          crown.graphic.removeChild(this.crownimg);
+          crown.die();
+          this.crownEntity.x = 0;
+          this.crownEntity.y = 0;
+          this.addCrown();
+        } else entity.die();
       }
     });
   }
