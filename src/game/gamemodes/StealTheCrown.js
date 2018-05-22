@@ -59,7 +59,7 @@ class StealTheCrown extends Gamemode {
       CROWNWIDTH,
       CROWNHEIGHT,
       0.01,
-      0xffffff // this.game.app.renderer.backgroundColor
+      this.game.app.renderer.backgroundColor
     );
 
     // gives first player hitting the invisible crownbearer the crown
@@ -219,7 +219,20 @@ class StealTheCrown extends Gamemode {
         phase: 2,
       },
       rules: [
-        'Steal the crown! Hold it to get points, and steal it from whoever currently carries it!',
+        ' Hold the crown to get points! If someone else has it, steal it from them!',
+      ],
+      abilities: [
+        {
+          name: 'Speed Boost',
+          cooldown: 10,
+          duration: 3,
+          color: '#0099ff',
+          activateFunc: entity => {
+            entity.vx *= 2;
+            entity.vy *= 2;
+          },
+          deactivateFunc: () => {},
+        },
       ],
       highscore: {
         order: HighscoreEnums.order.descending,
