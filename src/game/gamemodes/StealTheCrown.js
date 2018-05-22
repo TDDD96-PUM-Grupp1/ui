@@ -218,9 +218,7 @@ class StealTheCrown extends Gamemode {
         time: 1,
         phase: 2,
       },
-      rules: [
-        ' Hold the crown to get points! If someone else has it, steal it from them!',
-      ],
+      rules: [' Hold the crown to get points! If someone else has it, steal it from them!'],
       abilities: [
         {
           name: 'Speed Boost',
