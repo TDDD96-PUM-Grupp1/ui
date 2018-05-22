@@ -48,6 +48,10 @@ class HighscoreList {
     this.update();
   }
 
+  clean() {
+    this.container.destroy({ children: true });
+  }
+
   /*
   Paint the heading with explanations to different score types
   */

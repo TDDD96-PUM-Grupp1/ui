@@ -7,13 +7,14 @@ const settings = {
   defaultGamemode: 'Knock Off',
   game: {
     localPlayer: false,
-    dummyCount: 2,
+    dummyCount: 9,
     testLeave: false,
     testRejoin: false,
     testMove: false,
     forceCanvas: true,
     antialias: false,
-    scaleUI: false,
+    scaleUI: true,
+    demosystem: true,
   },
   communication: {
     pingrate: 1,
