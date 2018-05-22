@@ -49,10 +49,15 @@ class Game {
     this.resourceServer = new ResourceServer();
     this.scoreManager = new ScoreManager();
 
+    // Set up pixi containers
     this.gameStage = new PIXI.Container();
     this.app.stage.addChild(this.gameStage);
     this.staticStage = new PIXI.Container();
     this.app.stage.addChild(this.staticStage);
+
+    // Track joined players so we don't crash if they leave before they have joined
+    this.joinedPlayers = {};
+    this.leavingPlayers = {};
 
     this.gamemodeLoaded = false;
 
@@ -186,11 +191,22 @@ class Game {
 
   // Called when a new player joins.
   onPlayerJoin(playerObject) {
+    const { id } = playerObject;
+    if (this.leavingPlayers[id]) {
+      delete this.leavingPlayers[id];
+      return;
+    }
     this.currentGamemode.onPlayerJoin(playerObject);
   }
 
   // Called when a player leaves the game.
   onPlayerLeave(id) {
+    if (this.joinedPlayers[id] === undefined) {
+      this.leavingPlayers[id] = id;
+      return;
+    }
+    delete this.joinedPlayers[id];
+
     this.currentGamemode.onPlayerLeave(id);
   }
 
