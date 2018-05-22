@@ -59,6 +59,13 @@ class SpawnSystem extends ConfigSystem {
           this.handler.onPlayerCreated(playerObject, circle);
 
           resolve(circle);
+
+          // Handle if the player left before we finished creating them.
+          this.game.joinedPlayers[id] = playerObject;
+          if (this.game.leavingPlayers[id]) {
+            delete this.game.leavingPlayers[id];
+            this.game.onPlayerLeave(id);
+          }
         });
     });
   }
