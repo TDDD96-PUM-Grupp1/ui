@@ -75,14 +75,11 @@ class PassTheBomb extends Gamemode {
         player = eligible[Math.floor(Math.random() * eligible.length)];
         BOMB = player;
         this.time = 0;
+        BOMB.graphic.addChild(this.bombtext);
+        this.bombtext.x = -100;
+        this.bombtext.y = -100;
+        Bombset = true;
       }
-    }
-    // Sets the timer on the bombplayer
-    if (BOMB !== null && !Bombset) {
-      BOMB.graphic.addChild(this.bombtext);
-      this.bombtext.x = -100;
-      this.bombtext.y = -100;
-      Bombset = true;
     }
     // Makes the bomb tick and explodes if timer has run out
     if (Bombset) {
@@ -93,21 +90,16 @@ class PassTheBomb extends Gamemode {
 
         if (!BOMB.dead) {
           BOMB.die();
+        } else {
+          BOMB = null;
+          this.time = 0;
+          bombTimer = 5;
+          Bombset = false;
+          bombExploded = true;
         }
-        BOMB = null;
-        this.time = 0;
-        bombTimer = 5;
-        Bombset = false;
-        bombExploded = true;
       }
       if (bombTimer < 0) {
-        BOMB.graphic.removeChild(this.bombtext);
         BOMB.die();
-        Bombset = false;
-        BOMB = null;
-        this.time = 0;
-        bombTimer = 5;
-        bombExploded = true;
       }
     }
   }
@@ -139,6 +131,19 @@ class PassTheBomb extends Gamemode {
         bombTimer = Math.ceil(bombTimer);
         const score = this.game.scoreManager.getScore('Passes', victim.controller.id);
         this.game.scoreManager.setScore('Passes', victim.controller.id, score + 1);
+      }
+    });
+    // Reset bomb if the bombholder dies
+    circle.addDeathListener(player => {
+      if (!player.playerLeft) {
+        if (player === BOMB) {
+          BOMB.graphic.removeChild(this.bombtext);
+          Bombset = false;
+          BOMB = null;
+          this.time = 0;
+          bombTimer = 5;
+          bombExploded = true;
+        }
       }
     });
 
@@ -184,15 +189,7 @@ class PassTheBomb extends Gamemode {
           entity.y = height - entity.radius;
         }
       } else if (!entity.dead) {
-        if (entity === BOMB) {
-          BOMB.graphic.removeChild(this.bombtext);
-          BOMB.die();
-          Bombset = false;
-          BOMB = null;
-          this.time = 0;
-          bombTimer = 5;
-          bombExploded = true;
-        } else entity.die();
+        entity.die();
       }
     });
   }
