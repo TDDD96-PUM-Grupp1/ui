@@ -1,7 +1,7 @@
 import EntityController from './EntityController';
 
 const MAX_ANGLE = 50;
-const MAX_ACC = 600;
+const MAX_ACC = 650;
 const MIN_SENSOR_THRESHOLD = 5;
 
 const MAX_ANGLE_SQ = MAX_ANGLE * MAX_ANGLE;
@@ -19,7 +19,7 @@ class PlayerController extends EntityController {
 
     this.active = true;
 
-    this.accelerationScale = 1000;
+    this.accelerationScale = 1900;
   }
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
