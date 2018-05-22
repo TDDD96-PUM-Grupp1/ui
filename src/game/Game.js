@@ -20,6 +20,9 @@ Game.
 */
 class Game {
   constructor(app, communication) {
+    // Drop a global reference to the game so things can be tweaked from the in-browser console
+    window.game = this;
+
     this.app = app;
     this.communication = communication;
     this.instance = this.communication.getInstance();
@@ -97,12 +100,12 @@ class Game {
   }
 
   switchGamemode(nextGamemode) {
+    this.gamemodeLoaded = false;
     const gamemodeHandler = GamemodeHandler.getInstance();
     gamemodeHandler.selectGameMode(nextGamemode);
     this.instance.stashPlayers();
-    this.gamemodeLoaded = false;
 
-    // Clean (consistent naming btw)
+    // Clean up entities and graphics
     this.entityHandler.clear();
     this.respawnHandler.clean();
     this.currentGamemode.cleanUp();

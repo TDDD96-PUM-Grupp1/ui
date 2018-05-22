@@ -1,6 +1,7 @@
 import ConfigSystem from './ConfigSystem';
 import GamemodeHandler from '../GamemodeHandler';
 
+// eslint-disable-next-line
 function mod(n, m) {
   return (n % m + m) % m;
 }
@@ -32,6 +33,12 @@ class DemoSystem extends ConfigSystem {
 
   handleKeyboardInput(event) {
     const { key } = event;
+    if (key === 'p') {
+      // Restart current gamemode
+      this.game.switchGamemode(this.gamemodes[this.currentIndex]);
+    }
+    /* TODO:
+      Update service and controller when switching to new gamemode.
     if (key === 'i') {
       // Go to previous
       this.game.switchGamemode(this.gamemodes[mod(this.currentIndex - 1, this.gamemodes.length)]);
@@ -39,6 +46,7 @@ class DemoSystem extends ConfigSystem {
       // Go to next
       this.game.switchGamemode(this.gamemodes[mod(this.currentIndex + 1, this.gamemodes.length)]);
     }
+    */
   }
 
   clean() {
