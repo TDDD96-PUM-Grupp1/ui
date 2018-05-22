@@ -10,7 +10,7 @@ const SCALE = 300 / FONT_RESOLUTION;
 // Shuffle a list
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i -= 1) {
-    const j = Math.ceil(Math.random() * i);
+    const j = Math.floor(Math.random() * i);
     const temp = array[i];
     array[i] = array[j];
     array[j] = temp;
@@ -62,7 +62,7 @@ class Hockey extends Gamemode {
     line.restitution = 0.3;
     line.collisionGroup = 0;
     line.graphic.visible = false;
-    this.game.register(line);
+    this.game.registerWall(line);
     return line;
   }
 
@@ -100,7 +100,6 @@ class Hockey extends Gamemode {
     this.ball.resetPhysics();
     this.ball.x = 0;
     this.ball.y = 0;
-    this.ball.phase(2);
     this.resetPlayers();
   }
 
@@ -154,6 +153,13 @@ class Hockey extends Gamemode {
       this.team1Display.text = this.team1Score;
       this.resetBall();
     }
+
+    // Safety
+    if (this.ball.y < -this.game.gameStageHeight * 0.5) {
+      this.resetBall();
+    } else if (this.ball.y > this.game.gameStageHeight * 0.5) {
+      this.resetBall();
+    }
   }
 
   // Called when a new player has been created
@@ -198,6 +204,10 @@ class Hockey extends Gamemode {
 
     this.team1Zone.x = -width;
     this.team2Zone.x = width;
+  }
+
+  cleanUp() {
+    this.displayContainer.destroy({ children: true });
   }
 
   static getConfig() {

@@ -20,6 +20,9 @@ Game.
 */
 class Game {
   constructor(app, communication) {
+    // Drop a global reference to the game so things can be tweaked from the in-browser console
+    window.game = this;
+
     this.app = app;
     this.communication = communication;
     this.instance = this.communication.getInstance();
@@ -66,18 +69,8 @@ class Game {
       .then(resources => {
         this.basicResources = resources;
 
-        // Create gamemode
-        const gamemodeHandler = GamemodeHandler.getInstance();
-        const { SelectedMode, requestedResources, options } = gamemodeHandler.getSelected();
-        this.resourceServer.requestResources(requestedResources).then(gamemodeResources => {
-          this.currentGamemode = new SelectedMode(this, gamemodeResources);
-          this.currentGamemode.init();
-
-          this.handler = new GamemodeConfigHandler(this, this.currentGamemode, options);
-
-          this.gamemodeLoaded = true;
-          this.notifyResizeListeners();
-
+        this.startGamemode().then(() => {
+          // Let local players join after it has loaded
           if (settings.game.localPlayer) {
             this.addLocalPlayers();
           }
@@ -88,6 +81,41 @@ class Game {
     this.nameGraphic = new InstanceNameGraphic(this);
   }
 
+  startGamemode() {
+    // Create gamemode
+    const gamemodeHandler = GamemodeHandler.getInstance();
+    const { SelectedMode, resources, options } = gamemodeHandler.getSelected();
+    return new Promise(resolve => {
+      this.resourceServer.requestResources(resources).then(loadedResources => {
+        this.currentGamemode = new SelectedMode(this, loadedResources);
+        this.currentGamemode.init();
+
+        this.handler = new GamemodeConfigHandler(this, this.currentGamemode, options);
+
+        this.gamemodeLoaded = true;
+        this.notifyResizeListeners();
+        resolve();
+      });
+    });
+  }
+
+  switchGamemode(nextGamemode) {
+    this.gamemodeLoaded = false;
+    const gamemodeHandler = GamemodeHandler.getInstance();
+    gamemodeHandler.selectGameMode(nextGamemode);
+    this.instance.stashPlayers();
+
+    // Clean up entities and graphics
+    this.entityHandler.clear();
+    this.respawnHandler.clean();
+    this.currentGamemode.cleanUp();
+    this.handler.clean();
+
+    this.startGamemode().then(() => {
+      this.instance.popStash();
+    });
+  }
+
   // Main game loop
   loop(delta) {
     // Convert frame delta to time delta [second] (assuming 60fps)
@@ -95,9 +123,11 @@ class Game {
 
     // Update handlers and gamemodes
     if (this.gamemodeLoaded) {
+      this.handler.preUpdate(dt);
       this.currentGamemode.preUpdate(dt);
       this.entityHandler.update(dt);
       this.collisionHandler.handleCollisions(dt);
+      this.handler.postUpdate(dt);
       this.currentGamemode.postUpdate(dt);
       this.respawnHandler.checkRespawns();
       this.entityHandler.updateGraphics(dt);
@@ -186,11 +216,12 @@ class Game {
 
   // Called when a new player joins.
   onPlayerJoin(playerObject) {
-    this.currentGamemode.onPlayerJoin(playerObject);
+    this.handler.onPlayerJoin(playerObject);
   }
 
   // Called when a player leaves the game.
   onPlayerLeave(id) {
+    this.handler.onPlayerLeave(id);
     this.currentGamemode.onPlayerLeave(id);
   }
 
@@ -199,11 +230,9 @@ class Game {
 
   // eslint-disable-next-line
   onButtonsPressed(id, button) {
+    this.handler.onButtonPressed(id, button);
     this.currentGamemode.onButtonPressed(id, button);
   }
-
-  // eslint-disable-next-line
-  onButtonPressed(id, button) {}
 
   onPingUpdated(id, ping) {
     if (this.scoreManager.hasScoreType('Latency')) {
