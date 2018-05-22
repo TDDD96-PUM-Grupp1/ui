@@ -7,7 +7,6 @@ class Gamemode {
   constructor(game, resources) {
     this.game = game;
     this.resources = resources;
-    this.game.registerResizeListener(this);
     this.onButtonPressed = this.onButtonPressed.bind(this);
 
     this.scaleHeight = 1000;
