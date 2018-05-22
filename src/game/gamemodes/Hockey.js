@@ -27,7 +27,7 @@ class Hockey extends Gamemode {
     this.team1 = [];
     this.team2 = [];
 
-    this.scaleHeight = 600;
+    this.scaleHeight = 750;
 
     const ball = new BasicCircle(this.game, 20, 0.5, 0xdddddd, true);
     ball.x = 0;
@@ -109,7 +109,7 @@ class Hockey extends Gamemode {
     this.team2 = shuffle(this.team2);
 
     let counter = 0.5;
-    const dist = -250;
+    const dist = -this.scaleHeight / 2 + 50;
     const angleStart = Math.atan2(-this.scaleHeight + 50, dist);
     const angleEnd = Math.atan2(this.scaleHeight - 50, dist);
     const angleSpan = Math.atan2(Math.sin(angleEnd - angleStart), Math.cos(angleEnd - angleStart));
@@ -206,6 +206,8 @@ class Hockey extends Gamemode {
       moveWhilePhased: false,
       rules: [
         'Play as a team and try to score by bumping the puck into the goal of the opposite team!',
+        'Abilities:',
+        'Speed Boost - Increases the speed of the player for more scoring potential!',
       ],
       leave: {
         removeTime: 3,
