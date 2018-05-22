@@ -34,7 +34,6 @@ class Hockey extends Gamemode {
     ball.y = 0;
     ball.collisionGroup = 4;
     this.game.register(ball);
-    // ball.dynamicFriction = 0.5;
     this.ball = ball;
 
     this.topLine = this.addLine(-5000, 0, 5000, 0);
@@ -160,8 +159,6 @@ class Hockey extends Gamemode {
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
     const { id } = playerObject;
-
-    circle.dynamicFriction = 0;
 
     if (this.team2.length >= this.team1.length) {
       // join team 1
