@@ -55,7 +55,7 @@ class HighscoreSystem extends ConfigSystem {
       const { initial, primary } = score;
       this.scoreManager.addScoreType(name, initial, primary);
     });
-    this.gamemode.hs_list = new HighscoreList(this.scoreManager, this.game);
+    this.highscoreList = new HighscoreList(this.scoreManager, this.game);
 
     this.setUpHighscoreEvents();
 
@@ -73,6 +73,10 @@ class HighscoreSystem extends ConfigSystem {
     }
 
     return binds;
+  }
+
+  clean() {
+    this.highscoreList.clean();
   }
 
   attachHooks() {

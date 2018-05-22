@@ -4,6 +4,8 @@ import KillSystem from './configsystems/KillSystem';
 import HighscoreSystem from './configsystems/HighscoreSystem';
 import SpawnSystem from './configsystems/SpawnSystem';
 import LeaveSystem from './configsystems/LeaveSystem';
+import DemoSystem from './configsystems/DemoSystem';
+import settings from '../config';
 
 /*
 Handles a gamemode's config
@@ -29,8 +31,13 @@ class GamemodeConfigHandler {
     this.onPlayerLeaveSystems = [];
     this.onButtonPressedSystems = [];
 
-    this.injectBinds();
     this.setUpOptions();
+  }
+
+  clean() {
+    this.systems.forEach(system => {
+      system.clean();
+    });
   }
 
   getPlayerEntity(id) {
@@ -119,6 +126,12 @@ class GamemodeConfigHandler {
       this.game.app.renderer.backgroundColor = this.options.backgroundColor;
     }
 
+    // Add demo system if requested
+    if (settings.game.demosystem) {
+      this.addSystem(DemoSystem);
+    }
+
+    // Always add the leave system
     this.addSystem(LeaveSystem);
 
     // Always add the spawn system because we only have games built around this one.
@@ -129,41 +142,22 @@ class GamemodeConfigHandler {
     // After all systems have been added they should attach to hooks
     // There is no assumption about specific order this will happen in
     // so the available hooks should have already been created during setup.
-    this.systems.forEach(system => system.attachHooks());
-  }
+    this.systems.forEach(system => system.attachHooks(this));
 
-  // Injects the handler into the gamemode events allowing us to seamlessly add functionality
-  injectBinds() {
-    this.injectBind('preUpdate');
-    this.injectBind('postUpdate');
-    this.injectBind('onPlayerJoin');
-    this.injectBind('onPlayerCreated');
-    this.injectBind('onPlayerLeave');
-    this.injectBind('onButtonPressed');
-  }
-
-  // Swap a function in a gamemode with one of ours
-  injectBind(func) {
-    const temp = this.gamemode[func];
-
-    this.gamemode[func] = this[func].bind(this);
-    if (temp === undefined) {
-      this.binds[func] = () => {};
-    } else {
-      this.binds[func] = temp.bind(this.gamemode);
+    // Let the gamemode attach to hooks too
+    if (this.gamemode.attachHooks) {
+      this.gamemode.attachHooks(this);
     }
   }
 
   // Called before the physics update each loop
   preUpdate(dt) {
     this.preUpdateSystems.forEach(system => system.preUpdate(dt));
-    this.binds.preUpdate(dt);
   }
 
   // Called after the physics update
   postUpdate(dt) {
     this.postUpdateSystems.forEach(system => system.postUpdate(dt));
-    this.binds.postUpdate(dt);
   }
 
   // Called when a player joins the game
@@ -175,19 +169,17 @@ class GamemodeConfigHandler {
   // Called when a player joins the game but after they have had an entity created for them
   onPlayerCreated(playerObject, circle) {
     this.onPlayerCreatedSystems.forEach(system => system.onPlayerCreated(playerObject, circle));
-    this.binds.onPlayerCreated(playerObject, circle);
+    this.gamemode.onPlayerCreated(playerObject, circle);
   }
 
   // Called when a player leaves the game
   onPlayerLeave(id) {
     this.onPlayerLeaveSystems.forEach(system => system.onPlayerLeave(id));
-    this.binds.onPlayerLeave(id);
   }
 
   // Called when a player pressed a button
   onButtonPressed(id, button) {
     this.onButtonPressedSystems.forEach(system => system.onButtonPressed(id, button));
-    this.binds.onButtonPressed(id, button);
   }
 }
 

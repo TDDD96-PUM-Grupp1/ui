@@ -57,7 +57,7 @@ class SpawnSystem extends ConfigSystem {
           this.game.register(circle);
 
           // Tell the gamemode (and other systems) that the player entity is ready
-          this.gamemode.onPlayerCreated(playerObject, circle);
+          this.handler.onPlayerCreated(playerObject, circle);
 
           resolve(circle);
         });

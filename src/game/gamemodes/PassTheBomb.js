@@ -152,11 +152,6 @@ class PassTheBomb extends Gamemode {
     circle.y = this.arenaCenterY;
   }
 
-  // Clean up after the gamemode is finished.
-  cleanUp() {
-    this.arenaGraphic.destroy();
-  }
-
   // Called when an entity is respawned.
   onPlayerRespawn(entity) {
     // Move the entity close to the center

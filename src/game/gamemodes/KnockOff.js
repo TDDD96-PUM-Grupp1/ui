@@ -53,9 +53,7 @@ class KnockOff extends Gamemode {
 
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
-    // Place them in the middle of the arena for now
-    circle.x = this.arenaGraphic.x;
-    circle.y = this.arenaGraphic.y;
+    this.onPlayerRespawn(circle);
   }
 
   // Clean up after the gamemode is finished.

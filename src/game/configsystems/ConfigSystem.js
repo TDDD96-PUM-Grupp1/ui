@@ -17,6 +17,9 @@ class ConfigSystem {
   // Attach listener to the needed hooks
   attachHooks() {}
 
+  // Clean up consequences
+  clean() {}
+
   // Called before the physics update
   preUpdate(dt) {}
 

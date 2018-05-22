@@ -18,6 +18,9 @@ class BasicRectangle extends GameEntity {
 
     // Create a graphical rectangle
     const graphic = new PIXI.Graphics();
+    graphic.beginFill(0x0);
+    graphic.drawRect(-width * 0.5 - 3, -height * 0.5 - 3, width + 6, height + 6);
+    graphic.endFill();
     graphic.beginFill(0xfffffff);
     graphic.drawRect(-width * 0.5, -height * 0.5, width, height);
     graphic.endFill();
