@@ -66,7 +66,7 @@ class PassTheBomb extends Gamemode {
       const players = this.game.entityHandler.getPlayers();
       const eligible = [];
       players.forEach(player => {
-        if (!player.phasing && !player.dead) {
+        if (!player.phasing && !player.dead && !player.playerLeft) {
           eligible.push(player);
         }
       });
@@ -75,27 +75,31 @@ class PassTheBomb extends Gamemode {
         player = eligible[Math.floor(Math.random() * eligible.length)];
         BOMB = player;
         this.time = 0;
+        BOMB.graphic.addChild(this.bombtext);
+        this.bombtext.x = -100;
+        this.bombtext.y = -100;
+        Bombset = true;
       }
-    }
-    // Sets the timer on the bombplayer
-    if (BOMB !== null && !Bombset) {
-      BOMB.graphic.addChild(this.bombtext);
-      this.bombtext.x = -100;
-      this.bombtext.y = -100;
-      Bombset = true;
     }
     // Makes the bomb tick and explodes if timer has run out
     if (Bombset) {
       bombTimer -= dt;
       this.bombtext.text = Math.ceil(bombTimer);
-      if (bombTimer < 0) {
+      if (BOMB.playerLeft) {
         BOMB.graphic.removeChild(this.bombtext);
+
+        if (!BOMB.dead) {
+          BOMB.die();
+        } else {
+          BOMB = null;
+          this.time = 0;
+          bombTimer = 5;
+          Bombset = false;
+          bombExploded = true;
+        }
+      }
+      if (bombTimer < 0) {
         BOMB.die();
-        Bombset = false;
-        BOMB = null;
-        this.time = 0;
-        bombTimer = 5;
-        bombExploded = true;
       }
     }
   }
@@ -106,7 +110,7 @@ class PassTheBomb extends Gamemode {
     if (bombExploded) {
       Object.keys(this.players).forEach(id => {
         const entity = this.players[id];
-        if (!entity.dead) {
+        if (!entity.playerLeft && !entity.dead) {
           const score = this.game.scoreManager.getScore('Score', id);
           this.game.scoreManager.setScore('Score', id, score + 1);
         }
@@ -119,7 +123,7 @@ class PassTheBomb extends Gamemode {
   onPlayerCreated(playerObject, circle) {
     // Adds the bomblistener to the players
     circle.collision.addListener((player, victim) => {
-      if (victim === BOMB && this.restTime > 0.5) {
+      if (!player.playerLeft && victim === BOMB && this.restTime > 0.5) {
         BOMB.graphic.removeChild(this.bombtext);
         BOMB = player;
         BOMB.graphic.addChild(this.bombtext);
@@ -129,15 +133,23 @@ class PassTheBomb extends Gamemode {
         this.game.scoreManager.setScore('Passes', victim.controller.id, score + 1);
       }
     });
+    // Reset bomb if the bombholder dies
+    circle.addDeathListener(player => {
+      if (!player.playerLeft) {
+        if (player === BOMB) {
+          BOMB.graphic.removeChild(this.bombtext);
+          Bombset = false;
+          BOMB = null;
+          this.time = 0;
+          bombTimer = 5;
+          bombExploded = true;
+        }
+      }
+    });
 
     // Place them in the middle of the arena for now
     circle.x = this.arenaCenterX;
     circle.y = this.arenaCenterY;
-  }
-
-  // Clean up after the gamemode is finished.
-  cleanUp() {
-    this.arenaGraphic.destroy();
   }
 
   // Called when an entity is respawned.
@@ -160,15 +172,19 @@ class PassTheBomb extends Gamemode {
     // Puts a player back into the playing field if the window resizes
     Object.keys(this.players).forEach(id => {
       const entity = this.players[id];
-      if (entity.x < -width) {
-        entity.x = -width + entity.radius;
-      } else if (entity.x > width) {
-        entity.x = width - entity.radius;
-      }
-      if (entity.y < -height) {
-        entity.y = -height + entity.radius;
-      } else if (entity.y > height) {
-        entity.y = height - entity.radius;
+      if (!entity.playerLeft) {
+        if (entity.x < -width) {
+          entity.x = -width + entity.radius;
+        } else if (entity.x > width) {
+          entity.x = width - entity.radius;
+        }
+        if (entity.y < -height) {
+          entity.y = -height + entity.radius;
+        } else if (entity.y > height) {
+          entity.y = height - entity.radius;
+        }
+      } else if (!entity.dead) {
+        entity.die();
       }
     });
   }
@@ -180,13 +196,18 @@ class PassTheBomb extends Gamemode {
       backgroundColor: 0x061639,
       leave: {
         // If a player has the bomb then the bomb must pop before they are removed
+
         removeTime: bombTimer + 0.1,
       },
       respawn: {
         time: 1,
         phase: 2,
       },
-      rules: ['Avoid the bomb! If you are unlucky try to pass the bomb to a foe!'],
+      rules: [
+        'Avoid the bomb! If you are unlucky try to pass the bomb to a foe!',
+        'Abilities:',
+        'Speed Boost - Increases the speed of the player to easier escape or tag another player!',
+      ],
       abilities: [
         {
           name: 'Speed Boost',

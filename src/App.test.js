@@ -76,10 +76,10 @@ describe('GamemodeHandler', () => {
     for (let i = 0; i < gmList.length; i += 1) {
       gmHandler.selectGameMode(gmList[i]);
 
-      const { SelectedMode, requestedResources } = gmHandler.getSelected();
+      const { SelectedMode, resources } = gmHandler.getSelected();
       // If this tests breaks in the future
       // the problem is probably that the resources aren't loaded
-      gamemode = new SelectedMode(game, requestedResources);
+      gamemode = new SelectedMode(game, resources);
     }
   });
 
@@ -97,10 +97,10 @@ describe('GamemodeHandler', () => {
     for (let i = 0; i < gmList.length; i += 1) {
       gmHandler.selectGameMode(gmList[i]);
 
-      const { SelectedMode, requestedResources } = gmHandler.getSelected();
+      const { SelectedMode, resources } = gmHandler.getSelected();
       // If this tests breaks in the future
       // the problem is probably that the resources aren't loaded
-      gamemode = new SelectedMode(game, requestedResources);
+      gamemode = new SelectedMode(game, resources);
       gamemode.onWindowResize();
     }
   });

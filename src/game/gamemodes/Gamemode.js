@@ -51,10 +51,7 @@ class Gamemode {
   onWindowResize() {}
 
   // Clean up after the gamemode is finished.
-  cleanUp() {
-    this.game.entityHandler.clear();
-    this.game.respawnHandler.clean();
-  }
+  cleanUp() {}
   /* eslint-enable class-methods-use-this, no-unused-vars */
 }
 

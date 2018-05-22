@@ -20,12 +20,17 @@ class DodgebotBumper extends Dodgebot {
     bumper.y = y;
     bumper.restitution = 2;
 
+    // If these are registered as walls then they can push the players out of the square
     this.game.register(bumper);
   }
 
   static getConfig() {
     const superConf = super.getConfig();
-    superConf.rules = ['Avoid the killer robots that try to kill you and the bumper!'];
+    superConf.rules = [
+      'Avoid the killer robots that try to kill you and the bumper!',
+      'Abilities:',
+      'Speed Boost - Increases the speed of the player to easier avoid the bots!',
+    ];
     return superConf;
   }
 }

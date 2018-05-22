@@ -6,6 +6,8 @@ class Instance {
     this.players = {};
     this.instanceListener = undefined;
 
+    this.stashing = false;
+
     this.addInstanceListener = this.addInstanceListener.bind(this);
     this.addPlayer = this.addPlayer.bind(this);
     this.removePlayer = this.removePlayer.bind(this);
@@ -48,9 +50,21 @@ class Instance {
       playerObject.sensor = { beta: 0, gamma: 0 };
     }
 
+    const joiningPlayer = this.players[playerObject.id];
+
+    // If we are stashing then add them to stash instead.
+    if (this.stashing) {
+      this.stash[id] = playerObject;
+      // If they weren't already playing make sure communication adds another player.
+      if (joiningPlayer === undefined) {
+        return '';
+      }
+      // If they were already playing don't add another player on the service.
+      return 'no comm add';
+    }
+
     // Checks if the joining player already exists, and if they do whether they have reconnected
     // with new presets or not.
-    const joiningPlayer = this.players[playerObject.id];
     if (joiningPlayer === undefined) {
       // Joining player does not already exist
       if (this.instanceListener !== undefined) {
@@ -82,7 +96,10 @@ class Instance {
    * @param id The id of the player.
    */
   removePlayer(id) {
-    if (this.instanceListener !== undefined) {
+    // If we are stashing then remove them from the stash.
+    if (this.stashing) {
+      delete this.stash[id];
+    } else if (this.instanceListener !== undefined) {
       this.instanceListener.onPlayerLeave(id);
     }
     delete this.players[id];
@@ -144,6 +161,24 @@ class Instance {
    */
   getPlayers() {
     return this.players;
+  }
+
+  // Store a copy of all connected players.
+  stashPlayers() {
+    this.stashing = true;
+    this.stash = {};
+    Object.keys(this.players).forEach(key => {
+      this.stash[key] = this.players[key];
+    });
+  }
+
+  // Reconnect all stored players.
+  popStash() {
+    this.stashing = false;
+    this.players = {};
+    Object.keys(this.stash).forEach(key => {
+      this.addPlayer(this.stash[key]);
+    });
   }
 
   /*

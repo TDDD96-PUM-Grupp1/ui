@@ -10,7 +10,7 @@ const SCALE = 300 / FONT_RESOLUTION;
 // Shuffle a list
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i -= 1) {
-    const j = Math.ceil(Math.random() * i);
+    const j = Math.floor(Math.random() * i);
     const temp = array[i];
     array[i] = array[j];
     array[j] = temp;
@@ -27,7 +27,7 @@ class Hockey extends Gamemode {
     this.team1 = [];
     this.team2 = [];
 
-    this.scaleHeight = 600;
+    this.scaleHeight = 750;
 
     const ball = new BasicCircle(this.game, 20, 0.5, 0xdddddd, true);
     ball.x = 0;
@@ -62,7 +62,7 @@ class Hockey extends Gamemode {
     line.restitution = 0.3;
     line.collisionGroup = 0;
     line.graphic.visible = false;
-    this.game.register(line);
+    this.game.registerWall(line);
     return line;
   }
 
@@ -100,7 +100,6 @@ class Hockey extends Gamemode {
     this.ball.resetPhysics();
     this.ball.x = 0;
     this.ball.y = 0;
-    this.ball.phase(2);
     this.resetPlayers();
   }
 
@@ -109,7 +108,7 @@ class Hockey extends Gamemode {
     this.team2 = shuffle(this.team2);
 
     let counter = 0.5;
-    const dist = -250;
+    const dist = -this.scaleHeight / 2 + 50;
     const angleStart = Math.atan2(-this.scaleHeight + 50, dist);
     const angleEnd = Math.atan2(this.scaleHeight - 50, dist);
     const angleSpan = Math.atan2(Math.sin(angleEnd - angleStart), Math.cos(angleEnd - angleStart));
@@ -152,6 +151,13 @@ class Hockey extends Gamemode {
       // Team 1 scored!
       this.team1Score += 1;
       this.team1Display.text = this.team1Score;
+      this.resetBall();
+    }
+
+    // Safety
+    if (this.ball.y < -this.game.gameStageHeight * 0.5) {
+      this.resetBall();
+    } else if (this.ball.y > this.game.gameStageHeight * 0.5) {
       this.resetBall();
     }
   }
@@ -200,12 +206,18 @@ class Hockey extends Gamemode {
     this.team2Zone.x = width;
   }
 
+  cleanUp() {
+    this.displayContainer.destroy({ children: true });
+  }
+
   static getConfig() {
     return {
       joinPhase: 2,
       moveWhilePhased: false,
       rules: [
         'Play as a team and try to score by bumping the puck into the goal of the opposite team!',
+        'Abilities:',
+        'Speed Boost - Increases the speed of the player for more scoring potential!',
       ],
       leave: {
         removeTime: 3,

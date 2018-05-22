@@ -48,6 +48,10 @@ class HighscoreList {
     this.update();
   }
 
+  clean() {
+    this.container.destroy({ children: true });
+  }
+
   /*
   Paint the heading with explanations to different score types
   */
@@ -143,6 +147,8 @@ class HighscoreList {
         // Circle icon
         const iconPath = iconData[styles[val.id].iconID].img;
         const iconName = iconData[styles[val.id].iconID].name;
+        const iconColor = Number.parseInt(styles[val.id].iconColor.substr(1), 16);
+        const backgroundColor = Number.parseInt(styles[val.id].backgroundColor.substr(1), 16);
         this.game.resourceServer
           .requestResources([
             {
@@ -152,9 +158,6 @@ class HighscoreList {
           ])
           .then(res => {
             const playerModel = new PlayerCircle(this.game, res[iconName]);
-
-            const iconColor = Number.parseInt(styles[val.id].iconColor.substr(1), 16);
-            const backgroundColor = Number.parseInt(styles[val.id].backgroundColor.substr(1), 16);
             playerModel.setColor(backgroundColor, iconColor);
 
             const icon = playerModel.graphic;

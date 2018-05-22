@@ -83,8 +83,7 @@ class Dodgebot extends Gamemode {
   // Called when a new player has been created
   onPlayerCreated(playerObject, circle) {
     // Place them in the middle of the arena for now
-    circle.x = this.centerx;
-    circle.y = this.centery;
+    this.onPlayerRespawn(circle);
 
     circle.collisionGroup = playerObject.id;
   }
@@ -112,7 +111,11 @@ class Dodgebot extends Gamemode {
         time: 1,
         phase: 1.5,
       },
-      rules: ['Avoid the killer robots that try to kill you!'],
+      rules: [
+        'Avoid the killer robots that try to kill you!',
+        'Abilities:',
+        'Speed Boost - Increases the speed of the player to easier avoid the bots!',
+      ],
       abilities: [
         {
           name: 'Speed Boost',

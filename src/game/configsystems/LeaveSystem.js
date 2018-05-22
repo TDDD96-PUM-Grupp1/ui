@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import ConfigSystem from './ConfigSystem';
 
 /*
-Handles abilities.
+Handles leaving.
 */
 class LeaveSystem extends ConfigSystem {
   constructor(handler, options) {
