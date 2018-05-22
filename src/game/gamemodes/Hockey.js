@@ -27,7 +27,7 @@ class Hockey extends Gamemode {
     this.team1 = [];
     this.team2 = [];
 
-    this.scaleHeight = 600;
+    this.scaleHeight = 750;
 
     const ball = new BasicCircle(this.game, 20, 0.5, 0xdddddd, true);
     ball.x = 0;
@@ -50,6 +50,9 @@ class Hockey extends Gamemode {
     this.team2Display = this.addScoreDisplay('#FFAAAA', 200);
     this.game.gameStage.addChildAt(this.displayContainer, 0);
     this.displayContainer.alpha = 0.5;
+
+    this.team1Zone = this.addGoalZone(0xaaaaff, -500);
+    this.team2Zone = this.addGoalZone(0xffaaaa, 500);
   }
 
   addLine(x, y, ex, ey) {
@@ -61,6 +64,19 @@ class Hockey extends Gamemode {
     line.graphic.visible = false;
     this.game.register(line);
     return line;
+  }
+
+  addGoalZone(color, x) {
+    const width = 100;
+    const height = this.scaleHeight;
+    const zone = new PIXI.Graphics();
+    zone.beginFill(color);
+    zone.drawRect(-width * 0.5, -height * 0.5, width, height);
+    zone.endFill();
+    zone.x = x;
+    zone.alpha = 0.5;
+    this.displayContainer.addChild(zone);
+    return zone;
   }
 
   addScoreDisplay(color, x) {
@@ -93,7 +109,7 @@ class Hockey extends Gamemode {
     this.team2 = shuffle(this.team2);
 
     let counter = 0.5;
-    const dist = -250;
+    const dist = -this.scaleHeight / 2 + 50;
     const angleStart = Math.atan2(-this.scaleHeight + 50, dist);
     const angleEnd = Math.atan2(this.scaleHeight - 50, dist);
     const angleSpan = Math.atan2(Math.sin(angleEnd - angleStart), Math.cos(angleEnd - angleStart));
@@ -101,7 +117,7 @@ class Hockey extends Gamemode {
     this.team1.forEach(player => {
       const entity = this.players[player];
       entity.resetPhysics();
-      entity.phase(2);
+      entity.phase(1.3);
 
       const angle = angleStart + angleSlice * counter;
       entity.x = -dist * Math.cos(angle);
@@ -115,7 +131,7 @@ class Hockey extends Gamemode {
     this.team2.forEach(player => {
       const entity = this.players[player];
       entity.resetPhysics();
-      entity.phase(2);
+      entity.phase(1.3);
 
       const angle = angleStart + angleSlice * counter;
       entity.x = dist * Math.cos(angle);
@@ -179,6 +195,9 @@ class Hockey extends Gamemode {
     this.bottomLine.y = height;
     this.rightLine.x = width;
     this.leftLine.x = -width;
+
+    this.team1Zone.x = -width;
+    this.team2Zone.x = width;
   }
 
   static getConfig() {
@@ -187,10 +206,25 @@ class Hockey extends Gamemode {
       moveWhilePhased: false,
       rules: [
         'Play as a team and try to score by bumping the puck into the goal of the opposite team!',
+        'Abilities:',
+        'Speed Boost - Increases the speed of the player for more scoring potential!',
       ],
       leave: {
         removeTime: 3,
       },
+      abilities: [
+        {
+          name: 'Speed Boost',
+          cooldown: 10,
+          duration: 3,
+          color: '#0099ff',
+          activateFunc: entity => {
+            entity.vx *= 2;
+            entity.vy *= 2;
+          },
+          deactivateFunc: () => {},
+        },
+      ],
     };
   }
 }
