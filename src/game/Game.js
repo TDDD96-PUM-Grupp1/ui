@@ -236,7 +236,7 @@ class Game {
       return;
     }
     delete this.joinedPlayers[id];
-    
+
     this.handler.onPlayerLeave(id);
     this.currentGamemode.onPlayerLeave(id);
   }
