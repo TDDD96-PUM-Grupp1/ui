@@ -27,7 +27,7 @@ class Hockey extends Gamemode {
     this.team1 = [];
     this.team2 = [];
 
-    this.scaleHeight = 600;
+    this.scaleHeight = 750;
 
     const ball = new BasicCircle(this.game, 20, 0.5, 0xdddddd, true);
     ball.x = 0;
@@ -108,7 +108,7 @@ class Hockey extends Gamemode {
     this.team2 = shuffle(this.team2);
 
     let counter = 0.5;
-    const dist = -250;
+    const dist = -this.scaleHeight / 2 + 50;
     const angleStart = Math.atan2(-this.scaleHeight + 50, dist);
     const angleEnd = Math.atan2(this.scaleHeight - 50, dist);
     const angleSpan = Math.atan2(Math.sin(angleEnd - angleStart), Math.cos(angleEnd - angleStart));
