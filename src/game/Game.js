@@ -263,6 +263,7 @@ class Game {
     this.resizeListeners.forEach(listener => {
       listener.onWindowResize();
     });
+    this.currentGamemode.onWindowResize();
   }
 
   onWindowResize() {
