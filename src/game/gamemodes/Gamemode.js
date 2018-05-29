@@ -24,11 +24,6 @@ class Gamemode {
     return {};
   }
 
-  init() {}
-  /* eslint-enable class-methods-use-this, no-unused-vars, no-useless-constructor,
-  no-empty-function */
-
-  /* eslint-disable class-methods-use-this, no-unused-vars */
   // Called before the game objects are updated and physics are calculated.
   preUpdate(dt) {}
 
@@ -42,7 +37,7 @@ class Gamemode {
   onPlayerCreated(playerObject, circle) {}
 
   // Called when a player disconnects
-  onPlayerLeave(idTag) {}
+  onPlayerLeave(id) {}
 
   onButtonPressed(id, button) {}
 

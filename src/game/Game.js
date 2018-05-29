@@ -93,7 +93,6 @@ class Game {
     return new Promise(resolve => {
       this.resourceServer.requestResources(resources).then(loadedResources => {
         this.currentGamemode = new SelectedMode(this, loadedResources);
-        this.currentGamemode.init();
 
         this.handler = new GamemodeConfigHandler(this, this.currentGamemode, options);
 

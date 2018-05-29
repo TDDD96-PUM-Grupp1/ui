@@ -17,6 +17,8 @@ class GamemodeConfigHandler {
     this.gamemode = gamemode;
     this.options = options;
 
+    this.players = {};
+
     // Used to communicate between events
     this.hooks = {};
 
@@ -39,7 +41,7 @@ class GamemodeConfigHandler {
   }
 
   getPlayerEntity(id) {
-    return this.gamemode.players[id];
+    return this.players[id];
   }
 
   // Adds a hook
